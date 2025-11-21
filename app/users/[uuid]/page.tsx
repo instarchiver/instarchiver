@@ -208,7 +208,7 @@ export default function UserDetailPage({ params }: UserDetailPageProps) {
             )}
             {user.has_stories ? (
               <Link
-                href={`/stories?search=${encodeURIComponent(user.username)}&page=1`}
+                href={`/stories?search=${encodeURIComponent(user.username)}`}
                 className="flex-1"
               >
                 <Button className="w-full font-[var(--font-weight-heading)]">VIEW STORIES</Button>
