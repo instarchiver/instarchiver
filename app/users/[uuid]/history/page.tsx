@@ -1,13 +1,18 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useQueryClient } from '@tanstack/react-query';
 import { UserHistoryList } from './components/UserHistoryList';
-import { InstagramPage } from '../../components/InstagramPage';
-import { PaginationControls } from '../../components/PaginationControls';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { fetchUserHistory, extractCursor } from '../services/history';
 import { useUserHistory } from '@/hooks/useUserHistory';
-import { fetchUserHistory } from '../services/history';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationPrevious,
+  PaginationNext,
+} from '@/components/ui/pagination';
 
 interface UserHistoryPageProps {
   params: Promise<{
@@ -22,71 +27,99 @@ export default function UserHistoryPage({ params }: UserHistoryPageProps) {
   const searchParams = useSearchParams();
   const queryClient = useQueryClient();
 
-  // Get the current page from the URL parameters or default to 1
-  const initialPage = searchParams.get('page')
-    ? parseInt(searchParams.get('page') as string, 10)
-    : 1;
+  const [cursor, setCursor] = useState<string | null>(null);
 
-  // Local state to manage pagination
-  const [currentPage, setCurrentPage] = React.useState<number>(initialPage);
+  // Fetch history data using the useUserHistory hook with cursor
+  const { data, isLoading, error } = useUserHistory(uuid, cursor);
 
-  // Fetch history data using the useUserHistory hook
-  const { data, isLoading, error } = useUserHistory(uuid, currentPage);
+  // Initialize cursor from URL params on mount and when URL changes
+  useEffect(() => {
+    const urlCursor = searchParams.get('cursor');
+    setCursor(urlCursor);
+  }, [searchParams]);
+
+  const historyRecords = data ? data.results : [];
+  const nextCursor = data?.next ? extractCursor(data.next) : null;
+  const previousCursor = data?.previous ? extractCursor(data.previous) : null;
 
   // Prefetch next page data for smoother pagination
-  React.useEffect(() => {
-    if (data?.next) {
-      const nextPage = currentPage + 1;
+  useEffect(() => {
+    if (nextCursor) {
       queryClient.prefetchQuery({
-        queryKey: ['userHistory', uuid, nextPage],
-        queryFn: () => fetchUserHistory(uuid, nextPage),
+        queryKey: ['userHistory', uuid, nextCursor],
+        queryFn: () => fetchUserHistory(uuid, nextCursor),
       });
     }
-  }, [data, queryClient, uuid, currentPage]);
+  }, [data, queryClient, uuid, nextCursor]);
 
-  // Navigation handlers
-  const handleNextPage = () => {
-    if (data?.next) {
-      setCurrentPage(prev => prev + 1);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handlePrevPage = () => {
-    if (data?.previous) {
-      setCurrentPage(prev => prev - 1);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (previousCursor) {
+      setCursor(previousCursor);
+      const params = new URLSearchParams();
+      params.set('cursor', previousCursor);
+      router.push(`/users/${uuid}/history?${params.toString()}`);
+      scrollToTop();
     }
   };
 
-  // Calculate total pages
-  const totalPages = data ? Math.ceil(data.count / 10) : 0;
+  const handleNextPage = () => {
+    if (nextCursor) {
+      setCursor(nextCursor);
+      const params = new URLSearchParams();
+      params.set('cursor', nextCursor);
+      router.push(`/users/${uuid}/history?${params.toString()}`);
+      scrollToTop();
+    }
+  };
+
+  const username = data?.results[0]?.username || 'Loading...';
 
   return (
-    <InstagramPage
-      title="Profile History"
-      subtitle={`Showing history records for user (${data?.results[0]?.username || '...'})`}
-      totalCount={data?.count || 0}
-      currentPage={currentPage}
-      usersList={
-        <UserHistoryList
-          historyRecords={data?.results || []}
-          isLoading={isLoading}
-          error={error instanceof Error ? error : null}
-        />
-      }
-      pagination={
-        !isLoading && data && totalPages > 1 ? (
-          <PaginationControls
-            currentPage={currentPage}
-            totalPages={totalPages}
-            hasPrevious={!!data.previous}
-            hasNext={!!data.next}
-            onPrevPage={handlePrevPage}
-            onNextPage={handleNextPage}
-          />
-        ) : null
-      }
-    />
+    <div className="container mx-auto px-4 py-8">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold mb-2">Profile History</h1>
+        <p className="text-muted-foreground">Showing history records for user ({username})</p>
+      </div>
+
+      <UserHistoryList
+        historyRecords={historyRecords}
+        isLoading={isLoading}
+        error={error instanceof Error ? error : null}
+      />
+
+      {!isLoading && (previousCursor || nextCursor) && (
+        <Pagination className="mt-12">
+          <PaginationContent className="flex flex-wrap justify-center gap-1 sm:gap-2">
+            <PaginationItem className="min-w-9 sm:min-w-10">
+              <PaginationPrevious
+                href="#"
+                onClick={e => {
+                  e.preventDefault();
+                  if (previousCursor) handlePrevPage();
+                }}
+                aria-disabled={!previousCursor}
+                className={`${!previousCursor ? 'opacity-50 pointer-events-none' : ''} px-2 sm:px-3`}
+              />
+            </PaginationItem>
+
+            <PaginationItem className="min-w-9 sm:min-w-10">
+              <PaginationNext
+                href="#"
+                onClick={e => {
+                  e.preventDefault();
+                  if (nextCursor) handleNextPage();
+                }}
+                aria-disabled={!nextCursor}
+                className={`${!nextCursor ? 'opacity-50 pointer-events-none' : ''} px-2 sm:px-3`}
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      )}
+    </div>
   );
 }

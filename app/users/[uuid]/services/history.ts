@@ -1,31 +1,63 @@
-/**
- * API service functions for Instagram User History
- */
+import axiosInstance from '@/lib/axios';
 import { InstagramUserHistoryResponse } from '@/app/types/instagram/history';
+import { AxiosError } from 'axios';
 
-// Constants for the API
-const BASE_API_URL = process.env.NEXT_PUBLIC_INSTAGRAM_API_BASE_URL || 'https://api.animemoe.us';
-const COUNT_PER_PAGE = 10;
+// Constants
+export const API_CONSTANTS = {
+  COUNT_PER_PAGE: 12,
+};
+
+// API error class
+export class APIError extends Error {
+  constructor(
+    public status: number,
+    message: string
+  ) {
+    super(message);
+    this.name = 'APIError';
+  }
+}
 
 /**
- * Fetch history records for an Instagram user
+ * Extract cursor from pagination URL
+ */
+export function extractCursor(url: string | null): string | null {
+  if (!url) return null;
+  try {
+    const urlObj = new URL(url);
+    return urlObj.searchParams.get('cursor');
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Fetch history records for an Instagram user with cursor pagination
  */
 export async function fetchUserHistory(
   uuid: string,
-  page = 1
+  cursor?: string | null
 ): Promise<InstagramUserHistoryResponse> {
   try {
-    const response = await fetch(
-      `${BASE_API_URL}/instagram/users/${uuid}/history/?page=${page}&count=${COUNT_PER_PAGE}`
+    const params: Record<string, string> = {
+      page_size: API_CONSTANTS.COUNT_PER_PAGE.toString(),
+    };
+
+    if (cursor) params.cursor = cursor;
+
+    const response = await axiosInstance.get<InstagramUserHistoryResponse>(
+      `/instagram/users/${uuid}/history/`,
+      { params }
     );
 
-    if (!response.ok) {
-      throw new Error(`API error: ${response.status}`);
-    }
-
-    return await response.json();
+    return response.data;
   } catch (error) {
-    console.error('Error fetching user history:', error);
-    throw error;
+    if (error instanceof AxiosError) {
+      throw new APIError(
+        error.response?.status || 500,
+        error.response?.data?.message || 'Failed to fetch user history'
+      );
+    }
+    throw new Error('Failed to fetch user history from API');
   }
 }
