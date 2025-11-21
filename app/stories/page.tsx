@@ -38,19 +38,17 @@ export default function StoriesPage() {
     };
   }, []);
 
-  // Initialize state from URL params on mount
+  // Initialize state from URL params on mount and when URL changes
   useEffect(() => {
-    const search = searchParams.get('search');
+    const search = searchParams.get('search') || '';
     const urlCursor = searchParams.get('cursor');
 
-    if (search && search !== searchQuery) {
-      setSearchQuery(search);
-    }
+    // Update search query if it differs from URL
+    setSearchQuery(search);
 
-    if (urlCursor !== cursor) {
-      setCursor(urlCursor);
-    }
-  }, [searchParams, cursor, searchQuery]);
+    // Update cursor if it differs from URL
+    setCursor(urlCursor);
+  }, [searchParams]); // Only depend on searchParams to sync with URL changes
 
   const stories = data ? data.results : [];
   const nextCursor = data?.next ? extractCursor(data.next) : null;
