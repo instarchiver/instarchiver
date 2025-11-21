@@ -41,16 +41,11 @@ export default function StoriesPage() {
     const search = searchParams.get('search');
     const urlCursor = searchParams.get('cursor');
 
-    console.log(`[URL Effect] URL params - search: "${search}", cursor: "${urlCursor}"`);
-    console.log(`[URL Effect] Current state - searchQuery: "${searchQuery}", cursor: ${cursor}`);
-
     if (search && search !== searchQuery) {
-      console.log(`[URL Effect] Setting search query from URL: "${search}"`);
       setSearchQuery(search);
     }
 
     if (urlCursor !== cursor) {
-      console.log(`[URL Effect] Setting cursor from URL: ${urlCursor}`);
       setCursor(urlCursor);
     }
   }, [searchParams, cursor, searchQuery]);
@@ -69,7 +64,6 @@ export default function StoriesPage() {
   };
 
   const handleSearch = (query: string) => {
-    console.log(`[handleSearch] Searching for: "${query}"`);
     setSearchQuery(query);
     setCursor(null); // Reset cursor when searching
 
@@ -84,7 +78,6 @@ export default function StoriesPage() {
 
   const handlePrevPage = () => {
     if (previousCursor) {
-      console.log(`[handlePrevPage] Moving to previous cursor: ${previousCursor}`);
       setCursor(previousCursor);
 
       // Build URL with current search and previous cursor
@@ -99,7 +92,6 @@ export default function StoriesPage() {
 
   const handleNextPage = () => {
     if (nextCursor) {
-      console.log(`[handleNextPage] Moving to next cursor: ${nextCursor}`);
       setCursor(nextCursor);
 
       // Build URL with current search and next cursor
@@ -115,7 +107,6 @@ export default function StoriesPage() {
   return (
     <StoryPage
       totalStories={stories.length}
-      currentPage={1} // Not used with cursor pagination, but kept for compatibility
       searchQuery={searchQuery}
       viewMode={viewMode}
       onSearch={handleSearch}

@@ -10,7 +10,6 @@ import { Grid3X3, LayoutGrid, List } from 'lucide-react';
 
 interface StoryHeaderProps {
   totalStories: number;
-  currentPage: number;
   searchQuery: string;
   viewMode: ViewMode;
   onSearch: (query: string) => void;
@@ -21,7 +20,6 @@ interface StoryHeaderProps {
 
 export function StoryHeader({
   totalStories,
-  currentPage,
   searchQuery,
   viewMode,
   onSearch,
@@ -40,7 +38,6 @@ export function StoryHeader({
           <div className="flex flex-wrap gap-4 items-center justify-between mb-6">
             <div className="flex flex-wrap gap-4 items-center">
               <Badge variant="default">Total: {totalStories}</Badge>
-              <Badge variant="default">Page: {currentPage}</Badge>
               {searchQuery && <Badge variant="default">Search: {searchQuery}</Badge>}
             </div>
 
