@@ -20,11 +20,10 @@ export type { StoriesQueryOptions, OrderingOption };
 /**
  * Legacy hook for backward compatibility - uses cursor pagination
  */
-export function useStoriesQuery(cursor?: string | null, searchQuery?: string, userId?: string) {
+export function useStoriesQuery(cursor?: string | null, searchQuery?: string) {
   return useStoriesQueryWithOptions({
     cursor,
     searchQuery,
-    userId,
   });
 }
 
@@ -32,16 +31,13 @@ export function useStoriesQuery(cursor?: string | null, searchQuery?: string, us
  * Enhanced hook with full options support for fetching stories
  */
 export function useStoriesQueryWithOptions(options: StoriesQueryOptions = {}) {
-  const { cursor, searchQuery, userId, ordering, dateFrom, dateTo } = options;
+  const { cursor, searchQuery } = options;
 
   return useQuery({
-    queryKey: ['stories', cursor, searchQuery, userId, ordering, dateFrom, dateTo],
+    queryKey: ['stories', cursor, searchQuery],
     queryFn: async () => {
       console.log(`[API Call] Fetching stories with options:`, options);
       const result = await fetchStoriesWithOptions(options);
-      console.log(
-        `[API Response] Received ${result.results.length} stories, next: ${result.next}, previous: ${result.previous}`
-      );
       return result;
     },
     staleTime: 5 * 60 * 1000, // Data is considered fresh for 5 minutes

@@ -21,10 +21,6 @@ export type OrderingOption = (typeof ORDERING_OPTIONS)[keyof typeof ORDERING_OPT
 export interface StoriesQueryOptions {
   cursor?: string | null;
   searchQuery?: string;
-  userId?: string;
-  ordering?: OrderingOption | string;
-  dateFrom?: string;
-  dateTo?: string;
 }
 
 // API error class
@@ -57,7 +53,7 @@ export function extractCursor(url: string | null): string | null {
 export async function fetchStoriesWithOptions(
   options: StoriesQueryOptions = {}
 ): Promise<InstagramStoriesResponse> {
-  const { cursor, searchQuery, userId, ordering, dateFrom, dateTo } = options;
+  const { cursor, searchQuery } = options;
 
   try {
     const params: Record<string, string> = {
@@ -69,10 +65,6 @@ export async function fetchStoriesWithOptions(
 
     // Add optional parameters
     if (searchQuery) params.user__username = searchQuery;
-    if (userId) params.user = userId;
-    if (ordering) params.ordering = ordering;
-    if (dateFrom) params.story_created_at__gte = dateFrom;
-    if (dateTo) params.story_created_at__lte = dateTo;
 
     const response = await axiosInstance.get<InstagramStoriesResponse>('/instagram/stories/', {
       params,
@@ -95,13 +87,11 @@ export async function fetchStoriesWithOptions(
  */
 export async function fetchStories(
   cursor?: string | null,
-  searchQuery?: string,
-  userId?: string
+  searchQuery?: string
 ): Promise<InstagramStoriesResponse> {
   return fetchStoriesWithOptions({
     cursor,
     searchQuery,
-    userId,
   });
 }
 
