@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { StoriesGrid, StorySkeleton, StoryPage } from './components';
 import { useStoriesQueryWithOptions } from '@/hooks/useStories';
+import { extractCursor } from '@/lib/api/stories.api';
 import { useViewMode } from '@/hooks/useViewMode';
 import {
   Pagination,
@@ -20,6 +21,11 @@ export default function StoriesPage() {
 
   const [cursor, setCursor] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
+
+  const { data, isLoading } = useStoriesQueryWithOptions({
+    cursor,
+    searchQuery,
+  });
 
   // Reset state when navigating away
   useEffect(() => {
@@ -49,11 +55,6 @@ export default function StoriesPage() {
     }
   }, [searchParams, cursor, searchQuery]);
 
-  const { data, isLoading } = useStoriesQueryWithOptions({
-    cursor,
-    searchQuery,
-  });
-
   const stories = data ? data.results : [];
   const nextCursor = data?.next ? extractCursor(data.next) : null;
   const previousCursor = data?.previous ? extractCursor(data.previous) : null;
@@ -62,19 +63,6 @@ export default function StoriesPage() {
     `[Stories Render] isLoading: ${isLoading}, stories count: ${stories.length}, cursor: ${cursor}, searchQuery: "${searchQuery}"`
   );
   console.log(`[Stories Render] nextCursor: ${nextCursor}, previousCursor: ${previousCursor}`);
-
-  /**
-   * Extract cursor from URL
-   */
-  function extractCursor(url: string | null): string | null {
-    if (!url) return null;
-    try {
-      const urlObj = new URL(url);
-      return urlObj.searchParams.get('cursor');
-    } catch {
-      return null;
-    }
-  }
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
