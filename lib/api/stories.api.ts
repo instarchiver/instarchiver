@@ -61,7 +61,7 @@ export async function fetchStoriesWithOptions(
 
   try {
     const params: Record<string, string> = {
-      count: API_CONSTANTS.COUNT_PER_PAGE.toString(),
+      page_size: API_CONSTANTS.COUNT_PER_PAGE.toString(),
     };
 
     // Add cursor if provided
