@@ -64,7 +64,7 @@ export async function fetchStoriesWithOptions(
     if (cursor) params.cursor = cursor;
 
     // Add optional parameters
-    if (searchQuery) params.user__username = searchQuery;
+    if (searchQuery) params.search = searchQuery;
 
     const response = await axiosInstance.get<InstagramStoriesResponse>('/instagram/stories/', {
       params,
