@@ -5,7 +5,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'f26d9d016614b1f78aea52333ba66671.r2.cloudflarestorage.com',
+        hostname: 'cdn.instarchiver.net',
         pathname: '/**',
       },
     ],
