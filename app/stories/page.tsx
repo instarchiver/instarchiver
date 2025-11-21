@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { StoriesGrid, StorySkeleton, StoryPage, StoryPreviewModal } from './components';
-import { useStoriesQueryWithOptions, API_CONSTANTS } from '@/hooks/useStories';
+import { useStoriesQueryWithOptions } from '@/hooks/useStories';
 import { InstagramStory } from '@/app/types/instagram/story';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useViewMode } from '@/hooks/useViewMode';
@@ -11,10 +11,8 @@ import {
   Pagination,
   PaginationContent,
   PaginationItem,
-  PaginationLink,
   PaginationPrevious,
   PaginationNext,
-  PaginationEllipsis,
 } from '@/components/ui/pagination';
 
 export default function StoriesPage() {
@@ -23,9 +21,8 @@ export default function StoriesPage() {
   const isMobile = useIsMobile();
   const [viewMode, setViewMode] = useViewMode();
 
-  const [currentPage, setCurrentPage] = useState(1);
+  const [cursor, setCursor] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
-  const [maxVisiblePages, setMaxVisiblePages] = useState(5);
   const [previewStory, setPreviewStory] = useState<InstagramStory | null>(null);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
@@ -34,50 +31,55 @@ export default function StoriesPage() {
     // Clean up function runs when component unmounts
     return () => {
       setSearchQuery('');
-      setCurrentPage(1);
+      setCursor(null);
     };
   }, []);
-
-  // Update maxVisiblePages when screen size changes
-  useEffect(() => {
-    setMaxVisiblePages(isMobile ? 3 : 5);
-  }, [isMobile]);
 
   // Initialize state from URL params on mount
   useEffect(() => {
     const search = searchParams.get('search');
-    const page = searchParams.get('page');
+    const urlCursor = searchParams.get('cursor');
 
-    console.log(`[URL Effect] URL params - search: "${search}", page: "${page}"`);
-    console.log(
-      `[URL Effect] Current state - searchQuery: "${searchQuery}", currentPage: ${currentPage}`
-    );
+    console.log(`[URL Effect] URL params - search: "${search}", cursor: "${urlCursor}"`);
+    console.log(`[URL Effect] Current state - searchQuery: "${searchQuery}", cursor: ${cursor}`);
 
     if (search && search !== searchQuery) {
       console.log(`[URL Effect] Setting search query from URL: "${search}"`);
       setSearchQuery(search);
     }
 
-    if (page) {
-      const pageNum = parseInt(page, 10);
-      if (!isNaN(pageNum) && pageNum !== currentPage) {
-        console.log(`[URL Effect] Setting page from URL: ${pageNum}`);
-        setCurrentPage(pageNum);
-      }
+    if (urlCursor !== cursor) {
+      console.log(`[URL Effect] Setting cursor from URL: ${urlCursor}`);
+      setCursor(urlCursor);
     }
-  }, [searchParams, currentPage, searchQuery]); // Include all dependencies
+  }, [searchParams, cursor, searchQuery]);
 
   const { data, isLoading } = useStoriesQueryWithOptions({
-    page: currentPage,
+    cursor,
     searchQuery,
   });
 
-  const totalPages = data ? Math.ceil(data.count / API_CONSTANTS.COUNT_PER_PAGE) : 1;
   const stories = data ? data.results : [];
+  const nextCursor = data?.next ? extractCursor(data.next) : null;
+  const previousCursor = data?.previous ? extractCursor(data.previous) : null;
 
   console.log(
-    `[Stories Render] isLoading: ${isLoading}, stories count: ${stories.length}, currentPage: ${currentPage}, searchQuery: "${searchQuery}"`
+    `[Stories Render] isLoading: ${isLoading}, stories count: ${stories.length}, cursor: ${cursor}, searchQuery: "${searchQuery}"`
   );
+  console.log(`[Stories Render] nextCursor: ${nextCursor}, previousCursor: ${previousCursor}`);
+
+  /**
+   * Extract cursor from URL
+   */
+  function extractCursor(url: string | null): string | null {
+    if (!url) return null;
+    try {
+      const urlObj = new URL(url);
+      return urlObj.searchParams.get('cursor');
+    } catch {
+      return null;
+    }
+  }
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -96,7 +98,7 @@ export default function StoriesPage() {
   const handleSearch = (query: string) => {
     console.log(`[handleSearch] Searching for: "${query}"`);
     setSearchQuery(query);
-    setCurrentPage(1);
+    setCursor(null); // Reset cursor when searching
 
     // Build URL with search
     const params = new URLSearchParams();
@@ -108,98 +110,39 @@ export default function StoriesPage() {
   };
 
   const handlePrevPage = () => {
-    if (currentPage > 1) {
-      const newPage = currentPage - 1;
-      console.log(`[handlePrevPage] Moving to page: ${newPage}`);
-      setCurrentPage(newPage);
+    if (previousCursor) {
+      console.log(`[handlePrevPage] Moving to previous cursor: ${previousCursor}`);
+      setCursor(previousCursor);
 
-      // Build URL with current search and new page
+      // Build URL with current search and previous cursor
       const params = new URLSearchParams();
       if (searchQuery) params.set('search', searchQuery);
-      if (newPage > 1) params.set('page', newPage.toString());
-
-      const url = params.toString() ? `/stories?${params.toString()}` : '/stories';
-      router.push(url);
-      scrollToTop();
-    }
-  };
-
-  const handleNextPage = () => {
-    if (currentPage < totalPages) {
-      const newPage = currentPage + 1;
-      console.log(`[handleNextPage] Moving to page: ${newPage}`);
-      setCurrentPage(newPage);
-
-      // Build URL with current search and new page
-      const params = new URLSearchParams();
-      if (searchQuery) params.set('search', searchQuery);
-      params.set('page', newPage.toString());
+      params.set('cursor', previousCursor);
 
       router.push(`/stories?${params.toString()}`);
       scrollToTop();
     }
   };
 
-  const handlePageClick = (targetPage: number) => {
-    if (targetPage !== currentPage) {
-      console.log(`[handlePageClick] Moving to page: ${targetPage}`);
-      setCurrentPage(targetPage);
+  const handleNextPage = () => {
+    if (nextCursor) {
+      console.log(`[handleNextPage] Moving to next cursor: ${nextCursor}`);
+      setCursor(nextCursor);
 
-      // Build URL with current search and target page
+      // Build URL with current search and next cursor
       const params = new URLSearchParams();
       if (searchQuery) params.set('search', searchQuery);
-      if (targetPage > 1) params.set('page', targetPage.toString());
+      params.set('cursor', nextCursor);
 
-      const url = params.toString() ? `/stories?${params.toString()}` : '/stories';
-      router.push(url);
+      router.push(`/stories?${params.toString()}`);
       scrollToTop();
     }
   };
 
-  const getPageNumbers = (): (number | string)[] => {
-    const pages: (number | string)[] = [];
-    // Use the state value that is updated based on screen size
-
-    pages.push(1);
-
-    let startPage = Math.max(2, currentPage - Math.floor(maxVisiblePages / 2));
-    let endPage = Math.min(totalPages - 1, startPage + maxVisiblePages - 2);
-
-    if (currentPage <= Math.floor(maxVisiblePages / 2)) {
-      endPage = Math.min(totalPages - 1, maxVisiblePages - 1);
-    }
-
-    if (currentPage >= totalPages - Math.floor(maxVisiblePages / 2)) {
-      startPage = Math.max(2, totalPages - maxVisiblePages + 1);
-    }
-
-    if (startPage > 2) {
-      pages.push('start-ellipsis');
-    }
-
-    for (let i = startPage; i <= endPage; i++) {
-      if (i > 1 && i < totalPages) {
-        pages.push(i);
-      }
-    }
-
-    if (endPage < totalPages - 1 && totalPages > 1) {
-      pages.push('end-ellipsis');
-    }
-
-    if (totalPages > 1) {
-      pages.push(totalPages);
-    }
-
-    return pages;
-  };
-
-  const pageNumbers = getPageNumbers();
-
   return (
     <StoryPage
-      totalStories={data?.count || 0}
-      currentPage={currentPage}
+      totalStories={stories.length}
+      currentPage={1} // Not used with cursor pagination, but kept for compatibility
       searchQuery={searchQuery}
       viewMode={viewMode}
       onSearch={handleSearch}
@@ -235,48 +178,22 @@ export default function StoriesPage() {
                   href="#"
                   onClick={e => {
                     e.preventDefault();
-                    if (currentPage > 1) handlePrevPage();
+                    if (previousCursor) handlePrevPage();
                   }}
-                  aria-disabled={currentPage === 1}
-                  className={`${currentPage === 1 ? 'opacity-50 pointer-events-none' : ''} px-2 sm:px-3`}
+                  aria-disabled={!previousCursor}
+                  className={`${!previousCursor ? 'opacity-50 pointer-events-none' : ''} px-2 sm:px-3`}
                 />
               </PaginationItem>
-
-              {pageNumbers.map((page, index) => {
-                if (page === 'start-ellipsis' || page === 'end-ellipsis') {
-                  return (
-                    <PaginationItem key={`ellipsis-${index}`}>
-                      <PaginationEllipsis />
-                    </PaginationItem>
-                  );
-                }
-
-                return (
-                  <PaginationItem key={page} className="min-w-9 sm:min-w-10">
-                    <PaginationLink
-                      href="#"
-                      onClick={e => {
-                        e.preventDefault();
-                        if (typeof page === 'number') handlePageClick(page);
-                      }}
-                      isActive={currentPage === page}
-                      className="px-2 sm:px-3 h-9 sm:h-10"
-                    >
-                      {page}
-                    </PaginationLink>
-                  </PaginationItem>
-                );
-              })}
 
               <PaginationItem className="min-w-9 sm:min-w-10">
                 <PaginationNext
                   href="#"
                   onClick={e => {
                     e.preventDefault();
-                    if (currentPage < totalPages) handleNextPage();
+                    if (nextCursor) handleNextPage();
                   }}
-                  aria-disabled={currentPage === totalPages}
-                  className={`${currentPage === totalPages ? 'opacity-50 pointer-events-none' : ''} px-2 sm:px-3`}
+                  aria-disabled={!nextCursor}
+                  className={`${!nextCursor ? 'opacity-50 pointer-events-none' : ''} px-2 sm:px-3`}
                 />
               </PaginationItem>
             </PaginationContent>

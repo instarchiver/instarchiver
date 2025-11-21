@@ -2,10 +2,9 @@
 
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { toast } from 'sonner';
+import axiosInstance from '@/lib/axios';
 import { InstagramStory, InstagramStoriesResponse } from '@/app/types/instagram/story';
-
-// Base URL for the API
-const API_BASE_URL = 'https://api.animemoe.us';
+import { AxiosError } from 'axios';
 
 // Constants
 export const API_CONSTANTS = {
@@ -24,7 +23,7 @@ export type OrderingOption = (typeof ORDERING_OPTIONS)[keyof typeof ORDERING_OPT
 
 // Query options interface
 export interface StoriesQueryOptions {
-  page?: number;
+  cursor?: string | null;
   searchQuery?: string;
   userId?: string;
   ordering?: OrderingOption | string;
@@ -44,80 +43,88 @@ export class APIError extends Error {
 }
 
 /**
- * Make an API request with error handling
+ * Extract cursor from URL
  */
-async function makeRequest<T>(endpoint: string, options?: RequestInit): Promise<T> {
+function extractCursor(url: string | null): string | null {
+  if (!url) return null;
   try {
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, options);
-
-    if (!response.ok) {
-      throw new APIError(response.status, `API request failed with status ${response.status}`);
-    }
-
-    return await response.json();
-  } catch (error) {
-    if (error instanceof APIError) {
-      throw error;
-    }
-    throw new Error('Failed to fetch data from API');
+    const urlObj = new URL(url);
+    return urlObj.searchParams.get('cursor');
+  } catch {
+    return null;
   }
-}
-
-/**
- * Create API URL with query parameters
- */
-function createApiUrl(endpoint: string, params: Record<string, string>): string {
-  const searchParams = new URLSearchParams();
-  Object.entries(params).forEach(([key, value]) => {
-    if (value) searchParams.set(key, value);
-  });
-  return `${endpoint}?${searchParams.toString()}`;
 }
 
 /**
  * Fetch stories with optional filtering - Legacy function for backward compatibility
  */
 export async function fetchStories(
-  page = 1,
+  cursor?: string | null,
   searchQuery?: string,
   userId?: string
 ): Promise<InstagramStoriesResponse> {
   return fetchStoriesWithOptions({
-    page,
+    cursor,
     searchQuery,
     userId,
   });
 }
 
 /**
- * Fetch stories with comprehensive options
+ * Fetch stories with comprehensive options using cursor pagination
  */
 export async function fetchStoriesWithOptions(
   options: StoriesQueryOptions = {}
 ): Promise<InstagramStoriesResponse> {
-  const { page = 1, searchQuery, userId, ordering, dateFrom, dateTo } = options;
+  const { cursor, searchQuery, userId, ordering, dateFrom, dateTo } = options;
 
-  const params: Record<string, string> = {
-    page: page.toString(),
-    count: API_CONSTANTS.COUNT_PER_PAGE.toString(),
-  };
+  try {
+    const params: Record<string, string> = {
+      count: API_CONSTANTS.COUNT_PER_PAGE.toString(),
+    };
 
-  // Add optional parameters
-  if (searchQuery) params.user__username = searchQuery;
-  if (userId) params.user = userId;
-  if (ordering) params.ordering = ordering;
-  if (dateFrom) params.story_created_at__gte = dateFrom;
-  if (dateTo) params.story_created_at__lte = dateTo;
+    // Add cursor if provided
+    if (cursor) params.cursor = cursor;
 
-  const endpoint = createApiUrl('/instagram/stories/', params);
-  return makeRequest<InstagramStoriesResponse>(endpoint);
+    // Add optional parameters
+    if (searchQuery) params.user__username = searchQuery;
+    if (userId) params.user = userId;
+    if (ordering) params.ordering = ordering;
+    if (dateFrom) params.story_created_at__gte = dateFrom;
+    if (dateTo) params.story_created_at__lte = dateTo;
+
+    const response = await axiosInstance.get<InstagramStoriesResponse>('/instagram/stories/', {
+      params,
+    });
+
+    return response.data;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      throw new APIError(
+        error.response?.status || 500,
+        error.response?.data?.message || 'Failed to fetch stories'
+      );
+    }
+    throw new Error('Failed to fetch data from API');
+  }
 }
 
 /**
  * Fetch a single story by ID
  */
 export async function fetchStoryById(storyId: string): Promise<InstagramStory> {
-  return makeRequest<InstagramStory>(`/instagram/stories/${storyId}/`);
+  try {
+    const response = await axiosInstance.get<InstagramStory>(`/instagram/stories/${storyId}/`);
+    return response.data;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      throw new APIError(
+        error.response?.status || 500,
+        error.response?.data?.message || 'Failed to fetch story'
+      );
+    }
+    throw new Error('Failed to fetch story from API');
+  }
 }
 
 /**
@@ -142,10 +149,10 @@ export async function downloadStoryMedia(story: InstagramStory): Promise<void> {
   }
 }
 
-// Legacy hook for backward compatibility
-export function useStoriesQuery(page: number = 1, searchQuery?: string, userId?: string) {
+// Legacy hook for backward compatibility - now uses cursor
+export function useStoriesQuery(cursor?: string | null, searchQuery?: string, userId?: string) {
   return useStoriesQueryWithOptions({
-    page,
+    cursor,
     searchQuery,
     userId,
   });
@@ -153,10 +160,10 @@ export function useStoriesQuery(page: number = 1, searchQuery?: string, userId?:
 
 // Enhanced hook with full options support
 export function useStoriesQueryWithOptions(options: StoriesQueryOptions = {}) {
-  const { page = 1, searchQuery, userId, ordering, dateFrom, dateTo } = options;
+  const { cursor, searchQuery, userId, ordering, dateFrom, dateTo } = options;
 
   console.log(`[useStoriesQueryWithOptions] Fetching:`, {
-    page,
+    cursor,
     searchQuery,
     userId,
     ordering,
@@ -165,12 +172,12 @@ export function useStoriesQueryWithOptions(options: StoriesQueryOptions = {}) {
   });
 
   return useQuery({
-    queryKey: ['stories', page, searchQuery, userId, ordering, dateFrom, dateTo],
+    queryKey: ['stories', cursor, searchQuery, userId, ordering, dateFrom, dateTo],
     queryFn: async () => {
       console.log(`[API Call] Fetching stories with options:`, options);
       const result = await fetchStoriesWithOptions(options);
       console.log(
-        `[API Response] Received ${result.results.length} stories, total count: ${result.count}`
+        `[API Response] Received ${result.results.length} stories, next: ${result.next}, previous: ${result.previous}`
       );
       return result;
     },
