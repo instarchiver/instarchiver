@@ -1,7 +1,7 @@
 'use client';
 
-import React from 'react';
-import { SearchBar } from '../../users/components/SearchBar';
+import React, { useState, useEffect } from 'react';
+import { SearchBar } from '@/components/ui/search-bar';
 import { ViewMode } from './StoriesGrid';
 import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -27,6 +27,21 @@ export function StoryHeader({
   title = 'Instagram Stories Archive',
   subtitle,
 }: StoryHeaderProps) {
+  const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery);
+
+  // Sync local state with prop changes
+  useEffect(() => {
+    setLocalSearchQuery(searchQuery);
+  }, [searchQuery]);
+
+  const handleSearchSubmit = (value: string) => {
+    onSearch(value);
+  };
+
+  const handleSearchClear = () => {
+    onSearch('');
+  };
+
   return (
     <div className="mb-12">
       <Card>
@@ -75,9 +90,11 @@ export function StoryHeader({
 
           {/* Search bar */}
           <SearchBar
-            onSearch={onSearch}
+            value={localSearchQuery}
+            onChange={setLocalSearchQuery}
+            onSubmit={handleSearchSubmit}
+            onClear={handleSearchClear}
             placeholder="Search by username..."
-            initialQuery={searchQuery}
             className="mb-0"
           />
         </CardContent>
