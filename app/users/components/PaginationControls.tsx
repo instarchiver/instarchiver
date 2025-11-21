@@ -12,8 +12,8 @@ import {
 } from '@/components/ui/pagination';
 
 interface PaginationControlsProps {
-  currentPage: number;
-  totalPages: number;
+  currentPage?: number; // Optional for cursor-based pagination
+  totalPages?: number; // Optional for cursor-based pagination
   hasPrevious: boolean;
   hasNext: boolean;
   onPrevPage: () => void;
@@ -32,6 +32,9 @@ export function PaginationControls({
 }: PaginationControlsProps) {
   // Generate page numbers array to handle dynamic pagination
   const getPageNumbers = (): (number | string)[] => {
+    // Type guard: return empty array if required values are missing
+    if (!currentPage || !totalPages) return [];
+
     const pages: (number | string)[] = [];
     const maxVisiblePages = 5; // Max visible numbered pages
 
@@ -79,7 +82,8 @@ export function PaginationControls({
 
   // Function to navigate to a specific page
   const handlePageClick = (targetPage: number) => {
-    if (targetPage === currentPage) return;
+    // Type guard: do nothing if currentPage is not defined
+    if (!currentPage || targetPage === currentPage) return;
 
     if (goToPage) {
       // Use the direct navigation if provided
@@ -100,8 +104,9 @@ export function PaginationControls({
     }
   };
 
-  // Get the array of page numbers to display
-  const pageNumbers = getPageNumbers();
+  // Get the array of page numbers to display (only if using page-based pagination)
+  const pageNumbers = currentPage && totalPages ? getPageNumbers() : [];
+  const isCursorBased = !currentPage || !totalPages;
 
   return (
     <Pagination className="mt-12">
@@ -119,53 +124,60 @@ export function PaginationControls({
           />
         </PaginationItem>
 
-        {/* Mobile view: Only show current page indicator */}
-        <PaginationItem className="sm:hidden">
-          <PaginationLink
-            href="#"
-            isActive={true}
-            onClick={e => e.preventDefault()}
-            className="px-6"
-          >
-            {currentPage}/{totalPages}
-          </PaginationLink>
-        </PaginationItem>
-
-        {/* Desktop view: Show full pagination */}
-        {pageNumbers.map((page, index) => {
-          if (page === 'start-ellipsis' || page === 'end-ellipsis') {
-            return (
-              <PaginationItem key={`ellipsis-${index}`} className="hidden sm:flex">
-                <PaginationEllipsis />
-              </PaginationItem>
-            );
-          }
-
-          const pageNum = page as number;
-          // Important pages: first, last, current and adjacent
-          const isImportantPage =
-            pageNum === 1 || pageNum === totalPages || Math.abs(pageNum - currentPage) <= 1;
-
-          // On smallest screens, only show current page
-          // On small screens, show important pages
-          // On medium and up, show all calculated pages
-          const visibilityClass = isImportantPage ? 'hidden sm:flex' : 'hidden md:flex';
-
-          return (
-            <PaginationItem key={`page-${pageNum}`} className={visibilityClass}>
+        {/* Page numbers - only shown for page-based pagination */}
+        {!isCursorBased && (
+          <>
+            {/* Mobile view: Only show current page indicator */}
+            <PaginationItem className="sm:hidden">
               <PaginationLink
                 href="#"
-                onClick={e => {
-                  e.preventDefault();
-                  handlePageClick(pageNum);
-                }}
-                isActive={currentPage === pageNum}
+                isActive={true}
+                onClick={e => e.preventDefault()}
+                className="px-6"
               >
-                {pageNum}
+                {currentPage}/{totalPages}
               </PaginationLink>
             </PaginationItem>
-          );
-        })}
+
+            {/* Desktop view: Show full pagination */}
+            {pageNumbers.map((page, index) => {
+              if (page === 'start-ellipsis' || page === 'end-ellipsis') {
+                return (
+                  <PaginationItem key={`ellipsis-${index}`} className="hidden sm:flex">
+                    <PaginationEllipsis />
+                  </PaginationItem>
+                );
+              }
+
+              const pageNum = page as number;
+              // Important pages: first, last, current and adjacent
+              const isImportantPage =
+                pageNum === 1 ||
+                pageNum === totalPages ||
+                Math.abs(pageNum - (currentPage || 1)) <= 1;
+
+              // On smallest screens, only show current page
+              // On small screens, show important pages
+              // On medium and up, show all calculated pages
+              const visibilityClass = isImportantPage ? 'hidden sm:flex' : 'hidden md:flex';
+
+              return (
+                <PaginationItem key={`page-${pageNum}`} className={visibilityClass}>
+                  <PaginationLink
+                    href="#"
+                    onClick={e => {
+                      e.preventDefault();
+                      handlePageClick(pageNum);
+                    }}
+                    isActive={currentPage === pageNum}
+                  >
+                    {pageNum}
+                  </PaginationLink>
+                </PaginationItem>
+              );
+            })}
+          </>
+        )}
 
         {/* Next button always visible */}
         <PaginationItem>

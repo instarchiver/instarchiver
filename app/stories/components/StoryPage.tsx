@@ -5,8 +5,6 @@ import StoryHeader from './StoryHeader';
 import { ViewMode } from './StoriesGrid';
 
 interface StoryPageProps {
-  totalStories: number;
-  currentPage: number;
   searchQuery: string;
   viewMode: ViewMode;
   onSearch: (query: string) => void;
@@ -18,8 +16,6 @@ interface StoryPageProps {
 }
 
 export function StoryPage({
-  totalStories,
-  currentPage,
   searchQuery,
   viewMode,
   onSearch,
@@ -57,8 +53,6 @@ export function StoryPage({
         }
       >
         <StoryHeader
-          totalStories={totalStories}
-          currentPage={currentPage}
           searchQuery={searchQuery}
           viewMode={viewMode}
           onSearch={onSearch}

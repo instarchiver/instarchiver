@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, Suspense } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import { fetchInstagramUsers, extractPageFromUrl, API_CONSTANTS } from './services/api';
+import { extractCursor, API_CONSTANTS } from '@/lib/api/users.api';
 import { useUsers } from '@/hooks/useUsers';
 import { useUrlState } from '@/hooks/useUrlState';
 
@@ -14,59 +14,56 @@ import { UserSkeleton, UsersList, PaginationControls, InstagramPage } from './co
 // Main Instagram Users page component
 export default function InstagramUsersList() {
   const queryClient = useQueryClient();
-  const { search: searchQuery, page: currentPage, updateParams, resetParams } = useUrlState();
+  const { search: searchQuery, cursor: currentCursor, updateParams, resetParams } = useUrlState();
   const [viewMode, setViewMode] = useState<'compact' | 'detailed'>('detailed');
 
   const { data, isLoading, error } = useUsers({
-    page: searchQuery ? 1 : currentPage,
-    search: searchQuery,
+    cursor: searchQuery ? null : currentCursor,
+    searchQuery,
   });
 
   useEffect(() => {
     if (data?.next && !searchQuery) {
-      const nextPage = extractPageFromUrl(data.next);
-      queryClient.prefetchQuery({
-        queryKey: ['users', nextPage, searchQuery, undefined, undefined],
-        queryFn: () => fetchInstagramUsers({ page: nextPage, search: searchQuery }),
-      });
+      const nextCursor = extractCursor(data.next);
+      if (nextCursor) {
+        queryClient.prefetchQuery({
+          queryKey: ['users', nextCursor, searchQuery, undefined, undefined],
+          queryFn: () =>
+            import('@/lib/api/users.api').then(mod =>
+              mod.fetchUsersWithOptions({ cursor: nextCursor, searchQuery })
+            ),
+        });
+      }
     }
   }, [data, queryClient, searchQuery]);
 
   const handleNextPage = (): void => {
     if (data?.next && !searchQuery) {
-      const nextPage = extractPageFromUrl(data.next);
-      updateParams({ page: nextPage });
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      const nextCursor = extractCursor(data.next);
+      if (nextCursor) {
+        updateParams({ cursor: nextCursor });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
     }
   };
 
   const handlePrevPage = (): void => {
     if (data?.previous && !searchQuery) {
-      const prevPage = extractPageFromUrl(data.previous);
-      updateParams({ page: prevPage });
+      const prevCursor = extractCursor(data.previous);
+      // If there's no previous cursor, it means we're going back to the first page
+      updateParams({ cursor: prevCursor || undefined });
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
-
-  // Calculate total pages
-  const totalPages = data ? Math.ceil(data.count / COUNT_PER_PAGE) : 0;
 
   const handleRetry = () => {
     resetParams();
   };
 
-  const goToPage = (page: number) => {
-    if (searchQuery || page < 1 || page > totalPages || page === currentPage) {
-      return;
-    }
-    updateParams({ page });
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
   return (
     <InstagramPage
       totalCount={data?.count || 0}
-      currentPage={currentPage}
+      currentPage={1} // Not used with cursor pagination, but kept for compatibility
       viewMode={viewMode}
       onViewModeChange={setViewMode}
       usersList={
@@ -106,13 +103,10 @@ export default function InstagramUsersList() {
         >
           {!isLoading && data && !searchQuery && (
             <PaginationControls
-              currentPage={currentPage}
-              totalPages={totalPages}
               hasPrevious={!!data.previous}
               hasNext={!!data.next}
               onPrevPage={handlePrevPage}
               onNextPage={handleNextPage}
-              goToPage={goToPage}
             />
           )}
         </Suspense>

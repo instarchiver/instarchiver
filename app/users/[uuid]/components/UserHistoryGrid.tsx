@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -12,7 +12,6 @@ import {
   Pagination,
   PaginationContent,
   PaginationItem,
-  PaginationLink,
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination';
@@ -44,18 +43,49 @@ export function UserHistoryGrid({ uuid }: UserHistoryGridProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const currentPage = Number(searchParams.get('page')) || 1;
+  const currentCursor = searchParams.get('cursor');
 
   const { data, isLoading, error } = useQuery({
-    queryKey: ['userHistory', uuid, currentPage],
-    queryFn: () => fetchUserHistory(uuid, currentPage),
+    queryKey: ['userHistory', uuid, currentCursor],
+    queryFn: () => fetchUserHistory(uuid, currentCursor),
     staleTime: 1000 * 60 * 5, // Cache for 5 minutes
   });
 
-  const handlePageChange = (page: number) => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.set('page', page.toString());
-    router.push(`${pathname}?${params.toString()}`);
+  const handleNextPage = () => {
+    if (data?.next) {
+      const nextCursor = extractCursor(data.next);
+      if (nextCursor) {
+        const params = new URLSearchParams(searchParams.toString());
+        params.set('cursor', nextCursor);
+        router.push(`${pathname}?${params.toString()}`);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+  };
+
+  const handlePrevPage = () => {
+    if (data?.previous) {
+      const prevCursor = extractCursor(data.previous);
+      const params = new URLSearchParams(searchParams.toString());
+      if (prevCursor) {
+        params.set('cursor', prevCursor);
+      } else {
+        // Going back to first page
+        params.delete('cursor');
+      }
+      router.push(`${pathname}?${params.toString()}`);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
+  const extractCursor = (url: string | null): string | null => {
+    if (!url) return null;
+    try {
+      const urlObj = new URL(url);
+      return urlObj.searchParams.get('cursor');
+    } catch {
+      return null;
+    }
   };
 
   if (error) {
@@ -219,7 +249,7 @@ export function UserHistoryGrid({ uuid }: UserHistoryGridProps) {
             );
           })}
         </div>
-        {data && (
+        {data && (data.previous || data.next) && (
           <div className="mt-6">
             <Pagination className="font-black">
               <PaginationContent>
@@ -228,34 +258,19 @@ export function UserHistoryGrid({ uuid }: UserHistoryGridProps) {
                     href="#"
                     onClick={e => {
                       e.preventDefault();
-                      if (currentPage > 1) handlePageChange(currentPage - 1);
+                      handlePrevPage();
                     }}
-                    aria-disabled={currentPage === 1}
+                    aria-disabled={!data.previous}
                   />
                 </PaginationItem>
-                {[...Array(Math.ceil(data.count / 10))].map((_, i) => (
-                  <PaginationItem key={i + 1}>
-                    <PaginationLink
-                      href="#"
-                      onClick={e => {
-                        e.preventDefault();
-                        handlePageChange(i + 1);
-                      }}
-                      isActive={currentPage === i + 1}
-                    >
-                      {i + 1}
-                    </PaginationLink>
-                  </PaginationItem>
-                ))}
                 <PaginationItem>
                   <PaginationNext
                     href="#"
                     onClick={e => {
                       e.preventDefault();
-                      if (currentPage < Math.ceil(data.count / 10))
-                        handlePageChange(currentPage + 1);
+                      handleNextPage();
                     }}
-                    aria-disabled={currentPage === Math.ceil(data.count / 10)}
+                    aria-disabled={!data.next}
                   />
                 </PaginationItem>
               </PaginationContent>

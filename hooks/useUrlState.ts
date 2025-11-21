@@ -6,6 +6,7 @@ import { useCallback } from 'react';
 export interface UrlParams {
   search?: string;
   page?: number;
+  cursor?: string;
 }
 
 export function useUrlState() {
@@ -14,6 +15,7 @@ export function useUrlState() {
 
   const currentSearch = searchParams.get('search') || '';
   const currentPage = searchParams.get('page') ? parseInt(searchParams.get('page')!, 10) : 1;
+  const currentCursor = searchParams.get('cursor') || undefined;
 
   const updateParams = useCallback(
     (newParams: UrlParams) => {
@@ -25,7 +27,7 @@ export function useUrlState() {
         params.set('search', search);
       }
 
-      // Handle page parameter
+      // Handle page parameter (for page-based pagination)
       // If search is present, don't add page parameter (always page 1)
       // If no search and page > 1, add page parameter
       const page = newParams.page !== undefined ? newParams.page : currentPage;
@@ -33,10 +35,17 @@ export function useUrlState() {
         params.set('page', page.toString());
       }
 
+      // Handle cursor parameter (for cursor-based pagination)
+      // Only add cursor if explicitly provided and no search
+      const cursor = newParams.cursor !== undefined ? newParams.cursor : currentCursor;
+      if (!search && cursor) {
+        params.set('cursor', cursor);
+      }
+
       const newUrl = params.toString() ? `?${params.toString()}` : window.location.pathname;
       router.push(newUrl, { scroll: false });
     },
-    [router, currentSearch, currentPage]
+    [router, currentSearch, currentPage, currentCursor]
   );
 
   const resetParams = useCallback(() => {
@@ -46,6 +55,7 @@ export function useUrlState() {
   return {
     search: currentSearch,
     page: currentPage,
+    cursor: currentCursor,
     updateParams,
     resetParams,
   };

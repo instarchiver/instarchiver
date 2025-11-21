@@ -1,16 +1,13 @@
 'use client';
 
-import React from 'react';
-import { SearchBar } from '../../users/components/SearchBar';
+import React, { useState, useEffect } from 'react';
+import { SearchBar } from '@/components/ui/search-bar';
 import { ViewMode } from './StoriesGrid';
 import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Grid3X3, LayoutGrid, List } from 'lucide-react';
 
 interface StoryHeaderProps {
-  totalStories: number;
-  currentPage: number;
   searchQuery: string;
   viewMode: ViewMode;
   onSearch: (query: string) => void;
@@ -20,8 +17,6 @@ interface StoryHeaderProps {
 }
 
 export function StoryHeader({
-  totalStories,
-  currentPage,
   searchQuery,
   viewMode,
   onSearch,
@@ -29,6 +24,21 @@ export function StoryHeader({
   title = 'Instagram Stories Archive',
   subtitle,
 }: StoryHeaderProps) {
+  const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery);
+
+  // Sync local state with prop changes
+  useEffect(() => {
+    setLocalSearchQuery(searchQuery);
+  }, [searchQuery]);
+
+  const handleSearchSubmit = (value: string) => {
+    onSearch(value);
+  };
+
+  const handleSearchClear = () => {
+    onSearch('');
+  };
+
   return (
     <div className="mb-12">
       <Card>
@@ -38,14 +48,8 @@ export function StoryHeader({
         </CardHeader>
         <CardContent>
           <div className="flex flex-wrap gap-4 items-center justify-between mb-6">
-            <div className="flex flex-wrap gap-4 items-center">
-              <Badge variant="default">Total: {totalStories}</Badge>
-              <Badge variant="default">Page: {currentPage}</Badge>
-              {searchQuery && <Badge variant="default">Search: {searchQuery}</Badge>}
-            </div>
-
             {/* View mode toggle */}
-            <div className="flex gap-1 border-2 border-[var(--border)] rounded-[var(--radius-base)] bg-[var(--secondary-background)] p-1">
+            <div className="flex gap-1 border-2 border-[var(--border)] rounded-[var(--radius-base)] bg-[var(--secondary-background)] p-1 ml-auto">
               <Button
                 size="sm"
                 variant={viewMode === 'grid' ? 'default' : 'neutral'}
@@ -78,9 +82,11 @@ export function StoryHeader({
 
           {/* Search bar */}
           <SearchBar
-            onSearch={onSearch}
+            value={localSearchQuery}
+            onChange={setLocalSearchQuery}
+            onSubmit={handleSearchSubmit}
+            onClear={handleSearchClear}
             placeholder="Search by username..."
-            initialQuery={searchQuery}
             className="mb-0"
           />
         </CardContent>

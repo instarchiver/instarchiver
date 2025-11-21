@@ -47,7 +47,7 @@ function PaginationLink({
       aria-current={isActive ? 'page' : undefined}
       className={cn(
         buttonVariants({
-          variant: 'noShadow',
+          variant: 'default',
           size,
         }),
         className,
