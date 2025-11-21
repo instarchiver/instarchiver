@@ -2,10 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { StoriesGrid, StorySkeleton, StoryPage, StoryPreviewModal } from './components';
+import { StoriesGrid, StorySkeleton, StoryPage } from './components';
 import { useStoriesQueryWithOptions } from '@/hooks/useStories';
-import { InstagramStory } from '@/app/types/instagram/story';
-import { useIsMobile } from '@/hooks/use-mobile';
 import { useViewMode } from '@/hooks/useViewMode';
 import {
   Pagination,
@@ -18,13 +16,10 @@ import {
 export default function StoriesPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const isMobile = useIsMobile();
   const [viewMode, setViewMode] = useViewMode();
 
   const [cursor, setCursor] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
-  const [previewStory, setPreviewStory] = useState<InstagramStory | null>(null);
-  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
   // Reset state when navigating away
   useEffect(() => {
@@ -83,16 +78,6 @@ export default function StoriesPage() {
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const handleStoryPreview = (story: InstagramStory) => {
-    setPreviewStory(story);
-    setIsPreviewOpen(true);
-  };
-
-  const handleClosePreview = () => {
-    setIsPreviewOpen(false);
-    setPreviewStory(null);
   };
 
   const handleSearch = (query: string) => {
@@ -155,18 +140,7 @@ export default function StoriesPage() {
             ))}
           </div>
         ) : (
-          <>
-            <StoriesGrid
-              stories={stories}
-              viewMode={viewMode}
-              onStoryPreview={handleStoryPreview}
-            />
-            <StoryPreviewModal
-              story={previewStory}
-              isOpen={isPreviewOpen}
-              onClose={handleClosePreview}
-            />
-          </>
+          <StoriesGrid stories={stories} viewMode={viewMode} />
         )
       }
       pagination={

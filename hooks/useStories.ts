@@ -162,15 +162,6 @@ export function useStoriesQuery(cursor?: string | null, searchQuery?: string, us
 export function useStoriesQueryWithOptions(options: StoriesQueryOptions = {}) {
   const { cursor, searchQuery, userId, ordering, dateFrom, dateTo } = options;
 
-  console.log(`[useStoriesQueryWithOptions] Fetching:`, {
-    cursor,
-    searchQuery,
-    userId,
-    ordering,
-    dateFrom,
-    dateTo,
-  });
-
   return useQuery({
     queryKey: ['stories', cursor, searchQuery, userId, ordering, dateFrom, dateTo],
     queryFn: async () => {
