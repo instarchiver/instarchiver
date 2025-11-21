@@ -2,9 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useQueryClient } from '@tanstack/react-query';
 import { StoriesGrid, StorySkeleton, StoryPage } from './components';
 import { useStoriesQueryWithOptions } from '@/hooks/useStories';
-import { extractCursor } from '@/lib/api/stories.api';
+import { extractCursor, fetchStoriesWithOptions } from '@/lib/api/stories.api';
 import { useViewMode } from '@/hooks/useViewMode';
 import {
   Pagination,
@@ -17,6 +18,7 @@ import {
 export default function StoriesPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const queryClient = useQueryClient();
   const [viewMode, setViewMode] = useViewMode();
 
   const [cursor, setCursor] = useState<string | null>(null);
@@ -54,10 +56,15 @@ export default function StoriesPage() {
   const nextCursor = data?.next ? extractCursor(data.next) : null;
   const previousCursor = data?.previous ? extractCursor(data.previous) : null;
 
-  console.log(
-    `[Stories Render] isLoading: ${isLoading}, stories count: ${stories.length}, cursor: ${cursor}, searchQuery: "${searchQuery}"`
-  );
-  console.log(`[Stories Render] nextCursor: ${nextCursor}, previousCursor: ${previousCursor}`);
+  // Prefetch next page automatically when data is available
+  useEffect(() => {
+    if (nextCursor) {
+      queryClient.prefetchQuery({
+        queryKey: ['stories', nextCursor, searchQuery, undefined, undefined, undefined, undefined],
+        queryFn: () => fetchStoriesWithOptions({ cursor: nextCursor, searchQuery }),
+      });
+    }
+  }, [data, queryClient, searchQuery, nextCursor]);
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
