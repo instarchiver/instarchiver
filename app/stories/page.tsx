@@ -111,7 +111,6 @@ export default function StoriesPage() {
 
   return (
     <StoryPage
-      totalStories={stories.length}
       searchQuery={searchQuery}
       viewMode={viewMode}
       onSearch={handleSearch}

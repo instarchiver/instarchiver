@@ -4,12 +4,10 @@ import React, { useState, useEffect } from 'react';
 import { SearchBar } from '@/components/ui/search-bar';
 import { ViewMode } from './StoriesGrid';
 import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Grid3X3, LayoutGrid, List } from 'lucide-react';
 
 interface StoryHeaderProps {
-  totalStories: number;
   searchQuery: string;
   viewMode: ViewMode;
   onSearch: (query: string) => void;
@@ -19,7 +17,6 @@ interface StoryHeaderProps {
 }
 
 export function StoryHeader({
-  totalStories,
   searchQuery,
   viewMode,
   onSearch,
@@ -51,13 +48,8 @@ export function StoryHeader({
         </CardHeader>
         <CardContent>
           <div className="flex flex-wrap gap-4 items-center justify-between mb-6">
-            <div className="flex flex-wrap gap-4 items-center">
-              <Badge variant="default">Total: {totalStories}</Badge>
-              {searchQuery && <Badge variant="default">Search: {searchQuery}</Badge>}
-            </div>
-
             {/* View mode toggle */}
-            <div className="flex gap-1 border-2 border-[var(--border)] rounded-[var(--radius-base)] bg-[var(--secondary-background)] p-1">
+            <div className="flex gap-1 border-2 border-[var(--border)] rounded-[var(--radius-base)] bg-[var(--secondary-background)] p-1 ml-auto">
               <Button
                 size="sm"
                 variant={viewMode === 'grid' ? 'default' : 'neutral'}
