@@ -36,11 +36,11 @@ export function StoryCard({ story, onPreview }: StoryCardProps) {
               className="object-cover"
             />
           </div>
-          <div>
-            <CardTitle className="text-lg text-[var(--foreground)] font-[var(--font-weight-heading)]">
+          <div className="flex-1 overflow-hidden">
+            <CardTitle className="text-lg text-[var(--foreground)] font-[var(--font-weight-heading)] truncate">
               @{story.user.username}
             </CardTitle>
-            <CardDescription className="text-sm font-[var(--font-weight-base)] text-[var(--foreground)]">
+            <CardDescription className="text-sm font-[var(--font-weight-base)] text-[var(--foreground)] truncate">
               {story.user.full_name}
             </CardDescription>
           </div>
