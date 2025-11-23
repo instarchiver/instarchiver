@@ -1,18 +1,13 @@
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
+import { Red_Hat_Text } from 'next/font/google';
 import Script from 'next/script';
 import './globals.css';
 import { QueryProvider } from '@/components/providers/query-provider';
 import { ThemeProvider } from '@/components/providers/theme-provider';
 import { Navigation } from '@/components/ui/navigation';
 
-const geistSans = Geist({
-  variable: '--font-geist-sans',
-  subsets: ['latin'],
-});
-
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
+const redHatText = Red_Hat_Text({
+  variable: '--font-red-hat-text',
   subsets: ['latin'],
 });
 
@@ -29,7 +24,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground font-base`}
+        className={`${redHatText.variable} antialiased bg-background text-foreground font-base`}
       >
         {/* Google Analytics */}
         <Script
