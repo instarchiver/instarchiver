@@ -6,7 +6,6 @@ import { useQueryClient } from '@tanstack/react-query';
 import { StoriesGrid, StorySkeleton, StoryPage } from './components';
 import { useStoriesQueryWithOptions } from '@/hooks/useStories';
 import { extractCursor, fetchStoriesWithOptions } from '@/lib/api/stories.api';
-import { useViewMode } from '@/hooks/useViewMode';
 import {
   Pagination,
   PaginationContent,
@@ -19,7 +18,6 @@ export default function StoriesPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const queryClient = useQueryClient();
-  const [viewMode, setViewMode] = useViewMode();
 
   const [cursor, setCursor] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -112,9 +110,7 @@ export default function StoriesPage() {
   return (
     <StoryPage
       searchQuery={searchQuery}
-      viewMode={viewMode}
       onSearch={handleSearch}
-      onViewModeChange={setViewMode}
       storiesContent={
         isLoading ? (
           <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-10">
@@ -123,7 +119,7 @@ export default function StoriesPage() {
             ))}
           </div>
         ) : (
-          <StoriesGrid stories={stories} viewMode={viewMode} />
+          <StoriesGrid stories={stories} />
         )
       }
       pagination={
