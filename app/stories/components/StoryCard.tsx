@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import Link from 'next/link';
 import { Card, CardHeader, CardFooter, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { InstagramStory } from '@/app/types/instagram/story';
@@ -48,19 +49,18 @@ export function StoryCard({ story, onPreview }: StoryCardProps) {
       </CardHeader>
 
       {/* Full-width media section - no padding */}
-      <div
-        className="relative w-full border-t-2 border-[var(--border)] aspect-[9/16] cursor-pointer"
-        onClick={() => onPreview?.(story)}
-      >
-        <Image
-          src={story.thumbnail}
-          alt="Story thumbnail"
-          fill
-          sizes="(max-width: 768px) 100vw, 33vw"
-          className="object-cover"
-          priority
-        />
-      </div>
+      <Link href={`/stories/${story.story_id}`}>
+        <div className="relative w-full border-t-2 border-[var(--border)] aspect-[9/16] cursor-pointer hover:opacity-90 transition-opacity">
+          <Image
+            src={story.thumbnail}
+            alt="Story thumbnail"
+            fill
+            sizes="(max-width: 768px) 100vw, 33vw"
+            className="object-cover"
+            priority
+          />
+        </div>
+      </Link>
 
       <CardFooter className="border-t-2 border-[var(--border)] bg-[var(--secondary-background)] flex-col gap-2 p-3">
         <div className="flex w-full justify-between items-center">
@@ -69,7 +69,9 @@ export function StoryCard({ story, onPreview }: StoryCardProps) {
           </p>
         </div>
         <div className="flex w-full">
-          <Button onClick={() => onPreview?.(story)}>VIEW FULL STORY</Button>
+          <Link href={`/stories/${story.story_id}`} className="w-full">
+            <Button className="w-full">VIEW FULL STORY</Button>
+          </Link>
         </div>
       </CardFooter>
     </Card>
