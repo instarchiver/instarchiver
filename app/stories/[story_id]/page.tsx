@@ -72,40 +72,20 @@ export default function StoryDetailPage({ params }: StoryDetailPageProps) {
     <div className="fixed inset-0 pt-16 flex flex-col lg:flex-row">
       {/* Left side - Media viewer */}
       <div className="w-full lg:w-1/2 bg-black flex flex-col items-center justify-center relative overflow-hidden">
-        {/* Back button */}
-        <div className="absolute top-4 left-4 z-10">
-          <Link href="/stories">
-            <Button variant="neutral" size="sm">
-              ← Back
-            </Button>
-          </Link>
-        </div>
-
-        {/* User info overlay */}
-        <div className="absolute top-4 right-4 z-10 bg-black/70 backdrop-blur-sm rounded-[var(--radius-base)] p-3 border-2 border-[var(--border)]">
-          <div className="flex items-center gap-2">
-            <div className="relative w-10 h-10 border-2 border-[var(--border)] rounded-full overflow-hidden">
-              <Image
-                src={story.user.profile_picture}
-                alt={story.user.username}
-                fill
-                sizes="40px"
-                className="object-cover"
-              />
-            </div>
-            <div>
-              <p className="text-sm font-[var(--font-weight-heading)] text-white">
-                @{story.user.username}
-              </p>
-              <p className="text-xs font-[var(--font-weight-base)] text-gray-300">
-                {formatDate(story.story_created_at)}
-              </p>
-            </div>
-          </div>
+        {/* Blurred thumbnail background */}
+        <div className="absolute inset-0 z-0">
+          <Image
+            src={story.thumbnail || story.media}
+            alt="Background"
+            fill
+            sizes="50vw"
+            className="object-cover blur-3xl opacity-50"
+            priority
+          />
         </div>
 
         {/* Media content */}
-        <div className="w-full h-full flex items-center justify-center">
+        <div className="w-full h-full flex items-center justify-center relative z-10">
           {isVideo(story.media) ? (
             <video
               src={story.media}
