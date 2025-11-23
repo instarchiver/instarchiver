@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import Image from 'next/image';
 import Link from 'next/link';
 import { DiscussionEmbed } from 'disqus-react';
-import { Skeleton } from '@/components/ui/skeleton';
+import { StoryDetailSkeleton } from './components';
 
 interface StoryDetailPageProps {
   params: Promise<{
@@ -45,21 +45,7 @@ export default function StoryDetailPage({ params }: StoryDetailPageProps) {
   };
 
   if (isLoading) {
-    return (
-      <div className="fixed inset-0 pt-16 flex">
-        {/* Left side - Media skeleton */}
-        <div className="w-full lg:w-1/2 bg-black flex items-center justify-center">
-          <Skeleton className="w-full h-full" />
-        </div>
-
-        {/* Right side - Comments skeleton */}
-        <div className="hidden lg:block lg:w-1/2 bg-[var(--background)] p-6 overflow-y-auto">
-          <Skeleton className="h-20 w-full mb-4" />
-          <Skeleton className="h-40 w-full mb-4" />
-          <Skeleton className="h-40 w-full" />
-        </div>
-      </div>
-    );
+    return <StoryDetailSkeleton />;
   }
 
   if (error || !story) {
