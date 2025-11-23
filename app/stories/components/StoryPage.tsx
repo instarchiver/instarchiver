@@ -2,13 +2,10 @@
 
 import React, { Suspense } from 'react';
 import StoryHeader from './StoryHeader';
-import { ViewMode } from './StoriesGrid';
 
 interface StoryPageProps {
   searchQuery: string;
-  viewMode: ViewMode;
   onSearch: (query: string) => void;
-  onViewModeChange: (mode: ViewMode) => void;
   storiesContent: React.ReactNode;
   pagination: React.ReactNode;
   title?: string;
@@ -17,9 +14,7 @@ interface StoryPageProps {
 
 export function StoryPage({
   searchQuery,
-  viewMode,
   onSearch,
-  onViewModeChange,
   storiesContent,
   pagination,
   title,
@@ -54,9 +49,7 @@ export function StoryPage({
       >
         <StoryHeader
           searchQuery={searchQuery}
-          viewMode={viewMode}
           onSearch={onSearch}
-          onViewModeChange={onViewModeChange}
           title={title}
           subtitle={subtitle}
         />
