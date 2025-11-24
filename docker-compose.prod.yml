@@ -28,7 +28,7 @@ services:
     container_name: insta-archiver-nginx
     restart: unless-stopped
     ports:
-      - "5555:80"
+      - "100.86.58.86:64300:80"
     volumes:
       - ./compose/nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
     depends_on:
