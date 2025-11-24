@@ -67,7 +67,7 @@ export default function RootLayout({
         >
           <QueryProvider>
             <Navigation />
-            {children}
+            <div className="pt-16">{children}</div>
           </QueryProvider>
         </ThemeProvider>
       </body>

@@ -30,7 +30,7 @@ export function Navigation() {
 
   return (
     <Card
-      className="w-full border-b-4 border-border bg-background rounded-none shadow-none sticky top-0 z-50"
+      className="w-full border-b-4 border-border bg-background rounded-none shadow-none fixed top-0 z-50"
       role="banner"
     >
       <nav
