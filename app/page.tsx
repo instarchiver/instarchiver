@@ -6,7 +6,7 @@ import Star11 from '@/components/stars/s11';
 
 export default function Home() {
   return (
-    <div className="h-screen bg-gradient-to-br from-main via-main to-main p-4 sm:p-6 lg:p-8 flex items-center justify-center overflow-hidden">
+    <div className="h-[calc(100vh-4rem)] bg-gradient-to-br from-main via-main to-main p-4 sm:p-6 lg:p-8 flex items-center justify-center overflow-hidden">
       <div className="max-w-6xl mx-auto w-full">
         {/* Main Card */}
         <div className="bg-secondary-background rounded-3xl p-6 sm:p-8 lg:p-12 shadow-2xl border-2 border-border">
