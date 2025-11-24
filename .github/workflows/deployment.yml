@@ -20,7 +20,7 @@ jobs:
           script_stop: true
           script: |
             cd ${{ secrets.REPOSITORY_LOCATION }}
-            git pull origin master --force
+            git pull origin main --force
             docker compose -f docker-compose.prod.yml stop
             docker compose -f docker-compose.prod.yml build
             docker compose -f docker-compose.prod.yml up -d
