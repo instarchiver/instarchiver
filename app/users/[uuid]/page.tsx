@@ -234,10 +234,7 @@ export default function UserDetailPage({ params }: UserDetailPageProps) {
       </Card>
 
       <Card className="w-full max-w-4xl mx-auto border-2 border-[var(--border)] shadow-[var(--shadow)] ">
-        <CardHeader>
-          <CardTitle className="text-2xl font-[var(--font-weight-heading)] text-[var(--foreground)]"></CardTitle>
-        </CardHeader>
-        <CardContent>
+        <CardContent className="p-0">
           <DisqusWrapper shortname="instagram-archiver" config={disqusConfig} />
         </CardContent>
       </Card>

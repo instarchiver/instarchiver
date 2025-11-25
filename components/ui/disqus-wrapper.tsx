@@ -31,7 +31,7 @@ export function DisqusWrapper({ shortname, config }: DisqusWrapperProps) {
           backgroundColor: '#ffffff',
         } as React.CSSProperties
       }
-      className="dark:!bg-[#1a1a1a] dark:!text-[#ffffff]"
+      className="dark:!bg-[#1a1a1a] dark:!text-[#ffffff] p-0"
     >
       <DiscussionEmbed shortname={shortname} config={config} />
     </div>

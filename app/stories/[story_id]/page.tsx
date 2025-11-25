@@ -171,10 +171,7 @@ export default function StoryDetailPage({ params }: StoryDetailPageProps) {
 
           {/* Disqus comments */}
           <Card className="shadow-[var(--shadow)] bg-[var(--background)]">
-            <CardContent className="p-4">
-              <h3 className="text-xl font-[var(--font-weight-heading)] text-[var(--foreground)] mb-4">
-                Comments
-              </h3>
+            <CardContent className="p-0">
               {disqusConfig && (
                 <DisqusWrapper shortname="instagram-archiver" config={disqusConfig} />
               )}
