@@ -6,7 +6,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
 import Link from 'next/link';
-import { DiscussionEmbed } from 'disqus-react';
+import { DisqusWrapper } from '@/components/ui/disqus-wrapper';
 import { StoryDetailSkeleton } from './components';
 
 interface StoryDetailPageProps {
@@ -176,7 +176,7 @@ export default function StoryDetailPage({ params }: StoryDetailPageProps) {
                 Comments
               </h3>
               {disqusConfig && (
-                <DiscussionEmbed shortname="instagram-archiver" config={disqusConfig} />
+                <DisqusWrapper shortname="instagram-archiver" config={disqusConfig} />
               )}
             </CardContent>
           </Card>
