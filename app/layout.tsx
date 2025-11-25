@@ -4,6 +4,7 @@ import Script from 'next/script';
 import './globals.css';
 import { QueryProvider } from '@/components/providers/query-provider';
 import { ThemeProvider } from '@/components/providers/theme-provider';
+import { AuthProvider } from '@/components/providers/auth-provider';
 import { Navigation } from '@/components/ui/navigation';
 
 const redHatText = Red_Hat_Text({
@@ -66,8 +67,10 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <QueryProvider>
-            <Navigation />
-            <div className="pt-16">{children}</div>
+            <AuthProvider>
+              <Navigation />
+              <div className="pt-16">{children}</div>
+            </AuthProvider>
           </QueryProvider>
         </ThemeProvider>
       </body>

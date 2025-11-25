@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { auth, provider, signInWithPopup } from '@/lib/firebase';
 import { authApi } from '@/lib/api/auth.api';
+import { useAuth } from '@/components/providers/auth-provider';
 import {
   Dialog,
   DialogContent,
@@ -22,6 +23,7 @@ export function LoginDialog({ children }: LoginDialogProps) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { checkAuth } = useAuth();
 
   const handleGoogleSignIn = async () => {
     setLoading(true);
@@ -46,6 +48,9 @@ export function LoginDialog({ children }: LoginDialogProps) {
 
       // Close dialog on successful login
       setOpen(false);
+
+      // Recheck auth status to update the UI
+      await checkAuth();
     } catch (err: unknown) {
       console.error('Error signing in:', err);
       const errorMessage = err instanceof Error ? err.message : 'Failed to sign in with Google';

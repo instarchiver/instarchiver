@@ -8,11 +8,13 @@ import { Card } from './card';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from './sheet';
 import { ThemeToggle } from './theme-toggle';
 import { LoginDialog } from './login-dialog';
+import { useAuth } from '@/components/providers/auth-provider';
 import { Menu } from 'lucide-react';
 
 export function Navigation() {
   const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
+  const { isAuthenticated, isLoading: authLoading } = useAuth();
 
   useEffect(() => {
     setMounted(true);
@@ -82,11 +84,26 @@ export function Navigation() {
                       </Button>
                     ))}
                     <div className="pt-3 mt-3 border-t-2 border-border">
-                      <LoginDialog>
-                        <Button variant="default" size="lg" className="w-full font-heading">
-                          LOGIN
+                      {authLoading ? (
+                        <Button
+                          variant="default"
+                          size="lg"
+                          className="w-full font-heading"
+                          disabled
+                        >
+                          LOADING...
                         </Button>
-                      </LoginDialog>
+                      ) : isAuthenticated ? (
+                        <Button variant="default" size="lg" className="w-full font-heading">
+                          OK
+                        </Button>
+                      ) : (
+                        <LoginDialog>
+                          <Button variant="default" size="lg" className="w-full font-heading">
+                            LOGIN
+                          </Button>
+                        </LoginDialog>
+                      )}
                     </div>
                     <div className="pt-3 mt-3 border-t-2 border-border">
                       <div className="flex items-center justify-between">
@@ -135,7 +152,17 @@ export function Navigation() {
             ))}
           </div>
           <div className="flex items-center space-x-2 pl-4 border-l-2 border-border dark:border-foreground/20">
-            <LoginDialog />
+            {authLoading ? (
+              <Button variant="default" className="font-heading" disabled>
+                LOADING...
+              </Button>
+            ) : isAuthenticated ? (
+              <Button variant="default" className="font-heading">
+                OK
+              </Button>
+            ) : (
+              <LoginDialog />
+            )}
             <ThemeToggle />
           </div>
         </div>

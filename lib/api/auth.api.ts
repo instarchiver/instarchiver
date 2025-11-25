@@ -1,4 +1,4 @@
-import axiosInstance, { setTokens } from '../axios';
+import axiosInstance, { setTokens, clearTokens } from '../axios';
 
 interface LoginWithGoogleRequest {
   token: string;
@@ -28,6 +28,50 @@ export const loginWithGoogle = async (firebaseToken: string): Promise<LoginWithG
   return response.data;
 };
 
+/**
+ * Validate the current access token
+ * @returns true if token is valid, false otherwise
+ */
+export const validateToken = async (): Promise<boolean> => {
+  try {
+    const response = await axiosInstance.post('/authentication/validate/');
+    return response.status === 200;
+  } catch (error: unknown) {
+    console.error('Token validation failed:', error);
+
+    // Only clear tokens for specific error conditions
+    // 1. DRF token_not_valid error response
+    // 2. 403 Forbidden status
+    let shouldClearTokens = false;
+
+    if (error && typeof error === 'object' && 'response' in error) {
+      const axiosError = error as { response?: { status?: number; data?: unknown } };
+      const status = axiosError.response?.status;
+      const data = axiosError.response?.data;
+
+      // Check for 403 status
+      if (status === 403) {
+        shouldClearTokens = true;
+      }
+
+      // Check for DRF token_not_valid error
+      if (data && typeof data === 'object' && 'code' in data && data.code === 'token_not_valid') {
+        shouldClearTokens = true;
+      }
+    }
+
+    if (shouldClearTokens) {
+      console.log('Clearing invalid tokens');
+      clearTokens();
+    } else {
+      console.log('Network error or temporary issue - keeping tokens');
+    }
+
+    return false;
+  }
+};
+
 export const authApi = {
   loginWithGoogle,
+  validateToken,
 };
