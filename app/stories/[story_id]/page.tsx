@@ -114,7 +114,7 @@ export default function StoryDetailPage({ params }: StoryDetailPageProps) {
 
       {/* Right side - Disqus comments */}
       <div className="w-full lg:w-1/2 bg-[var(--background)] overflow-y-auto">
-        <div className="p-4 sm:p-6 lg:p-8">
+        <div className="p-4 sm:p-6 lg:p-8 max-w-4xl mx-auto">
           {/* Story info card */}
           <Card className="mb-6 shadow-[var(--shadow)] bg-[var(--background)]">
             <CardContent className="p-4">
