@@ -7,6 +7,7 @@ import { Button } from './button';
 import { Card } from './card';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from './sheet';
 import { ThemeToggle } from './theme-toggle';
+import { LoginDialog } from './login-dialog';
 import { Menu } from 'lucide-react';
 
 export function Navigation() {
@@ -81,6 +82,13 @@ export function Navigation() {
                       </Button>
                     ))}
                     <div className="pt-3 mt-3 border-t-2 border-border">
+                      <LoginDialog>
+                        <Button variant="default" size="lg" className="w-full font-heading">
+                          LOGIN
+                        </Button>
+                      </LoginDialog>
+                    </div>
+                    <div className="pt-3 mt-3 border-t-2 border-border">
                       <div className="flex items-center justify-between">
                         <span className="text-sm font-heading text-foreground/70">THEME</span>
                         <ThemeToggle />
@@ -126,7 +134,8 @@ export function Navigation() {
               </Button>
             ))}
           </div>
-          <div className="pl-4 border-l-2 border-border dark:border-foreground/20">
+          <div className="flex items-center space-x-2 pl-4 border-l-2 border-border dark:border-foreground/20">
+            <LoginDialog />
             <ThemeToggle />
           </div>
         </div>
