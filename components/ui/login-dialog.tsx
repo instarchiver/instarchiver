@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { auth, provider, signInWithPopup } from '@/lib/firebase';
+import { authApi } from '@/lib/api/auth.api';
 import {
   Dialog,
   DialogContent,
@@ -27,10 +28,21 @@ export function LoginDialog({ children }: LoginDialogProps) {
     setError(null);
 
     try {
+      // Step 1: Sign in with Google via Firebase
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
+      const firebaseToken = await user.getIdToken();
+
       console.log('User signed in:', user);
-      console.log('Token', await user.getIdToken());
+      console.log('Firebase Token:', firebaseToken);
+
+      // Step 2: Exchange Firebase token for backend JWT tokens
+      const jwtTokens = await authApi.loginWithGoogle(firebaseToken);
+
+      console.log('JWT tokens received:', {
+        access: jwtTokens.access.substring(0, 20) + '...',
+        refresh: jwtTokens.refresh.substring(0, 20) + '...',
+      });
 
       // Close dialog on successful login
       setOpen(false);
