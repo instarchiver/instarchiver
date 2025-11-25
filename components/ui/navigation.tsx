@@ -7,11 +7,16 @@ import { Button } from './button';
 import { Card } from './card';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from './sheet';
 import { ThemeToggle } from './theme-toggle';
-import { Menu } from 'lucide-react';
+import { LoginDialog } from './login-dialog';
+import { LogoutDialog } from './logout-dialog';
+import { Avatar, AvatarFallback, AvatarImage } from './avatar';
+import { useAuth } from '@/components/providers/auth-provider';
+import { Menu, LogIn } from 'lucide-react';
 
 export function Navigation() {
   const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
+  const { isAuthenticated, isLoading: authLoading, user } = useAuth();
 
   useEffect(() => {
     setMounted(true);
@@ -81,6 +86,33 @@ export function Navigation() {
                       </Button>
                     ))}
                     <div className="pt-3 mt-3 border-t-2 border-border">
+                      {authLoading ? (
+                        <Button
+                          variant="default"
+                          size="icon"
+                          className="w-full font-heading"
+                          disabled
+                        >
+                          <LogIn className="h-5 w-5" />
+                        </Button>
+                      ) : isAuthenticated && user ? (
+                        <LogoutDialog>
+                          <Avatar className="h-10 w-10 border-2 border-border cursor-pointer hover:opacity-80 transition-opacity">
+                            <AvatarImage src={user.photo_url} alt={user.username} />
+                            <AvatarFallback className="font-heading text-sm">
+                              {user.username.substring(0, 2).toUpperCase()}
+                            </AvatarFallback>
+                          </Avatar>
+                        </LogoutDialog>
+                      ) : (
+                        <LoginDialog>
+                          <Button variant="default" size="icon" className="w-full font-heading">
+                            <LogIn className="h-5 w-5" />
+                          </Button>
+                        </LoginDialog>
+                      )}
+                    </div>
+                    <div className="pt-3 mt-3 border-t-2 border-border">
                       <div className="flex items-center justify-between">
                         <span className="text-sm font-heading text-foreground/70">THEME</span>
                         <ThemeToggle />
@@ -126,7 +158,27 @@ export function Navigation() {
               </Button>
             ))}
           </div>
-          <div className="pl-4 border-l-2 border-border dark:border-foreground/20">
+          <div className="flex items-center space-x-2 pl-4 border-l-2 border-border dark:border-foreground/20">
+            {authLoading ? (
+              <Button variant="default" size="icon" className="font-heading" disabled>
+                <LogIn className="h-5 w-5" />
+              </Button>
+            ) : isAuthenticated && user ? (
+              <LogoutDialog>
+                <Avatar className="h-8 w-8 border-2 border-border cursor-pointer hover:opacity-80 transition-opacity">
+                  <AvatarImage src={user.photo_url} alt={user.username} />
+                  <AvatarFallback className="font-heading text-xs">
+                    {user.username.substring(0, 2).toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+              </LogoutDialog>
+            ) : (
+              <LoginDialog>
+                <Button variant="default" size="icon" className="font-heading">
+                  <LogIn className="h-5 w-5" />
+                </Button>
+              </LoginDialog>
+            )}
             <ThemeToggle />
           </div>
         </div>

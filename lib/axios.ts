@@ -100,7 +100,7 @@ const refreshAccessToken = async (): Promise<string> => {
   }
 
   try {
-    const response = await axios.post(`${API_BASE_URL}/auth/refresh/`, {
+    const response = await axios.post(`${API_BASE_URL}/authentication/refresh/`, {
       refresh: refreshToken,
     });
 
@@ -138,7 +138,7 @@ axiosInstance.interceptors.request.use(
   }
 );
 
-// Response interceptor - Handle token refresh on 401 errors
+// Response interceptor - Handle token refresh on 401 or 403 token_not_valid errors
 axiosInstance.interceptors.response.use(
   response => {
     return response;
@@ -148,8 +148,16 @@ axiosInstance.interceptors.response.use(
       _retry?: boolean;
     };
 
-    // If error is 401 and we haven't retried yet
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    // Check if error is 403 with token_not_valid code
+    const is403TokenInvalid =
+      error.response?.status === 403 &&
+      error.response?.data &&
+      typeof error.response.data === 'object' &&
+      'code' in error.response.data &&
+      error.response.data.code === 'token_not_valid';
+
+    // If error is 401 or 403 token_not_valid and we haven't retried yet
+    if ((error.response?.status === 401 || is403TokenInvalid) && !originalRequest._retry) {
       if (isRefreshing) {
         // If already refreshing, queue this request
         return new Promise((resolve, reject) => {
