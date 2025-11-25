@@ -8,6 +8,7 @@ import { Card } from './card';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from './sheet';
 import { ThemeToggle } from './theme-toggle';
 import { LoginDialog } from './login-dialog';
+import { LogoutDialog } from './logout-dialog';
 import { Avatar, AvatarFallback, AvatarImage } from './avatar';
 import { useAuth } from '@/components/providers/auth-provider';
 import { Menu, LogIn } from 'lucide-react';
@@ -95,12 +96,14 @@ export function Navigation() {
                           <LogIn className="h-5 w-5" />
                         </Button>
                       ) : isAuthenticated && user ? (
-                        <Avatar className="h-10 w-10 border-2 border-border">
-                          <AvatarImage src={user.photo_url} alt={user.username} />
-                          <AvatarFallback className="font-heading text-sm">
-                            {user.username.substring(0, 2).toUpperCase()}
-                          </AvatarFallback>
-                        </Avatar>
+                        <LogoutDialog>
+                          <Avatar className="h-10 w-10 border-2 border-border cursor-pointer hover:opacity-80 transition-opacity">
+                            <AvatarImage src={user.photo_url} alt={user.username} />
+                            <AvatarFallback className="font-heading text-sm">
+                              {user.username.substring(0, 2).toUpperCase()}
+                            </AvatarFallback>
+                          </Avatar>
+                        </LogoutDialog>
                       ) : (
                         <LoginDialog>
                           <Button variant="default" size="icon" className="w-full font-heading">
@@ -161,12 +164,14 @@ export function Navigation() {
                 <LogIn className="h-5 w-5" />
               </Button>
             ) : isAuthenticated && user ? (
-              <Avatar className="h-8 w-8 border-2 border-border">
-                <AvatarImage src={user.photo_url} alt={user.username} />
-                <AvatarFallback className="font-heading text-xs">
-                  {user.username.substring(0, 2).toUpperCase()}
-                </AvatarFallback>
-              </Avatar>
+              <LogoutDialog>
+                <Avatar className="h-8 w-8 border-2 border-border cursor-pointer hover:opacity-80 transition-opacity">
+                  <AvatarImage src={user.photo_url} alt={user.username} />
+                  <AvatarFallback className="font-heading text-xs">
+                    {user.username.substring(0, 2).toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+              </LogoutDialog>
             ) : (
               <LoginDialog>
                 <Button variant="default" size="icon" className="font-heading">
