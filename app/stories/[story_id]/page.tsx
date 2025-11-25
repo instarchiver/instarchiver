@@ -6,7 +6,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
 import Link from 'next/link';
-import { DiscussionEmbed } from 'disqus-react';
+import { DisqusWrapper } from '@/components/ui/disqus-wrapper';
 import { StoryDetailSkeleton } from './components';
 
 interface StoryDetailPageProps {
@@ -114,7 +114,7 @@ export default function StoryDetailPage({ params }: StoryDetailPageProps) {
 
       {/* Right side - Disqus comments */}
       <div className="w-full lg:w-1/2 bg-[var(--background)] overflow-y-auto">
-        <div className="p-4 sm:p-6 lg:p-8">
+        <div className="p-4 sm:p-6 lg:p-8 max-w-4xl mx-auto">
           {/* Story info card */}
           <Card className="mb-6 shadow-[var(--shadow)] bg-[var(--background)]">
             <CardContent className="p-4">
@@ -171,12 +171,9 @@ export default function StoryDetailPage({ params }: StoryDetailPageProps) {
 
           {/* Disqus comments */}
           <Card className="shadow-[var(--shadow)] bg-[var(--background)]">
-            <CardContent className="p-4">
-              <h3 className="text-xl font-[var(--font-weight-heading)] text-[var(--foreground)] mb-4">
-                Comments
-              </h3>
+            <CardContent className="p-0">
               {disqusConfig && (
-                <DiscussionEmbed shortname="instagram-archiver" config={disqusConfig} />
+                <DisqusWrapper shortname="instagram-archiver" config={disqusConfig} />
               )}
             </CardContent>
           </Card>
