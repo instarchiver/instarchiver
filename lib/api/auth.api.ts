@@ -9,6 +9,14 @@ interface LoginWithGoogleResponse {
   access: string;
 }
 
+export interface User {
+  id: number;
+  username: string;
+  email: string;
+  name: string;
+  photo_url: string;
+}
+
 /**
  * Exchange Firebase ID token for JWT tokens
  */
@@ -71,7 +79,21 @@ export const validateToken = async (): Promise<boolean> => {
   }
 };
 
+/**
+ * Get current user data
+ */
+export const getMe = async (): Promise<User | null> => {
+  try {
+    const response = await axiosInstance.get<User>('/authentication/me/');
+    return response.data;
+  } catch (error) {
+    console.error('Failed to fetch user data:', error);
+    return null;
+  }
+};
+
 export const authApi = {
   loginWithGoogle,
   validateToken,
+  getMe,
 };

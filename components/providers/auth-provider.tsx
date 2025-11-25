@@ -1,12 +1,13 @@
 'use client';
 
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import { authApi } from '@/lib/api/auth.api';
+import { authApi, User } from '@/lib/api/auth.api';
 import { getAccessToken } from '@/lib/axios';
 
 interface AuthContextType {
   isAuthenticated: boolean;
   isLoading: boolean;
+  user: User | null;
   checkAuth: () => Promise<void>;
 }
 
@@ -15,6 +16,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [user, setUser] = useState<User | null>(null);
 
   const checkAuth = async () => {
     setIsLoading(true);
@@ -25,6 +27,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       if (!token) {
         setIsAuthenticated(false);
+        setUser(null);
         setIsLoading(false);
         return;
       }
@@ -32,9 +35,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // Validate the token with the backend
       const isValid = await authApi.validateToken();
       setIsAuthenticated(isValid);
+
+      // Fetch user data if authenticated
+      if (isValid) {
+        const userData = await authApi.getMe();
+        setUser(userData);
+      } else {
+        setUser(null);
+      }
     } catch (error) {
       console.error('Auth check failed:', error);
       setIsAuthenticated(false);
+      setUser(null);
     } finally {
       setIsLoading(false);
     }
@@ -46,7 +58,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, isLoading, checkAuth }}>
+    <AuthContext.Provider value={{ isAuthenticated, isLoading, user, checkAuth }}>
       {children}
     </AuthContext.Provider>
   );
