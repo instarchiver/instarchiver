@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { UserPlus, Loader2 } from 'lucide-react';
+import { Instagram, Loader2 } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -60,8 +60,8 @@ export function AddUserModal({ isOpen, onClose }: AddUserModalProps) {
       <DialogContent className="max-w-md">
         <DialogHeader>
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-[var(--primary)] border-2 border-[var(--border)] rounded-[var(--radius-base)] flex items-center justify-center">
-              <UserPlus className="w-6 h-6 text-white" />
+            <div className="w-12 h-12 bg-[var(--main)] border-2 border-[var(--border)] rounded-[var(--radius-base)] flex items-center justify-center">
+              <Instagram className="w-6 h-6 text-[var(--main-foreground)]" />
             </div>
             <div className="text-left">
               <DialogTitle className="text-xl font-bold">Add Instagram User</DialogTitle>
@@ -123,7 +123,7 @@ export function AddUserModal({ isOpen, onClose }: AddUserModalProps) {
                 </>
               ) : (
                 <>
-                  <UserPlus className="w-4 h-4" />
+                  <Instagram className="w-4 h-4" />
                   Add User
                 </>
               )}

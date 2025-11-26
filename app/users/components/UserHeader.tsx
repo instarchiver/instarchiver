@@ -4,7 +4,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Grid, List, UserPlus } from 'lucide-react';
+import { Grid, List, Instagram } from 'lucide-react';
 
 interface UserHeaderProps {
   totalUsers: number;
@@ -70,7 +70,7 @@ export function UserHeader({
                   onClick={onAddUser}
                   className="h-9 px-3 flex items-center gap-2"
                 >
-                  <UserPlus size={16} />
+                  <Instagram size={16} />
                   Add User
                 </Button>
               )}
