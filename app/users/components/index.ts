@@ -10,6 +10,7 @@ export * from './UsersGrid';
 export * from './PaginationContainer';
 export * from './InstagramPage';
 export * from './SearchBar';
+export * from './AddUserModal';
 
 // Default exports
 import UserCard from './UserCard';

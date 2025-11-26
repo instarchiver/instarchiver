@@ -1,9 +1,10 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   fetchUsersWithOptions,
   fetchUserById,
+  createUser,
   type UsersQueryOptions,
   API_CONSTANTS,
 } from '@/lib/api/users.api';
@@ -56,5 +57,20 @@ export function useUserById(uuid: string) {
     queryFn: () => fetchUserById(uuid),
     staleTime: 5 * 60 * 1000, // 5 minutes
     enabled: !!uuid,
+  });
+}
+
+/**
+ * Hook for creating a new Instagram user
+ */
+export function useCreateUser() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (username: string) => createUser(username),
+    onSuccess: () => {
+      // Invalidate users query to refetch the list
+      queryClient.invalidateQueries({ queryKey: ['users'] });
+    },
   });
 }
