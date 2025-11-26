@@ -114,3 +114,25 @@ export async function fetchUserById(uuid: string): Promise<InstagramUser> {
     throw new Error('Failed to fetch user from API');
   }
 }
+
+/**
+ * Create a new Instagram user by username
+ */
+export async function createUser(username: string): Promise<InstagramUser> {
+  try {
+    const response = await axiosInstance.post<InstagramUser>('/instagram/users/', {
+      username,
+    });
+    return response.data;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.response?.data?.username?.[0] ||
+        error.response?.data?.detail ||
+        'Failed to create user';
+      throw new APIError(error.response?.status || 500, errorMessage);
+    }
+    throw new Error('Failed to create user');
+  }
+}

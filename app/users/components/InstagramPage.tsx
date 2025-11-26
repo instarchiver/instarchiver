@@ -11,6 +11,7 @@ interface InstagramPageProps {
   currentPage: number;
   viewMode?: 'compact' | 'detailed';
   onViewModeChange?: (mode: 'compact' | 'detailed') => void;
+  onAddUser?: () => void;
   usersList: React.ReactNode;
   pagination: React.ReactNode;
 }
@@ -23,6 +24,7 @@ export function InstagramPage({
   currentPage,
   viewMode,
   onViewModeChange,
+  onAddUser,
   usersList,
   pagination,
 }: InstagramPageProps) {
@@ -44,6 +46,7 @@ export function InstagramPage({
           subtitle={subtitle}
           viewMode={viewMode}
           onViewModeChange={onViewModeChange}
+          onAddUser={onAddUser}
         />
       </Suspense>
 

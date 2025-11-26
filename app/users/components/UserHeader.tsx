@@ -4,13 +4,14 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Grid, List } from 'lucide-react';
+import { Grid, List, UserPlus } from 'lucide-react';
 
 interface UserHeaderProps {
   totalUsers: number;
   currentPage: number;
   viewMode?: 'compact' | 'detailed';
   onViewModeChange?: (mode: 'compact' | 'detailed') => void;
+  onAddUser?: () => void;
 }
 
 export function UserHeader({
@@ -20,6 +21,7 @@ export function UserHeader({
   subtitle,
   viewMode = 'detailed',
   onViewModeChange,
+  onAddUser,
 }: UserHeaderProps & { title?: string; subtitle?: string }) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -59,29 +61,44 @@ export function UserHeader({
               {searchQuery && <Badge variant="default">Search: {searchQuery}</Badge>}
             </div>
 
-            {/* View mode toggle */}
-            {onViewModeChange && (
-              <div className="flex gap-1 border-2 border-[var(--border)] rounded-[var(--radius-base)] bg-[var(--secondary-background)] p-1">
+            <div className="flex gap-2 items-center">
+              {/* Add User Button */}
+              {onAddUser && (
                 <Button
                   size="sm"
-                  variant={viewMode === 'compact' ? 'default' : 'neutral'}
-                  onClick={() => onViewModeChange('compact')}
-                  className="h-8 px-2"
+                  variant="default"
+                  onClick={onAddUser}
+                  className="h-9 px-3 flex items-center gap-2"
                 >
-                  <List size={16} className="mr-1" />
-                  Compact
+                  <UserPlus size={16} />
+                  Add User
                 </Button>
-                <Button
-                  size="sm"
-                  variant={viewMode === 'detailed' ? 'default' : 'neutral'}
-                  onClick={() => onViewModeChange('detailed')}
-                  className="h-8 px-2"
-                >
-                  <Grid size={16} className="mr-1" />
-                  Detailed
-                </Button>
-              </div>
-            )}
+              )}
+
+              {/* View mode toggle */}
+              {onViewModeChange && (
+                <div className="flex gap-1 border-2 border-[var(--border)] rounded-[var(--radius-base)] bg-[var(--secondary-background)] p-1">
+                  <Button
+                    size="sm"
+                    variant={viewMode === 'compact' ? 'default' : 'neutral'}
+                    onClick={() => onViewModeChange('compact')}
+                    className="h-8 px-2"
+                  >
+                    <List size={16} className="mr-1" />
+                    Compact
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant={viewMode === 'detailed' ? 'default' : 'neutral'}
+                    onClick={() => onViewModeChange('detailed')}
+                    className="h-8 px-2"
+                  >
+                    <Grid size={16} className="mr-1" />
+                    Detailed
+                  </Button>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Add the search bar component if showing users list */}
