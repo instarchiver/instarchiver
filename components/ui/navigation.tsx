@@ -11,7 +11,7 @@ import { LoginDialog } from './login-dialog';
 import { LogoutDialog } from './logout-dialog';
 import { Avatar, AvatarFallback, AvatarImage } from './avatar';
 import { useAuth } from '@/components/providers/auth-provider';
-import { Menu, LogIn } from 'lucide-react';
+import { Menu, LogIn, Instagram } from 'lucide-react';
 
 export function Navigation() {
   const pathname = usePathname();
@@ -43,8 +43,12 @@ export function Navigation() {
         aria-label="Main navigation"
       >
         <Link href="/" className="flex items-center" aria-label="Instagram Archiver Home">
-          <Button variant="default" size="lg" className="font-heading text-xl">
-            INSTA ARCHIVER
+          <Button
+            variant="default"
+            size="lg"
+            className="font-heading text-xl h-auto w-auto p-2 [&_svg]:size-6"
+          >
+            <Instagram />
           </Button>
         </Link>
 
