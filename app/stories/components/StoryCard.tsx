@@ -58,6 +58,8 @@ export function StoryCard({ story, onPreview }: StoryCardProps) {
             sizes="(max-width: 768px) 100vw, 33vw"
             className="object-cover"
             priority
+            blurDataURL={`data:image/png;base64,${story.blur_data_url}`}
+            placeholder={story.blur_data_url ? 'blur' : 'empty'}
           />
         </div>
       </Link>
