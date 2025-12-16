@@ -3,8 +3,9 @@
 import { InstagramPost } from '@/app/types/instagram';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Image as ImageIcon, Video, Images, Calendar } from 'lucide-react';
-import { formatDistanceToNow } from 'date-fns';
+import { formatDistanceToNow, format } from 'date-fns';
 import Link from 'next/link';
 import Image from 'next/image';
 
@@ -60,7 +61,9 @@ export function PostCard({ post }: PostCardProps) {
             className={`${getVariantColor()} border-2 border-border shadow-shadow flex items-center gap-1`}
           >
             {getVariantIcon()}
-            <span className="capitalize text-xs font-bold">{post.variant}</span>
+            <span className="capitalize text-xs font-bold">
+              {post.variant === 'normal' ? 'Image' : post.variant}
+            </span>
           </Badge>
         </div>
 
@@ -100,7 +103,18 @@ export function PostCard({ post }: PostCardProps) {
         {/* Post Date */}
         <div className="flex items-center gap-2 text-xs text-foreground/60">
           <Calendar className="w-3 h-3" />
-          <span>{formatDistanceToNow(new Date(post.post_created_at), { addSuffix: true })}</span>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span className="cursor-help">
+                  {formatDistanceToNow(new Date(post.post_created_at), { addSuffix: true })}
+                </span>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>{format(new Date(post.post_created_at), 'PPpp')}</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
       </div>
     </Card>
