@@ -31,6 +31,7 @@ export function Navigation() {
     { name: 'Home', path: '/' },
     { name: 'Users', path: '/users' },
     { name: 'Stories', path: '/stories' },
+    { name: 'Posts', path: '/posts' },
   ];
 
   return (

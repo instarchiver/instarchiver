@@ -7,6 +7,7 @@ export interface InstagramStory {
   story_id: string;
   user: InstagramUser;
   thumbnail: string;
+  blur_data_url: string;
   media: string;
   created_at: string;
   story_created_at: string;
