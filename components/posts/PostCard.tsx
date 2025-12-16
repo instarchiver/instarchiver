@@ -76,15 +76,48 @@ export function PostCard({ post }: PostCardProps) {
     <Card className="group overflow-hidden border-2 border-border shadow-shadow hover:shadow-[4px_4px_0px_0px_var(--border)] transition-all duration-200 bg-secondary-background">
       {/* Thumbnail */}
       <div className="relative aspect-square overflow-hidden bg-background">
-        <Image
-          src={getCurrentImageSrc()}
-          alt={`Post by ${post.user.username}`}
-          fill
-          className="object-cover group-hover:scale-105 transition-transform duration-300"
-          placeholder={post.blur_data_url ? 'blur' : 'empty'}
-          blurDataURL={post.blur_data_url || undefined}
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
-        />
+        {post.variant === 'carousel' && post.media && post.media.length > 0 ? (
+          // Carousel with smooth transitions
+          <div className="relative w-full h-full">
+            {post.media.map((media, index) => (
+              <div
+                key={media.id}
+                className="absolute inset-0 transition-all duration-500 ease-in-out"
+                style={{
+                  opacity: index === currentSlide ? 1 : 0,
+                  transform: `translateX(${(index - currentSlide) * 100}%)`,
+                  pointerEvents: index === currentSlide ? 'auto' : 'none',
+                }}
+              >
+                <Image
+                  src={media.thumbnail || media.thumbnail_url}
+                  alt={`Post by ${post.user.username} - Image ${index + 1}`}
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-300"
+                  placeholder={media.blur_data_url ? 'blur' : 'empty'}
+                  blurDataURL={
+                    media.blur_data_url ? `data:image/png;base64,${media.blur_data_url}` : undefined
+                  }
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
+                  priority={index === 0}
+                />
+              </div>
+            ))}
+          </div>
+        ) : (
+          // Single image for non-carousel posts
+          <Image
+            src={getThumbnailSrc()}
+            alt={`Post by ${post.user.username}`}
+            fill
+            className="object-cover group-hover:scale-105 transition-transform duration-300"
+            placeholder={post.blur_data_url ? 'blur' : 'empty'}
+            blurDataURL={
+              post.blur_data_url ? `data:image/png;base64,${post.blur_data_url}` : undefined
+            }
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
+          />
+        )}
 
         {/* Carousel Navigation */}
         {post.variant === 'carousel' && post.media && post.media.length > 1 && (
