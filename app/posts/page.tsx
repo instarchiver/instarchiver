@@ -2,6 +2,7 @@
 
 import { usePosts } from '@/hooks/usePosts';
 import { PostCard } from '@/components/posts/PostCard';
+import { PostCardSkeleton } from '@/components/posts/PostCardSkeleton';
 import { Button } from '@/components/ui/button';
 import { Loader2, AlertCircle, Grid3x3, ArrowLeft } from 'lucide-react';
 import { useInView } from 'react-intersection-observer';
@@ -23,10 +24,34 @@ export default function PostsPage() {
   // Loading state
   if (isLoading) {
     return (
-      <div className="min-h-[calc(100vh-4rem)] bg-background flex items-center justify-center">
-        <div className="flex flex-col items-center gap-4">
-          <Loader2 className="w-12 h-12 animate-spin text-main" />
-          <p className="text-foreground font-bold text-lg">Loading posts...</p>
+      <div className="min-h-[calc(100vh-4rem)] bg-background">
+        {/* Header Skeleton */}
+        <div className="bg-secondary-background border-b-2 border-border sticky top-0 z-10">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 bg-foreground/10 rounded-lg animate-pulse" />
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-main rounded-lg flex items-center justify-center">
+                    <Grid3x3 className="w-6 h-6 text-main-foreground" />
+                  </div>
+                  <div>
+                    <div className="h-8 w-48 bg-foreground/10 rounded animate-pulse mb-1" />
+                    <div className="h-4 w-32 bg-foreground/10 rounded animate-pulse" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Posts Grid Skeleton */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+            {Array.from({ length: 12 }).map((_, index) => (
+              <PostCardSkeleton key={index} />
+            ))}
+          </div>
         </div>
       </div>
     );
