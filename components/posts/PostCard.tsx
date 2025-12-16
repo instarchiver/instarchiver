@@ -11,6 +11,8 @@ import {
   Calendar,
   ChevronLeft,
   ChevronRight,
+  Volume2,
+  VolumeX,
 } from 'lucide-react';
 import { formatDistanceToNow, format } from 'date-fns';
 import Link from 'next/link';
@@ -27,7 +29,14 @@ export function PostCard({ post }: PostCardProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const { currentlyPlayingId, setCurrentlyPlaying } = useVideoPlayback();
+  const { currentlyPlayingId, setCurrentlyPlaying, isMuted, toggleMute } = useVideoPlayback();
+
+  // Sync video muted state with context
+  useEffect(() => {
+    if (videoRef.current && post.variant === 'video') {
+      videoRef.current.muted = isMuted;
+    }
+  }, [isMuted, post.variant]);
 
   const getVariantIcon = () => {
     switch (post.variant) {
@@ -94,6 +103,12 @@ export function PostCard({ post }: PostCardProps) {
         setCurrentlyPlaying(post.id);
       }
     }
+  };
+
+  const handleMuteClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    toggleMute();
   };
 
   // Pause this video if another video starts playing
@@ -174,7 +189,7 @@ export function PostCard({ post }: PostCardProps) {
               src={post.media?.[0]?.media_url || post.media?.[0]?.media || ''}
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
               loop
-              muted
+              muted={isMuted}
               playsInline
               poster={getThumbnailSrc()}
             />
@@ -202,6 +217,14 @@ export function PostCard({ post }: PostCardProps) {
                 )}
               </div>
             </div>
+            {/* Mute/Unmute Button */}
+            <button
+              onClick={handleMuteClick}
+              className="absolute top-2 left-2 bg-foreground/80 hover:bg-foreground text-secondary-background rounded-full p-2 border-2 border-border shadow-shadow transition-all duration-200 z-10"
+              aria-label={isMuted ? 'Unmute' : 'Mute'}
+            >
+              {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+            </button>
           </div>
         ) : (
           // Single image for normal posts
