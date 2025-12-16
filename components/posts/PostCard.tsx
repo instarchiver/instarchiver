@@ -79,7 +79,7 @@ export function PostCard({ post }: PostCardProps) {
       <div className="p-4 space-y-3">
         {/* User Info */}
         <Link
-          href={`/users/${post.user.username}`}
+          href={`/users/${post.user.uuid}`}
           className="flex items-center gap-2 group/user hover:opacity-80 transition-opacity"
         >
           <div className="w-8 h-8 rounded-full border-2 border-border overflow-hidden bg-background relative">
