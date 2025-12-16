@@ -15,7 +15,8 @@ import {
 import { formatDistanceToNow, format } from 'date-fns';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
+import { useVideoPlayback } from '@/contexts/VideoPlaybackContext';
 
 interface PostCardProps {
   post: InstagramPost;
@@ -23,6 +24,10 @@ interface PostCardProps {
 
 export function PostCard({ post }: PostCardProps) {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { currentlyPlayingId, setCurrentlyPlaying } = useVideoPlayback();
 
   const getVariantIcon = () => {
     switch (post.variant) {
@@ -72,10 +77,67 @@ export function PostCard({ post }: PostCardProps) {
     setCurrentSlide(prev => (prev === post.media.length - 1 ? 0 : prev + 1));
   };
 
+  const handleVideoClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (post.variant === 'video' && videoRef.current) {
+      if (isPlaying) {
+        videoRef.current.pause();
+        setIsPlaying(false);
+        setCurrentlyPlaying(null);
+      } else {
+        videoRef.current.play().catch(err => {
+          console.error('Error playing video:', err);
+        });
+        setIsPlaying(true);
+        setCurrentlyPlaying(post.id);
+      }
+    }
+  };
+
+  // Pause this video if another video starts playing
+  useEffect(() => {
+    if (post.variant === 'video' && currentlyPlayingId !== post.id && isPlaying) {
+      if (videoRef.current) {
+        videoRef.current.pause();
+        setIsPlaying(false);
+      }
+    }
+  }, [currentlyPlayingId, post.id, post.variant, isPlaying]);
+
+  // Auto-pause video when scrolled out of viewport
+  useEffect(() => {
+    if (post.variant !== 'video' || !containerRef.current) return;
+
+    const observer = new IntersectionObserver(
+      entries => {
+        entries.forEach(entry => {
+          if (!entry.isIntersecting && videoRef.current && isPlaying) {
+            videoRef.current.pause();
+            setIsPlaying(false);
+            setCurrentlyPlaying(null);
+          }
+        });
+      },
+      { threshold: 0.5 }
+    );
+
+    observer.observe(containerRef.current);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [post.variant, isPlaying, setCurrentlyPlaying]);
+
   return (
     <Card className="group overflow-hidden border-2 border-border shadow-shadow hover:shadow-[4px_4px_0px_0px_var(--border)] transition-all duration-200 bg-secondary-background">
       {/* Thumbnail */}
-      <div className="relative aspect-square overflow-hidden bg-background">
+      <div
+        ref={containerRef}
+        className="relative aspect-square overflow-hidden bg-background"
+        onClick={post.variant === 'video' ? handleVideoClick : undefined}
+      >
         {post.variant === 'carousel' && post.media && post.media.length > 0 ? (
           // Carousel with smooth transitions
           <div className="relative w-full h-full">
@@ -104,8 +166,45 @@ export function PostCard({ post }: PostCardProps) {
               </div>
             ))}
           </div>
+        ) : post.variant === 'video' ? (
+          // Video element for video posts
+          <div className="relative w-full h-full cursor-pointer">
+            <video
+              ref={videoRef}
+              src={post.media?.[0]?.media_url || post.media?.[0]?.media || ''}
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              loop
+              muted
+              playsInline
+              poster={getThumbnailSrc()}
+            />
+            {/* Play/Pause Overlay */}
+            <div
+              className={`absolute inset-0 flex items-center justify-center bg-black/20 transition-opacity duration-200 ${isPlaying ? 'opacity-0 hover:opacity-100' : 'opacity-100'}`}
+            >
+              <div className="bg-foreground/80 rounded-full p-4 border-2 border-border shadow-shadow">
+                {isPlaying ? (
+                  <svg
+                    className="w-8 h-8 text-secondary-background"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z" />
+                  </svg>
+                ) : (
+                  <svg
+                    className="w-8 h-8 text-secondary-background"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M8 5v14l11-7z" />
+                  </svg>
+                )}
+              </div>
+            </div>
+          </div>
         ) : (
-          // Single image for non-carousel posts
+          // Single image for normal posts
           <Image
             src={getThumbnailSrc()}
             alt={`Post by ${post.user.username}`}
