@@ -10,10 +10,18 @@ import { InstagramPost } from '@/app/types/instagram';
  */
 const fetchPosts = async ({
   pageParam,
+  search,
 }: {
   pageParam?: string;
+  search?: string;
 }): Promise<ApiResponse<InstagramPost>> => {
-  const url = pageParam || '/instagram/posts/';
+  let url = pageParam || '/instagram/posts/';
+
+  // If no pageParam but search exists, add search to initial URL
+  if (!pageParam && search) {
+    url = `/instagram/posts/?search=${encodeURIComponent(search)}`;
+  }
+
   const response = await axiosInstance.get<ApiResponse<InstagramPost>>(url);
   return response.data;
 };
@@ -21,11 +29,12 @@ const fetchPosts = async ({
 /**
  * Custom hook to fetch Instagram posts with infinite scroll support
  */
-export const usePosts = () => {
+export const usePosts = (search?: string) => {
   return useInfiniteQuery({
-    queryKey: ['posts'],
-    queryFn: fetchPosts,
-    initialPageParam: undefined,
+    queryKey: ['posts', search],
+    queryFn: ({ pageParam }: { pageParam: string | undefined }) =>
+      fetchPosts({ pageParam, search }),
+    initialPageParam: undefined as string | undefined,
     getNextPageParam: lastPage => lastPage.next,
     getPreviousPageParam: firstPage => firstPage.previous,
   });

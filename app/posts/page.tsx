@@ -4,16 +4,28 @@ import { usePosts } from '@/hooks/usePosts';
 import { PostCard } from '@/components/posts/PostCard';
 import { PostCardSkeleton } from '@/components/posts/PostCardSkeleton';
 import { Button } from '@/components/ui/button';
-import { Loader2, AlertCircle, Grid3x3, ArrowLeft } from 'lucide-react';
+import { Loader2, AlertCircle, Grid3x3, ArrowLeft, Search, X } from 'lucide-react';
 import { useInView } from 'react-intersection-observer';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { VideoPlaybackProvider } from '@/contexts/VideoPlaybackContext';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 export default function PostsPage() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const searchQuery = searchParams.get('search') || '';
+
+  const [searchInput, setSearchInput] = useState(searchQuery);
+
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading, isError, error } =
-    usePosts();
+    usePosts(searchQuery);
   const { ref, inView } = useInView();
+
+  // Sync search input with URL params
+  useEffect(() => {
+    setSearchInput(searchQuery);
+  }, [searchQuery]);
 
   // Auto-fetch next page when scrolling to bottom
   useEffect(() => {
@@ -22,32 +34,41 @@ export default function PostsPage() {
     }
   }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    const trimmedSearch = searchInput.trim();
+
+    if (trimmedSearch) {
+      router.push(`/posts?search=${encodeURIComponent(trimmedSearch)}`);
+    } else {
+      router.push('/posts');
+    }
+  };
+
+  const handleClearSearch = () => {
+    setSearchInput('');
+    router.push('/posts');
+  };
+
   // Loading state
   if (isLoading) {
     return (
       <div className="min-h-[calc(100vh-4rem)] bg-background">
-        {/* Header Skeleton */}
-        <div className="bg-secondary-background border-b-2 border-border sticky top-0 z-10">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <div className="w-10 h-10 bg-foreground/10 rounded-lg animate-pulse" />
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-main rounded-lg flex items-center justify-center">
-                    <Grid3x3 className="w-6 h-6 text-main-foreground" />
-                  </div>
-                  <div>
-                    <div className="h-8 w-48 bg-foreground/10 rounded animate-pulse mb-1" />
-                    <div className="h-4 w-32 bg-foreground/10 rounded animate-pulse" />
-                  </div>
-                </div>
+        {/* Search Section Skeleton */}
+        <div className="w-full py-12 sm:py-16 lg:py-20">
+          <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex flex-col items-center gap-6">
+              <div className="h-12 w-80 bg-foreground/10 rounded animate-pulse" />
+              <div className="w-full max-w-2xl">
+                <div className="h-14 w-full bg-foreground/10 rounded-full animate-pulse" />
               </div>
+              <div className="h-4 w-32 bg-foreground/10 rounded animate-pulse" />
             </div>
           </div>
         </div>
 
         {/* Posts Grid Skeleton */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
             {Array.from({ length: 12 }).map((_, index) => (
               <PostCardSkeleton key={index} />
@@ -85,36 +106,56 @@ export default function PostsPage() {
   return (
     <VideoPlaybackProvider>
       <div className="min-h-[calc(100vh-4rem)] bg-background">
-        {/* Header */}
-        <div className="bg-secondary-background border-b-2 border-border sticky top-0 z-10">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <Button variant="neutral" size="icon" asChild>
-                  <Link href="/">
-                    <ArrowLeft className="w-5 h-5" />
-                  </Link>
-                </Button>
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-main rounded-lg flex items-center justify-center">
-                    <Grid3x3 className="w-6 h-6 text-main-foreground" />
-                  </div>
-                  <div>
-                    <h1 className="text-2xl sm:text-3xl font-bold text-foreground">
-                      Instagram Posts
-                    </h1>
-                    <p className="text-sm text-foreground/60">
-                      {allPosts.length} {allPosts.length === 1 ? 'post' : 'posts'} loaded
-                    </p>
-                  </div>
+        {/* Search Section */}
+        <div className="w-full py-12 sm:py-16 lg:py-20">
+          <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex flex-col items-center gap-6">
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground text-center">
+                Search Instagram Posts
+              </h1>
+              <form onSubmit={handleSearch} className="w-full max-w-2xl">
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={searchInput}
+                    onChange={e => setSearchInput(e.target.value)}
+                    placeholder="Search by caption, username, or hashtag..."
+                    className={`w-full px-6 py-4 text-base sm:text-lg bg-secondary-background border-2 border-border rounded-full shadow-shadow focus:outline-none focus:ring-2 focus:ring-main focus:border-main transition-all ${
+                      searchInput ? 'pr-[100px]' : 'pr-[60px]'
+                    }`}
+                  />
+                  {searchInput && (
+                    <button
+                      type="button"
+                      onClick={handleClearSearch}
+                      className="absolute right-[60px] top-1/2 -translate-y-1/2 p-2 text-foreground/60 hover:text-foreground transition-colors"
+                      aria-label="Clear search"
+                    >
+                      <X className="w-5 h-5" />
+                    </button>
+                  )}
+                  <button
+                    type="submit"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-main text-main-foreground rounded-full font-medium hover:opacity-90 transition-opacity flex items-center justify-center"
+                    aria-label="Search"
+                  >
+                    <Search className="w-5 h-5" />
+                  </button>
                 </div>
-              </div>
+              </form>
+              <p className="text-sm text-foreground/60">
+                {searchQuery && (
+                  <span className="font-medium">Searching for &quot;{searchQuery}&quot; • </span>
+                )}
+                {allPosts.length} {allPosts.length === 1 ? 'post' : 'posts'}{' '}
+                {searchQuery ? 'found' : 'available'}
+              </p>
             </div>
           </div>
         </div>
 
         {/* Posts Grid */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
           {allPosts.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-20">
               <div className="w-20 h-20 bg-secondary-background border-2 border-border rounded-full flex items-center justify-center mb-4">
