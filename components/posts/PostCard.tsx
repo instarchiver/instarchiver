@@ -4,16 +4,26 @@ import { InstagramPost } from '@/app/types/instagram';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { Image as ImageIcon, Video, Images, Calendar } from 'lucide-react';
+import {
+  Image as ImageIcon,
+  Video,
+  Images,
+  Calendar,
+  ChevronLeft,
+  ChevronRight,
+} from 'lucide-react';
 import { formatDistanceToNow, format } from 'date-fns';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useState } from 'react';
 
 interface PostCardProps {
   post: InstagramPost;
 }
 
 export function PostCard({ post }: PostCardProps) {
+  const [currentSlide, setCurrentSlide] = useState(0);
+
   const getVariantIcon = () => {
     switch (post.variant) {
       case 'video':
@@ -41,12 +51,33 @@ export function PostCard({ post }: PostCardProps) {
     return post.thumbnail || post.thumbnail_url;
   };
 
+  // Get current image source for carousel
+  const getCurrentImageSrc = () => {
+    if (post.variant === 'carousel' && post.media && post.media.length > 0) {
+      const currentMedia = post.media[currentSlide];
+      return currentMedia.thumbnail || currentMedia.thumbnail_url;
+    }
+    return getThumbnailSrc();
+  };
+
+  const handlePrevSlide = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setCurrentSlide(prev => (prev === 0 ? post.media.length - 1 : prev - 1));
+  };
+
+  const handleNextSlide = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setCurrentSlide(prev => (prev === post.media.length - 1 ? 0 : prev + 1));
+  };
+
   return (
     <Card className="group overflow-hidden border-2 border-border shadow-shadow hover:shadow-[4px_4px_0px_0px_var(--border)] transition-all duration-200 bg-secondary-background">
       {/* Thumbnail */}
       <div className="relative aspect-square overflow-hidden bg-background">
         <Image
-          src={getThumbnailSrc()}
+          src={getCurrentImageSrc()}
           alt={`Post by ${post.user.username}`}
           fill
           className="object-cover group-hover:scale-105 transition-transform duration-300"
@@ -54,6 +85,41 @@ export function PostCard({ post }: PostCardProps) {
           blurDataURL={post.blur_data_url || undefined}
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
         />
+
+        {/* Carousel Navigation */}
+        {post.variant === 'carousel' && post.media && post.media.length > 1 && (
+          <>
+            {/* Previous Button */}
+            <button
+              onClick={handlePrevSlide}
+              className="absolute left-2 top-1/2 -translate-y-1/2 bg-foreground/80 hover:bg-foreground text-secondary-background rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 border-2 border-border shadow-shadow"
+              aria-label="Previous image"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+
+            {/* Next Button */}
+            <button
+              onClick={handleNextSlide}
+              className="absolute right-2 top-1/2 -translate-y-1/2 bg-foreground/80 hover:bg-foreground text-secondary-background rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 border-2 border-border shadow-shadow"
+              aria-label="Next image"
+            >
+              <ChevronRight className="w-4 h-4" />
+            </button>
+
+            {/* Slide Indicators */}
+            <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1">
+              {post.media.map((_, index) => (
+                <div
+                  key={index}
+                  className={`w-1.5 h-1.5 rounded-full border border-border transition-all duration-200 ${
+                    index === currentSlide ? 'bg-foreground w-4' : 'bg-foreground/40'
+                  }`}
+                />
+              ))}
+            </div>
+          </>
+        )}
 
         {/* Variant Badge */}
         <div className="absolute top-2 right-2">
@@ -72,7 +138,7 @@ export function PostCard({ post }: PostCardProps) {
           <div className="absolute top-2 left-2">
             <Badge className="bg-foreground text-secondary-background border-2 border-border shadow-shadow">
               <Images className="w-3 h-3 mr-1" />
-              {post.media_count}
+              {currentSlide + 1}/{post.media_count}
             </Badge>
           </div>
         )}
