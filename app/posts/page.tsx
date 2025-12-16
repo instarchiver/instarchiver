@@ -6,12 +6,12 @@ import { PostCardSkeleton } from '@/components/posts/PostCardSkeleton';
 import { Button } from '@/components/ui/button';
 import { Loader2, AlertCircle, Grid3x3, ArrowLeft, Search, X } from 'lucide-react';
 import { useInView } from 'react-intersection-observer';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import Link from 'next/link';
 import { VideoPlaybackProvider } from '@/contexts/VideoPlaybackContext';
 import { useRouter, useSearchParams } from 'next/navigation';
 
-export default function PostsPage() {
+function PostsPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const searchQuery = searchParams.get('search') || '';
@@ -191,5 +191,39 @@ export default function PostsPage() {
         </div>
       </div>
     </VideoPlaybackProvider>
+  );
+}
+
+export default function PostsPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-[calc(100vh-4rem)] bg-background">
+          {/* Search Section Skeleton */}
+          <div className="w-full py-12 sm:py-16 lg:py-20">
+            <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="flex flex-col items-center gap-6">
+                <div className="h-12 w-80 bg-foreground/10 rounded animate-pulse" />
+                <div className="w-full max-w-2xl">
+                  <div className="h-14 w-full bg-foreground/10 rounded-full animate-pulse" />
+                </div>
+                <div className="h-4 w-32 bg-foreground/10 rounded animate-pulse" />
+              </div>
+            </div>
+          </div>
+
+          {/* Posts Grid Skeleton */}
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+              {Array.from({ length: 12 }).map((_, index) => (
+                <PostCardSkeleton key={index} />
+              ))}
+            </div>
+          </div>
+        </div>
+      }
+    >
+      <PostsPageContent />
+    </Suspense>
   );
 }
