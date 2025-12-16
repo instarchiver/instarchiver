@@ -125,7 +125,7 @@ export function PostCard({ post }: PostCardProps) {
             {/* Previous Button */}
             <button
               onClick={handlePrevSlide}
-              className="absolute left-2 top-1/2 -translate-y-1/2 bg-foreground/80 hover:bg-foreground text-secondary-background rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 border-2 border-border shadow-shadow"
+              className="absolute left-2 top-1/2 -translate-y-1/2 bg-foreground/80 hover:bg-foreground text-secondary-background rounded-full p-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-200 border-2 border-border shadow-shadow z-10"
               aria-label="Previous image"
             >
               <ChevronLeft className="w-4 h-4" />
@@ -134,14 +134,14 @@ export function PostCard({ post }: PostCardProps) {
             {/* Next Button */}
             <button
               onClick={handleNextSlide}
-              className="absolute right-2 top-1/2 -translate-y-1/2 bg-foreground/80 hover:bg-foreground text-secondary-background rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 border-2 border-border shadow-shadow"
+              className="absolute right-2 top-1/2 -translate-y-1/2 bg-foreground/80 hover:bg-foreground text-secondary-background rounded-full p-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-200 border-2 border-border shadow-shadow z-10"
               aria-label="Next image"
             >
               <ChevronRight className="w-4 h-4" />
             </button>
 
             {/* Slide Indicators */}
-            <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1">
+            <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1 z-10">
               {post.media.map((_, index) => (
                 <div
                   key={index}
