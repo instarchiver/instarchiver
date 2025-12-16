@@ -45,6 +45,11 @@ export default function Home() {
                   <ArrowRight size={20} />
                 </Link>
               </Button>
+              <Button variant="default" size="icon" asChild>
+                <Link href="/posts">
+                  <ArrowRight size={20} />
+                </Link>
+              </Button>
             </div>
 
             <div className="bg-main text-main-foreground px-4 py-2 sm:px-6 lg:px-8 sm:py-3 rounded-full text-sm sm:text-base lg:text-lg font-semibold flex items-center space-x-2 text-center">
