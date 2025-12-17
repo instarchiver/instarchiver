@@ -10,11 +10,11 @@ interface MasonryGridProps {
 
 export function MasonryGrid({ children, className = '' }: MasonryGridProps) {
   const breakpointColumns = {
-    default: 4,
-    1280: 4,
-    1024: 3,
-    640: 2,
-    0: 1,
+    default: 4, // 4 columns on extra large screens
+    1280: 4, // 4 columns on large screens (xl)
+    1024: 3, // 3 columns on medium-large screens (lg)
+    768: 2, // 2 columns on tablets (md)
+    640: 1, // 1 column on mobile (sm and below)
   };
 
   return (
