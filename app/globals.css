@@ -159,3 +159,26 @@ body::-webkit-scrollbar-thumb {
     scrollbar-width: thin;
   }
 }
+
+/* Masonry Grid Styles */
+.masonry-grid {
+  display: flex;
+  margin-left: -1rem; /* gutter size offset */
+  width: auto;
+}
+
+.masonry-grid-column {
+  padding-left: 1rem; /* gutter size */
+  background-clip: padding-box;
+}
+
+/* Responsive gap adjustments */
+@media (min-width: 640px) {
+  .masonry-grid {
+    margin-left: -1.5rem;
+  }
+
+  .masonry-grid-column {
+    padding-left: 1.5rem;
+  }
+}
