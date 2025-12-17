@@ -15,6 +15,9 @@ const redHatText = Red_Hat_Text({
 export const metadata: Metadata = {
   title: 'Instagram Archiver',
   description: 'Archive and browse Instagram user profiles and content',
+  other: {
+    'google-adsense-account': 'ca-pub-3865845660755241',
+  },
 };
 
 export default function RootLayout({
