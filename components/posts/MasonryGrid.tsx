@@ -1,6 +1,7 @@
 'use client';
 
 import { ReactNode } from 'react';
+import Masonry from 'react-masonry-css';
 
 interface MasonryGridProps {
   children: ReactNode;
@@ -8,9 +9,21 @@ interface MasonryGridProps {
 }
 
 export function MasonryGrid({ children, className = '' }: MasonryGridProps) {
+  const breakpointColumns = {
+    default: 4,
+    1280: 4,
+    1024: 3,
+    640: 2,
+    0: 1,
+  };
+
   return (
-    <div className={`columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-4 sm:gap-6 ${className}`}>
+    <Masonry
+      breakpointCols={breakpointColumns}
+      className={`masonry-grid ${className}`}
+      columnClassName="masonry-grid-column"
+    >
       {children}
-    </div>
+    </Masonry>
   );
 }
