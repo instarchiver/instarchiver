@@ -11,6 +11,8 @@ export interface PostMedia {
   media_url: string;
   thumbnail: string | null;
   media: string | null;
+  width: number;
+  height: number;
   created_at: string;
   updated_at: string;
 }
@@ -23,6 +25,8 @@ export interface InstagramPost {
   thumbnail_url: string;
   thumbnail: string | null;
   blur_data_url: string;
+  width: number;
+  height: number;
   media_count: number;
   post_created_at: string;
   created_at: string;

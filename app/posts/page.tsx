@@ -3,6 +3,7 @@
 import { usePosts } from '@/hooks/usePosts';
 import { PostCard } from '@/components/posts/PostCard';
 import { PostCardSkeleton } from '@/components/posts/PostCardSkeleton';
+import { MasonryGrid } from '@/components/posts/MasonryGrid';
 import { Button } from '@/components/ui/button';
 import { Loader2, AlertCircle, Grid3x3, ArrowLeft, Search, X } from 'lucide-react';
 import { useInView } from 'react-intersection-observer';
@@ -69,11 +70,11 @@ function PostsPageContent() {
 
         {/* Posts Grid Skeleton */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+          <MasonryGrid>
             {Array.from({ length: 12 }).map((_, index) => (
               <PostCardSkeleton key={index} />
             ))}
-          </div>
+          </MasonryGrid>
         </div>
       </div>
     );
@@ -159,11 +160,11 @@ function PostsPageContent() {
             </div>
           ) : (
             <>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+              <MasonryGrid>
                 {allPosts.map(post => (
                   <PostCard key={post.id} post={post} />
                 ))}
-              </div>
+              </MasonryGrid>
 
               {/* Infinite Scroll Trigger */}
               <div ref={ref} className="flex justify-center py-8">
@@ -207,11 +208,11 @@ export default function PostsPage() {
 
           {/* Posts Grid Skeleton */}
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+            <MasonryGrid>
               {Array.from({ length: 12 }).map((_, index) => (
                 <PostCardSkeleton key={index} />
               ))}
-            </div>
+            </MasonryGrid>
           </div>
         </div>
       }
