@@ -143,13 +143,6 @@ function PostsPageContent() {
                   </button>
                 </div>
               </form>
-              <p className="text-sm text-foreground/60">
-                {searchQuery && (
-                  <span className="font-medium">Searching for &quot;{searchQuery}&quot; • </span>
-                )}
-                {allPosts.length} {allPosts.length === 1 ? 'post' : 'posts'}{' '}
-                {searchQuery ? 'found' : 'available'}
-              </p>
             </div>
           </div>
         </div>
