@@ -14,10 +14,10 @@ import {
   ChevronRight,
   Volume2,
   VolumeX,
-  ExternalLink,
 } from 'lucide-react';
 import { formatDistanceToNow, format } from 'date-fns';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { useState, useRef, useEffect } from 'react';
 import { useVideoPlayback } from '@/contexts/VideoPlaybackContext';
@@ -27,11 +27,17 @@ interface PostCardProps {
 }
 
 export function PostCard({ post }: PostCardProps) {
+  const router = useRouter();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const { currentlyPlayingId, setCurrentlyPlaying, isMuted, toggleMute } = useVideoPlayback();
+
+  // Handle card click for navigation
+  const handleCardClick = () => {
+    router.push(`/posts/${post.id}`);
+  };
 
   // Sync video muted state with context
   useEffect(() => {
@@ -88,7 +94,7 @@ export function PostCard({ post }: PostCardProps) {
     setCurrentSlide(prev => (prev === post.media.length - 1 ? 0 : prev + 1));
   };
 
-  const handleVideoClick = (e: React.MouseEvent) => {
+  const handlePlayPauseClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
 
@@ -167,11 +173,11 @@ export function PostCard({ post }: PostCardProps) {
         {/* Thumbnail */}
         <div
           ref={containerRef}
-          className="relative overflow-hidden bg-background"
+          className="relative overflow-hidden bg-background cursor-pointer"
           style={{
             aspectRatio: getAspectRatio(),
           }}
-          onClick={post.variant === 'video' ? handleVideoClick : undefined}
+          onClick={handleCardClick}
         >
           {post.variant === 'carousel' && post.media && post.media.length > 0 ? (
             // Carousel with smooth transitions
@@ -219,7 +225,10 @@ export function PostCard({ post }: PostCardProps) {
               <div
                 className={`absolute inset-0 flex items-center justify-center bg-black/20 transition-opacity duration-200 ${isPlaying ? 'opacity-0 hover:opacity-100' : 'opacity-100'}`}
               >
-                <div className="bg-foreground/80 rounded-full p-4 border-2 border-border shadow-shadow">
+                <div
+                  onClick={handlePlayPauseClick}
+                  className="bg-foreground/80 rounded-full p-4 border-2 border-border shadow-shadow cursor-pointer"
+                >
                   {isPlaying ? (
                     <svg
                       className="w-8 h-8 text-secondary-background"
@@ -319,20 +328,6 @@ export function PostCard({ post }: PostCardProps) {
               </Badge>
             </div>
           )}
-
-          {/* View Details Button */}
-          <div className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-            <Link href={`/posts/${post.id}`}>
-              <Button
-                variant="default"
-                size="sm"
-                className="gap-1.5 bg-foreground/60 hover:bg-foreground/80 text-secondary-background border border-border/50 shadow-sm backdrop-blur-sm"
-              >
-                View Details
-                <ExternalLink className="w-3 h-3" />
-              </Button>
-            </Link>
-          </div>
         </div>
 
         {/* Post Info */}
