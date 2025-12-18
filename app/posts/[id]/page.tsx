@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { usePost } from '@/hooks/usePost';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -9,7 +9,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { DisqusWrapper } from '@/components/ui/disqus-wrapper';
 import {
-  ArrowLeft,
   Calendar,
   Image as ImageIcon,
   Video as VideoIcon,
@@ -68,6 +67,20 @@ export default function PostDetailPage({ params }: PostDetailPageProps) {
         title: `Post by @${post.user.username}`,
       }
     : undefined;
+
+  // Update page title dynamically
+  useEffect(() => {
+    if (post) {
+      document.title = `@${post.user.username}'s Post | Instagram Archiver`;
+    } else {
+      document.title = 'Post Details | Instagram Archiver';
+    }
+
+    // Cleanup: Reset title when component unmounts
+    return () => {
+      document.title = 'Instagram Archiver';
+    };
+  }, [post]);
 
   const handlePrevSlide = () => {
     setCurrentSlide(prev => (prev === 0 ? (post?.media.length || 1) - 1 : prev - 1));
@@ -148,14 +161,6 @@ export default function PostDetailPage({ params }: PostDetailPageProps) {
     <div className="min-h-screen bg-background pt-16">
       <div className="container mx-auto px-4 py-6 sm:py-8">
         <div className="max-w-7xl mx-auto">
-          {/* Back Button */}
-          <Link href="/posts">
-            <Button variant="neutral" className="mb-6 border-2 border-border shadow-shadow">
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Posts
-            </Button>
-          </Link>
-
           {/* Main Content Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
             {/* Left Side - Media */}
