@@ -3,6 +3,7 @@
 import { InstagramPost } from '@/app/types/instagram';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import {
   Image as ImageIcon,
@@ -16,6 +17,7 @@ import {
 } from 'lucide-react';
 import { formatDistanceToNow, format } from 'date-fns';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { useState, useRef, useEffect } from 'react';
 import { useVideoPlayback } from '@/contexts/VideoPlaybackContext';
@@ -25,11 +27,17 @@ interface PostCardProps {
 }
 
 export function PostCard({ post }: PostCardProps) {
+  const router = useRouter();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const { currentlyPlayingId, setCurrentlyPlaying, isMuted, toggleMute } = useVideoPlayback();
+
+  // Handle card click for navigation
+  const handleCardClick = () => {
+    router.push(`/posts/${post.id}`);
+  };
 
   // Sync video muted state with context
   useEffect(() => {
@@ -86,7 +94,7 @@ export function PostCard({ post }: PostCardProps) {
     setCurrentSlide(prev => (prev === post.media.length - 1 ? 0 : prev + 1));
   };
 
-  const handleVideoClick = (e: React.MouseEvent) => {
+  const handlePlayPauseClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
 
@@ -165,11 +173,11 @@ export function PostCard({ post }: PostCardProps) {
         {/* Thumbnail */}
         <div
           ref={containerRef}
-          className="relative overflow-hidden bg-background"
+          className="relative overflow-hidden bg-background cursor-pointer"
           style={{
             aspectRatio: getAspectRatio(),
           }}
-          onClick={post.variant === 'video' ? handleVideoClick : undefined}
+          onClick={handleCardClick}
         >
           {post.variant === 'carousel' && post.media && post.media.length > 0 ? (
             // Carousel with smooth transitions
@@ -206,7 +214,7 @@ export function PostCard({ post }: PostCardProps) {
             <div className="relative w-full h-full cursor-pointer">
               <video
                 ref={videoRef}
-                src={post.media?.[0]?.media_url || post.media?.[0]?.media || ''}
+                src={post.media?.[0]?.media || post.media?.[0]?.media_url || ''}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 loop
                 muted={isMuted}
@@ -217,7 +225,10 @@ export function PostCard({ post }: PostCardProps) {
               <div
                 className={`absolute inset-0 flex items-center justify-center bg-black/20 transition-opacity duration-200 ${isPlaying ? 'opacity-0 hover:opacity-100' : 'opacity-100'}`}
               >
-                <div className="bg-foreground/80 rounded-full p-4 border-2 border-border shadow-shadow">
+                <div
+                  onClick={handlePlayPauseClick}
+                  className="bg-foreground/80 rounded-full p-4 border-2 border-border shadow-shadow cursor-pointer"
+                >
                   {isPlaying ? (
                     <svg
                       className="w-8 h-8 text-secondary-background"
