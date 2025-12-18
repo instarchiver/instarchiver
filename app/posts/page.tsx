@@ -106,7 +106,7 @@ function PostsPageContent() {
 
   return (
     <VideoPlaybackProvider>
-      <div className="min-h-[calc(100vh-4rem)] bg-background">
+      <div className="min-h-[calc(100vh-4rem)] bg-background pt-16">
         {/* Search Section */}
         <div className="w-full py-8 sm:py-8 lg:py-12">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">

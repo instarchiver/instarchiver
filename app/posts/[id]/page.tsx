@@ -29,11 +29,10 @@ interface PostDetailPageProps {
 
 function PostDetailSkeleton() {
   return (
-    <div className="min-h-screen bg-background pt-16">
-      <div className="container mx-auto px-4 py-8">
+    <div className="min-h-[calc(100vh-4rem)] bg-background pt-8 px-4">
+      <div className="container mx-auto py-6">
         <div className="max-w-7xl mx-auto">
-          <Skeleton className="h-10 w-32 mb-6" />
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
             {/* Left side skeleton */}
             <div className="space-y-4">
               <Skeleton className="aspect-square w-full rounded-lg" />
@@ -41,7 +40,7 @@ function PostDetailSkeleton() {
             {/* Right side skeleton */}
             <div className="space-y-4">
               <Skeleton className="h-40 w-full rounded-lg" />
-              <Skeleton className="h-96 w-full rounded-lg" />
+              <Skeleton className="h-52 w-full rounded-lg" />
             </div>
           </div>
         </div>
@@ -139,8 +138,8 @@ export default function PostDetailPage({ params }: PostDetailPageProps) {
 
   if (error || !post) {
     return (
-      <div className="min-h-screen bg-background pt-16">
-        <div className="container mx-auto px-4 py-8">
+      <div className="min-h-[calc(100vh-4rem)] bg-background pt-16 px-4">
+        <div className="container mx-auto py-8">
           <Card className="w-full max-w-2xl mx-auto border-2 border-border shadow-shadow">
             <CardContent className="p-8">
               <h1 className="text-2xl font-bold text-foreground mb-4">Error Loading Post</h1>
@@ -158,8 +157,8 @@ export default function PostDetailPage({ params }: PostDetailPageProps) {
   }
 
   return (
-    <div className="min-h-screen bg-background pt-16">
-      <div className="container mx-auto px-4 py-6 sm:py-8">
+    <div className="min-h-[calc(100vh-4rem)] bg-background pt-6 px-4">
+      <div className="container mx-auto py-6">
         <div className="max-w-7xl mx-auto">
           {/* Main Content Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">

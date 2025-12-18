@@ -43,7 +43,12 @@ export function Navigation() {
         className="container mx-auto px-4 flex justify-between items-center h-16"
         aria-label="Main navigation"
       >
-        <Link href="/" className="flex items-center" aria-label="Instagram Archiver Home">
+        <Link
+          href="/"
+          className="flex items-center"
+          aria-label="Instagram Archiver Home"
+          scroll={true}
+        >
           <Button
             variant="default"
             size="lg"
@@ -85,6 +90,7 @@ export function Navigation() {
                           href={link.path}
                           aria-current={isActive(link.path) ? 'page' : undefined}
                           aria-label={`Navigate to ${link.name} page`}
+                          scroll={true}
                         >
                           {link.name.toUpperCase()}
                         </Link>
@@ -157,6 +163,7 @@ export function Navigation() {
                   href={link.path}
                   aria-current={isActive(link.path) ? 'page' : undefined}
                   aria-label={`Navigate to ${link.name} page`}
+                  scroll={true}
                 >
                   {link.name.toUpperCase()}
                 </Link>
