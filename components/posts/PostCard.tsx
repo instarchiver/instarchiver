@@ -3,6 +3,7 @@
 import { InstagramPost } from '@/app/types/instagram';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import {
   Image as ImageIcon,
@@ -13,6 +14,7 @@ import {
   ChevronRight,
   Volume2,
   VolumeX,
+  ExternalLink,
 } from 'lucide-react';
 import { formatDistanceToNow, format } from 'date-fns';
 import Link from 'next/link';
@@ -163,163 +165,175 @@ export function PostCard({ post }: PostCardProps) {
     <div className="break-inside-avoid mb-4 sm:mb-6">
       <Card className="group overflow-hidden border-2 border-border shadow-shadow hover:shadow-[4px_4px_0px_0px_var(--border)] transition-all duration-200 bg-secondary-background">
         {/* Thumbnail */}
-        <Link href={`/posts/${post.id}`}>
-          <div
-            ref={containerRef}
-            className="relative overflow-hidden bg-background cursor-pointer"
-            style={{
-              aspectRatio: getAspectRatio(),
-            }}
-            onClick={post.variant === 'video' ? handleVideoClick : undefined}
-          >
-            {post.variant === 'carousel' && post.media && post.media.length > 0 ? (
-              // Carousel with smooth transitions
-              <div className="relative w-full h-full">
-                {post.media.map((media, index) => (
+        <div
+          ref={containerRef}
+          className="relative overflow-hidden bg-background"
+          style={{
+            aspectRatio: getAspectRatio(),
+          }}
+          onClick={post.variant === 'video' ? handleVideoClick : undefined}
+        >
+          {post.variant === 'carousel' && post.media && post.media.length > 0 ? (
+            // Carousel with smooth transitions
+            <div className="relative w-full h-full">
+              {post.media.map((media, index) => (
+                <div
+                  key={media.id}
+                  className="absolute inset-0 transition-all duration-500 ease-in-out"
+                  style={{
+                    opacity: index === currentSlide ? 1 : 0,
+                    transform: `translateX(${(index - currentSlide) * 100}%)`,
+                    pointerEvents: index === currentSlide ? 'auto' : 'none',
+                  }}
+                >
+                  <Image
+                    src={media.thumbnail || media.thumbnail_url}
+                    alt={`Post by ${post.user.username} - Image ${index + 1}`}
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform duration-300"
+                    placeholder={media.blur_data_url ? 'blur' : 'empty'}
+                    blurDataURL={
+                      media.blur_data_url
+                        ? `data:image/png;base64,${media.blur_data_url}`
+                        : undefined
+                    }
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
+                    priority={index === 0}
+                  />
+                </div>
+              ))}
+            </div>
+          ) : post.variant === 'video' ? (
+            // Video element for video posts
+            <div className="relative w-full h-full cursor-pointer">
+              <video
+                ref={videoRef}
+                src={post.media?.[0]?.media || post.media?.[0]?.media_url || ''}
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                loop
+                muted={isMuted}
+                playsInline
+                poster={getThumbnailSrc()}
+              />
+              {/* Play/Pause Overlay */}
+              <div
+                className={`absolute inset-0 flex items-center justify-center bg-black/20 transition-opacity duration-200 ${isPlaying ? 'opacity-0 hover:opacity-100' : 'opacity-100'}`}
+              >
+                <div className="bg-foreground/80 rounded-full p-4 border-2 border-border shadow-shadow">
+                  {isPlaying ? (
+                    <svg
+                      className="w-8 h-8 text-secondary-background"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z" />
+                    </svg>
+                  ) : (
+                    <svg
+                      className="w-8 h-8 text-secondary-background"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path d="M8 5v14l11-7z" />
+                    </svg>
+                  )}
+                </div>
+              </div>
+              {/* Mute/Unmute Button */}
+              <button
+                onClick={handleMuteClick}
+                className="absolute top-2 left-2 bg-foreground/80 hover:bg-foreground text-secondary-background rounded-full p-2 border-2 border-border shadow-shadow transition-all duration-200 z-10"
+                aria-label={isMuted ? 'Unmute' : 'Mute'}
+              >
+                {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+              </button>
+            </div>
+          ) : (
+            // Single image for normal posts
+            <Image
+              src={getThumbnailSrc()}
+              alt={`Post by ${post.user.username}`}
+              fill
+              className="object-cover group-hover:scale-105 transition-transform duration-300"
+              placeholder={post.blur_data_url ? 'blur' : 'empty'}
+              blurDataURL={
+                post.blur_data_url ? `data:image/png;base64,${post.blur_data_url}` : undefined
+              }
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
+            />
+          )}
+
+          {/* Carousel Navigation */}
+          {post.variant === 'carousel' && post.media && post.media.length > 1 && (
+            <>
+              {/* Previous Button */}
+              <button
+                onClick={handlePrevSlide}
+                className="absolute left-2 top-1/2 -translate-y-1/2 bg-foreground/80 hover:bg-foreground text-secondary-background rounded-full p-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-200 border-2 border-border shadow-shadow z-10"
+                aria-label="Previous image"
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+
+              {/* Next Button */}
+              <button
+                onClick={handleNextSlide}
+                className="absolute right-2 top-1/2 -translate-y-1/2 bg-foreground/80 hover:bg-foreground text-secondary-background rounded-full p-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-200 border-2 border-border shadow-shadow z-10"
+                aria-label="Next image"
+              >
+                <ChevronRight className="w-4 h-4" />
+              </button>
+
+              {/* Slide Indicators */}
+              <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1 z-10">
+                {post.media.map((_, index) => (
                   <div
-                    key={media.id}
-                    className="absolute inset-0 transition-all duration-500 ease-in-out"
-                    style={{
-                      opacity: index === currentSlide ? 1 : 0,
-                      transform: `translateX(${(index - currentSlide) * 100}%)`,
-                      pointerEvents: index === currentSlide ? 'auto' : 'none',
-                    }}
-                  >
-                    <Image
-                      src={media.thumbnail || media.thumbnail_url}
-                      alt={`Post by ${post.user.username} - Image ${index + 1}`}
-                      fill
-                      className="object-cover group-hover:scale-105 transition-transform duration-300"
-                      placeholder={media.blur_data_url ? 'blur' : 'empty'}
-                      blurDataURL={
-                        media.blur_data_url
-                          ? `data:image/png;base64,${media.blur_data_url}`
-                          : undefined
-                      }
-                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
-                      priority={index === 0}
-                    />
-                  </div>
+                    key={index}
+                    className={`w-1.5 h-1.5 rounded-full border border-border transition-all duration-200 ${
+                      index === currentSlide ? 'bg-foreground w-4' : 'bg-foreground/40'
+                    }`}
+                  />
                 ))}
               </div>
-            ) : post.variant === 'video' ? (
-              // Video element for video posts
-              <div className="relative w-full h-full cursor-pointer">
-                <video
-                  ref={videoRef}
-                  src={post.media?.[0]?.media_url || post.media?.[0]?.media || ''}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  loop
-                  muted={isMuted}
-                  playsInline
-                  poster={getThumbnailSrc()}
-                />
-                {/* Play/Pause Overlay */}
-                <div
-                  className={`absolute inset-0 flex items-center justify-center bg-black/20 transition-opacity duration-200 ${isPlaying ? 'opacity-0 hover:opacity-100' : 'opacity-100'}`}
-                >
-                  <div className="bg-foreground/80 rounded-full p-4 border-2 border-border shadow-shadow">
-                    {isPlaying ? (
-                      <svg
-                        className="w-8 h-8 text-secondary-background"
-                        fill="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z" />
-                      </svg>
-                    ) : (
-                      <svg
-                        className="w-8 h-8 text-secondary-background"
-                        fill="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path d="M8 5v14l11-7z" />
-                      </svg>
-                    )}
-                  </div>
-                </div>
-                {/* Mute/Unmute Button */}
-                <button
-                  onClick={handleMuteClick}
-                  className="absolute top-2 left-2 bg-foreground/80 hover:bg-foreground text-secondary-background rounded-full p-2 border-2 border-border shadow-shadow transition-all duration-200 z-10"
-                  aria-label={isMuted ? 'Unmute' : 'Mute'}
-                >
-                  {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
-                </button>
-              </div>
-            ) : (
-              // Single image for normal posts
-              <Image
-                src={getThumbnailSrc()}
-                alt={`Post by ${post.user.username}`}
-                fill
-                className="object-cover group-hover:scale-105 transition-transform duration-300"
-                placeholder={post.blur_data_url ? 'blur' : 'empty'}
-                blurDataURL={
-                  post.blur_data_url ? `data:image/png;base64,${post.blur_data_url}` : undefined
-                }
-                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
-              />
-            )}
+            </>
+          )}
 
-            {/* Carousel Navigation */}
-            {post.variant === 'carousel' && post.media && post.media.length > 1 && (
-              <>
-                {/* Previous Button */}
-                <button
-                  onClick={handlePrevSlide}
-                  className="absolute left-2 top-1/2 -translate-y-1/2 bg-foreground/80 hover:bg-foreground text-secondary-background rounded-full p-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-200 border-2 border-border shadow-shadow z-10"
-                  aria-label="Previous image"
-                >
-                  <ChevronLeft className="w-4 h-4" />
-                </button>
+          {/* Variant Badge */}
+          <div className="absolute top-2 right-2">
+            <Badge
+              className={`${getVariantColor()} border-2 border-border shadow-shadow flex items-center gap-1`}
+            >
+              {getVariantIcon()}
+              <span className="capitalize text-xs font-bold">
+                {post.variant === 'normal' ? 'Image' : post.variant}
+              </span>
+            </Badge>
+          </div>
 
-                {/* Next Button */}
-                <button
-                  onClick={handleNextSlide}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 bg-foreground/80 hover:bg-foreground text-secondary-background rounded-full p-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-200 border-2 border-border shadow-shadow z-10"
-                  aria-label="Next image"
-                >
-                  <ChevronRight className="w-4 h-4" />
-                </button>
-
-                {/* Slide Indicators */}
-                <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1 z-10">
-                  {post.media.map((_, index) => (
-                    <div
-                      key={index}
-                      className={`w-1.5 h-1.5 rounded-full border border-border transition-all duration-200 ${
-                        index === currentSlide ? 'bg-foreground w-4' : 'bg-foreground/40'
-                      }`}
-                    />
-                  ))}
-                </div>
-              </>
-            )}
-
-            {/* Variant Badge */}
-            <div className="absolute top-2 right-2">
-              <Badge
-                className={`${getVariantColor()} border-2 border-border shadow-shadow flex items-center gap-1`}
-              >
-                {getVariantIcon()}
-                <span className="capitalize text-xs font-bold">
-                  {post.variant === 'normal' ? 'Image' : post.variant}
-                </span>
+          {/* Media Count for Carousel */}
+          {post.variant === 'carousel' && post.media_count > 1 && (
+            <div className="absolute top-2 left-2">
+              <Badge className="bg-foreground text-secondary-background border-2 border-border shadow-shadow">
+                <Images className="w-3 h-3 mr-1" />
+                {currentSlide + 1}/{post.media_count}
               </Badge>
             </div>
+          )}
 
-            {/* Media Count for Carousel */}
-            {post.variant === 'carousel' && post.media_count > 1 && (
-              <div className="absolute top-2 left-2">
-                <Badge className="bg-foreground text-secondary-background border-2 border-border shadow-shadow">
-                  <Images className="w-3 h-3 mr-1" />
-                  {currentSlide + 1}/{post.media_count}
-                </Badge>
-              </div>
-            )}
+          {/* View Details Button */}
+          <div className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+            <Link href={`/posts/${post.id}`}>
+              <Button
+                variant="default"
+                size="sm"
+                className="gap-1.5 bg-foreground/60 hover:bg-foreground/80 text-secondary-background border border-border/50 shadow-sm backdrop-blur-sm"
+              >
+                View Details
+                <ExternalLink className="w-3 h-3" />
+              </Button>
+            </Link>
           </div>
-        </Link>
+        </div>
 
         {/* Post Info */}
         <div className="p-4 space-y-3">

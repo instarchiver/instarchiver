@@ -239,7 +239,7 @@ export default function PostDetailPage({ params }: PostDetailPageProps) {
                     >
                       <video
                         ref={videoRef}
-                        src={post.media?.[0]?.media_url || post.media?.[0]?.media || ''}
+                        src={post.media?.[0]?.media || post.media?.[0]?.media_url || ''}
                         className="w-full h-full object-cover"
                         loop
                         muted={isMuted}
