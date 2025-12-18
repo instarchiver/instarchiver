@@ -25,6 +25,7 @@ export interface InstagramPost {
   thumbnail_url: string;
   thumbnail: string | null;
   blur_data_url: string;
+  caption: string;
   width: number;
   height: number;
   media_count: number;
