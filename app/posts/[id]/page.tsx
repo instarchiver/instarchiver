@@ -132,6 +132,21 @@ export default function PostDetailPage({ params }: PostDetailPageProps) {
     }
   };
 
+  const getAspectRatio = () => {
+    // For carousel, use the first media item's dimensions
+    if (post?.media && post.media.length > 0 && post.media[0].width && post.media[0].height) {
+      return `${post.media[0].width} / ${post.media[0].height}`;
+    }
+
+    // Fall back to post-level dimensions
+    if (post?.width && post?.height) {
+      return `${post.width} / ${post.height}`;
+    }
+
+    // Default to square
+    return '1 / 1';
+  };
+
   if (isLoading) {
     return <PostDetailSkeleton />;
   }
@@ -166,7 +181,7 @@ export default function PostDetailPage({ params }: PostDetailPageProps) {
             <div className="space-y-4">
               <Card className="border-2 border-border shadow-shadow overflow-hidden">
                 {/* Media Display */}
-                <div className="relative bg-background" style={{ aspectRatio: '1 / 1' }}>
+                <div className="relative bg-background" style={{ aspectRatio: getAspectRatio() }}>
                   {post.variant === 'carousel' && post.media && post.media.length > 0 ? (
                     // Carousel
                     <div className="relative w-full h-full">
