@@ -23,7 +23,7 @@ export function StoriesGrid({ stories, onStoryPreview }: StoriesGridProps) {
   }
 
   return (
-    <MasonryGrid columns={6}>
+    <MasonryGrid columns={5}>
       {stories.map(story => (
         <StoryCard key={story.story_id} story={story} onPreview={onStoryPreview} />
       ))}
