@@ -23,9 +23,11 @@ import {
   Volume2,
   VolumeX,
   Sparkles,
+  Loader2,
 } from 'lucide-react';
 import { format, formatDistanceToNow } from 'date-fns';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useInView } from 'react-intersection-observer';
 
 interface PostDetailPageProps {
   params: Promise<{
@@ -60,11 +62,21 @@ export default function PostDetailPage({ params }: PostDetailPageProps) {
   const { id } = resolvedParams;
 
   const { data: post, isLoading, error } = usePost(id);
-  const { data: similarPosts, isLoading: isLoadingSimilar } = useSimilarPosts(id);
+  const {
+    data: similarPostsData,
+    isLoading: isLoadingSimilar,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useSimilarPosts(id);
+  const { ref: similarPostsRef, inView } = useInView();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
+
+  // Flatten paginated similar posts
+  const similarPosts = similarPostsData?.pages.flatMap(page => page.results) ?? [];
 
   const disqusConfig = post
     ? {
@@ -87,6 +99,13 @@ export default function PostDetailPage({ params }: PostDetailPageProps) {
       document.title = 'Instagram Archiver';
     };
   }, [post]);
+
+  // Auto-fetch next page of similar posts when scrolling to bottom
+  useEffect(() => {
+    if (inView && hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   const handlePrevSlide = () => {
     setCurrentSlide(prev => (prev === 0 ? (post?.media.length || 1) - 1 : prev - 1));
@@ -435,7 +454,7 @@ export default function PostDetailPage({ params }: PostDetailPageProps) {
           </div>
 
           {/* Similar Posts Section */}
-          {similarPosts && similarPosts.length > 0 && (
+          {similarPosts.length > 0 && (
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8 mt-8">
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-10 h-10 bg-chart-3 rounded-full flex items-center justify-center border-2 border-border">
@@ -451,6 +470,21 @@ export default function PostDetailPage({ params }: PostDetailPageProps) {
                   ))}
                 </MasonryGrid>
               </VideoPlaybackProvider>
+
+              {/* Infinite Scroll Trigger */}
+              <div ref={similarPostsRef} className="flex justify-center py-8">
+                {isFetchingNextPage && (
+                  <div className="flex items-center gap-2 text-foreground">
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                    <span className="font-medium">Loading more similar posts...</span>
+                  </div>
+                )}
+                {!hasNextPage && similarPosts.length > 0 && (
+                  <div className="text-foreground/60 font-medium">
+                    You&apos;ve seen all similar posts! 🎉
+                  </div>
+                )}
+              </div>
             </div>
           )}
 
