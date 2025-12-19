@@ -2,12 +2,17 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { usePost } from '@/hooks/usePost';
+import { useSimilarPosts } from '@/hooks/useSimilarPosts';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import Image from 'next/image';
 import Link from 'next/link';
 import { DisqusWrapper } from '@/components/ui/disqus-wrapper';
+import { MasonryGrid } from '@/components/posts/MasonryGrid';
+import { PostCard } from '@/components/posts/PostCard';
+import { PostCardSkeleton } from '@/components/posts/PostCardSkeleton';
+import { VideoPlaybackProvider } from '@/contexts/VideoPlaybackContext';
 import {
   Calendar,
   Image as ImageIcon,
@@ -17,6 +22,7 @@ import {
   ChevronRight,
   Volume2,
   VolumeX,
+  Sparkles,
 } from 'lucide-react';
 import { format, formatDistanceToNow } from 'date-fns';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -54,6 +60,7 @@ export default function PostDetailPage({ params }: PostDetailPageProps) {
   const { id } = resolvedParams;
 
   const { data: post, isLoading, error } = usePost(id);
+  const { data: similarPosts, isLoading: isLoadingSimilar } = useSimilarPosts(id);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
@@ -426,6 +433,44 @@ export default function PostDetailPage({ params }: PostDetailPageProps) {
               </Card>
             </div>
           </div>
+
+          {/* Similar Posts Section */}
+          {similarPosts && similarPosts.length > 0 && (
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8 mt-8">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 bg-chart-3 rounded-full flex items-center justify-center border-2 border-border">
+                  <Sparkles className="w-5 h-5 text-main-foreground" />
+                </div>
+                <h2 className="text-2xl sm:text-3xl font-bold text-foreground">Similar Posts</h2>
+              </div>
+
+              <VideoPlaybackProvider>
+                <MasonryGrid>
+                  {similarPosts.map(similarPost => (
+                    <PostCard key={similarPost.id} post={similarPost} />
+                  ))}
+                </MasonryGrid>
+              </VideoPlaybackProvider>
+            </div>
+          )}
+
+          {/* Loading State for Similar Posts */}
+          {isLoadingSimilar && (
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8 mt-8">
+              <div className="flex items-center gap-3 mb-6">
+                <Skeleton className="w-10 h-10 rounded-full" />
+                <Skeleton className="h-8 w-48" />
+              </div>
+
+              <VideoPlaybackProvider>
+                <MasonryGrid>
+                  {Array.from({ length: 12 }).map((_, index) => (
+                    <PostCardSkeleton key={index} />
+                  ))}
+                </MasonryGrid>
+              </VideoPlaybackProvider>
+            </div>
+          )}
         </div>
       </div>
     </div>
