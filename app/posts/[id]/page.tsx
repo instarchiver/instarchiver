@@ -2,12 +2,17 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { usePost } from '@/hooks/usePost';
+import { useSimilarPosts } from '@/hooks/useSimilarPosts';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import Image from 'next/image';
 import Link from 'next/link';
 import { DisqusWrapper } from '@/components/ui/disqus-wrapper';
+import { MasonryGrid } from '@/components/posts/MasonryGrid';
+import { PostCard } from '@/components/posts/PostCard';
+import { PostCardSkeleton } from '@/components/posts/PostCardSkeleton';
+import { VideoPlaybackProvider } from '@/contexts/VideoPlaybackContext';
 import {
   Calendar,
   Image as ImageIcon,
@@ -17,9 +22,12 @@ import {
   ChevronRight,
   Volume2,
   VolumeX,
+  Sparkles,
+  Loader2,
 } from 'lucide-react';
 import { format, formatDistanceToNow } from 'date-fns';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useInView } from 'react-intersection-observer';
 
 interface PostDetailPageProps {
   params: Promise<{
@@ -54,10 +62,21 @@ export default function PostDetailPage({ params }: PostDetailPageProps) {
   const { id } = resolvedParams;
 
   const { data: post, isLoading, error } = usePost(id);
+  const {
+    data: similarPostsData,
+    isLoading: isLoadingSimilar,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useSimilarPosts(id);
+  const { ref: similarPostsRef, inView } = useInView();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
+
+  // Flatten paginated similar posts
+  const similarPosts = similarPostsData?.pages.flatMap(page => page.results) ?? [];
 
   const disqusConfig = post
     ? {
@@ -80,6 +99,13 @@ export default function PostDetailPage({ params }: PostDetailPageProps) {
       document.title = 'Instagram Archiver';
     };
   }, [post]);
+
+  // Auto-fetch next page of similar posts when scrolling to bottom
+  useEffect(() => {
+    if (inView && hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   const handlePrevSlide = () => {
     setCurrentSlide(prev => (prev === 0 ? (post?.media.length || 1) - 1 : prev - 1));
@@ -132,6 +158,21 @@ export default function PostDetailPage({ params }: PostDetailPageProps) {
     }
   };
 
+  const getAspectRatio = () => {
+    // For carousel, use the first media item's dimensions
+    if (post?.media && post.media.length > 0 && post.media[0].width && post.media[0].height) {
+      return `${post.media[0].width} / ${post.media[0].height}`;
+    }
+
+    // Fall back to post-level dimensions
+    if (post?.width && post?.height) {
+      return `${post.width} / ${post.height}`;
+    }
+
+    // Default to square
+    return '1 / 1';
+  };
+
   if (isLoading) {
     return <PostDetailSkeleton />;
   }
@@ -166,7 +207,7 @@ export default function PostDetailPage({ params }: PostDetailPageProps) {
             <div className="space-y-4">
               <Card className="border-2 border-border shadow-shadow overflow-hidden">
                 {/* Media Display */}
-                <div className="relative bg-background" style={{ aspectRatio: '1 / 1' }}>
+                <div className="relative bg-background" style={{ aspectRatio: getAspectRatio() }}>
                   {post.variant === 'carousel' && post.media && post.media.length > 0 ? (
                     // Carousel
                     <div className="relative w-full h-full">
@@ -411,6 +452,59 @@ export default function PostDetailPage({ params }: PostDetailPageProps) {
               </Card>
             </div>
           </div>
+
+          {/* Similar Posts Section */}
+          {similarPosts.length > 0 && (
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8 mt-8">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 bg-chart-3 rounded-full flex items-center justify-center border-2 border-border">
+                  <Sparkles className="w-5 h-5 text-main-foreground" />
+                </div>
+                <h2 className="text-2xl sm:text-3xl font-bold text-foreground">Similar Posts</h2>
+              </div>
+
+              <VideoPlaybackProvider>
+                <MasonryGrid>
+                  {similarPosts.map(similarPost => (
+                    <PostCard key={similarPost.id} post={similarPost} />
+                  ))}
+                </MasonryGrid>
+              </VideoPlaybackProvider>
+
+              {/* Infinite Scroll Trigger */}
+              <div ref={similarPostsRef} className="flex justify-center py-8">
+                {isFetchingNextPage && (
+                  <div className="flex items-center gap-2 text-foreground">
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                    <span className="font-medium">Loading more similar posts...</span>
+                  </div>
+                )}
+                {!hasNextPage && similarPosts.length > 0 && (
+                  <div className="text-foreground/60 font-medium">
+                    You&apos;ve seen all similar posts! 🎉
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Loading State for Similar Posts */}
+          {isLoadingSimilar && (
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8 mt-8">
+              <div className="flex items-center gap-3 mb-6">
+                <Skeleton className="w-10 h-10 rounded-full" />
+                <Skeleton className="h-8 w-48" />
+              </div>
+
+              <VideoPlaybackProvider>
+                <MasonryGrid>
+                  {Array.from({ length: 12 }).map((_, index) => (
+                    <PostCardSkeleton key={index} />
+                  ))}
+                </MasonryGrid>
+              </VideoPlaybackProvider>
+            </div>
+          )}
         </div>
       </div>
     </div>

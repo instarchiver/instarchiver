@@ -1359,32 +1359,25 @@
 
 "@tanstack/query-core@5.90.12":
   version "5.90.12"
-  resolved "https://registry.yarnpkg.com/@tanstack/query-core/-/query-core-5.90.12.tgz#e1f5f47e72ef7d0fc794325936921c700352515e"
+  resolved "https://registry.npmjs.org/@tanstack/query-core/-/query-core-5.90.12.tgz"
   integrity sha512-T1/8t5DhV/SisWjDnaiU2drl6ySvsHj1bHBCWNXd+/T+Hh1cf6JodyEYMd5sgwm+b/mETT4EV3H+zCVczCU5hg==
 
 "@tanstack/query-devtools@5.91.1":
   version "5.91.1"
-  resolved "https://registry.yarnpkg.com/@tanstack/query-devtools/-/query-devtools-5.91.1.tgz#0b0e3b94861f3a584560af3047a536bf7fea06f1"
+  resolved "https://registry.npmjs.org/@tanstack/query-devtools/-/query-devtools-5.91.1.tgz"
   integrity sha512-l8bxjk6BMsCaVQH6NzQEE/bEgFy1hAs5qbgXl0xhzezlaQbPk6Mgz9BqEg2vTLPOHD8N4k+w/gdgCbEzecGyNg==
 
 "@tanstack/react-query-devtools@^5.91.1":
   version "5.91.1"
-  resolved "https://registry.yarnpkg.com/@tanstack/react-query-devtools/-/react-query-devtools-5.91.1.tgz#48c7507ba57156fcd2060d1fdbd3dc6fd566bf16"
+  resolved "https://registry.npmjs.org/@tanstack/react-query-devtools/-/react-query-devtools-5.91.1.tgz"
   integrity sha512-tRnJYwEbH0kAOuToy8Ew7bJw1lX3AjkkgSlf/vzb+NpnqmHPdWM+lA2DSdGQSLi1SU0PDRrrCI1vnZnci96CsQ==
   dependencies:
     "@tanstack/query-devtools" "5.91.1"
 
-<<<<<<< HEAD
-"@tanstack/react-query@^5.75.5", "@tanstack/react-query@^5.90.2":
-  version "5.90.10"
-  resolved "https://registry.npmjs.org/@tanstack/react-query/-/react-query-5.90.10.tgz"
-  integrity sha512-BKLss9Y8PQ9IUjPYQiv3/Zmlx92uxffUOX8ZZNoQlCIZBJPT5M+GOMQj7xislvVQ6l1BstBjcX0XB/aHfFYVNw==
-=======
-"@tanstack/react-query@^5.90.12":
+"@tanstack/react-query@^5.90.10", "@tanstack/react-query@^5.90.12":
   version "5.90.12"
-  resolved "https://registry.yarnpkg.com/@tanstack/react-query/-/react-query-5.90.12.tgz#49536842eff6487a9e645a453fea2642d8f4f209"
+  resolved "https://registry.npmjs.org/@tanstack/react-query/-/react-query-5.90.12.tgz"
   integrity sha512-graRZspg7EoEaw0a8faiUASCyJrqjKPdqJ9EwuDRUF9mEYJ1YPczI9H+/agJ0mOJkPCJDk0lsz5QTrLZ/jQ2rg==
->>>>>>> e22cb1f8201578c40f2f4b7a6b4f6dc0f4399842
   dependencies:
     "@tanstack/query-core" "5.90.12"
 
@@ -1895,7 +1888,7 @@ cli-cursor@^5.0.0:
 
 cli-truncate@^5.0.0:
   version "5.1.1"
-  resolved "https://registry.yarnpkg.com/cli-truncate/-/cli-truncate-5.1.1.tgz#455476face9904d94b7d11e98d9adbca15292ea5"
+  resolved "https://registry.npmjs.org/cli-truncate/-/cli-truncate-5.1.1.tgz"
   integrity sha512-SroPvNHxUnk+vIW/dOSfNqdy1sPEFkrTk6TUtqLCnBlo3N7TNYYkzzN7uSD6+jVjrdO4+p8nH7JzH6cIvUem6A==
   dependencies:
     slice-ansi "^7.1.0"
@@ -1956,7 +1949,7 @@ combined-stream@^1.0.8:
 
 commander@^14.0.2:
   version "14.0.2"
-  resolved "https://registry.yarnpkg.com/commander/-/commander-14.0.2.tgz#b71fd37fe4069e4c3c7c13925252ada4eba14e8e"
+  resolved "https://registry.npmjs.org/commander/-/commander-14.0.2.tgz"
   integrity sha512-TywoWNNRbhoD0BXs1P3ZEScW8W5iKrnbithIl0YH+uCmBd0QpPOA8yc82DS3BIE5Ma6FnBVUsJ7wVUDz4dvOWQ==
 
 concat-map@0.0.1:
@@ -3282,7 +3275,7 @@ lightningcss@1.30.2:
 
 lint-staged@^16.2.7:
   version "16.2.7"
-  resolved "https://registry.yarnpkg.com/lint-staged/-/lint-staged-16.2.7.tgz#c4a635960c17b52fe774f1f40aee8ce1bd86531f"
+  resolved "https://registry.npmjs.org/lint-staged/-/lint-staged-16.2.7.tgz"
   integrity sha512-lDIj4RnYmK7/kXMya+qJsmkRFkGolciXjrsZ6PC25GdTfWOAWetR0ZbsNXRAj1EHHImRSalc+whZFg56F5DVow==
   dependencies:
     commander "^14.0.2"
@@ -3295,7 +3288,7 @@ lint-staged@^16.2.7:
 
 listr2@^9.0.5:
   version "9.0.5"
-  resolved "https://registry.yarnpkg.com/listr2/-/listr2-9.0.5.tgz#92df7c4416a6da630eb9ef46da469b70de97b316"
+  resolved "https://registry.npmjs.org/listr2/-/listr2-9.0.5.tgz"
   integrity sha512-ME4Fb83LgEgwNw96RKNvKV4VTLuXfoKudAmm2lP8Kk87KaMK0/Xrx/aAkMWmT8mDb+3MlFDspfbCs7adjRxA2g==
   dependencies:
     cli-truncate "^5.0.0"
@@ -3423,7 +3416,7 @@ ms@^2.1.1, ms@^2.1.3:
 
 nano-spawn@^2.0.0:
   version "2.0.0"
-  resolved "https://registry.yarnpkg.com/nano-spawn/-/nano-spawn-2.0.0.tgz#f1250434c09ae18870d4f729fc54b406cf85a3e1"
+  resolved "https://registry.npmjs.org/nano-spawn/-/nano-spawn-2.0.0.tgz"
   integrity sha512-tacvGzUY5o2D8CBh2rrwxyNojUsZNU2zjNTzKQrkgGJQTbGAfArVWXSKMBokBeeg6C7OLRGUEyoFlYbfeWQIqw==
 
 nanoid@^3.3.11, nanoid@^3.3.6:
@@ -4125,7 +4118,7 @@ string-width@^7.0.0:
 
 string-width@^8.0.0:
   version "8.1.0"
-  resolved "https://registry.yarnpkg.com/string-width/-/string-width-8.1.0.tgz#9e9fb305174947cf45c30529414b5da916e9e8d1"
+  resolved "https://registry.npmjs.org/string-width/-/string-width-8.1.0.tgz"
   integrity sha512-Kxl3KJGb/gxkaUMOjRsQ8IrXiGW75O4E3RPjFIINOVH8AMl2SQ/yWdTzWwF3FevIX9LcMAjJW+GRwAlAbTSXdg==
   dependencies:
     get-east-asian-width "^1.3.0"
@@ -4563,9 +4556,9 @@ y18n@^5.0.5:
   integrity sha512-0pfFzegeDWJHJIAmTLRP2DwHjdF5s7jo9tuztdQxAhINCdvS+3nGINqPd00AphqJR/0LhANUS6/+7SCb98YOfA==
 
 yaml@^2.8.1:
-  version "2.8.2"
-  resolved "https://registry.yarnpkg.com/yaml/-/yaml-2.8.2.tgz#5694f25eca0ce9c3e7a9d9e00ce0ddabbd9e35c5"
-  integrity sha512-mplynKqc1C2hTVYxd0PU2xQAc22TI1vShAYGksCCfxbn/dFwnHTNi1bvYsBTkhdUNtGIf5xNOg938rrSSYvS9A==
+  version "2.8.1"
+  resolved "https://registry.npmjs.org/yaml/-/yaml-2.8.1.tgz"
+  integrity sha512-lcYcMxX2PO9XMGvAJkJ3OsNMw+/7FKes7/hgerGUYWIoWu5j/+YQqcZr5JnPZWzOsEBgMbSbiSTn/dv/69Mkpw==
 
 yargs-parser@^21.1.1:
   version "21.1.1"
