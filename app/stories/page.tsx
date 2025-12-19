@@ -67,7 +67,7 @@ function StoriesPageContent() {
 
         {/* Stories Grid Skeleton */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
-          <MasonryGrid>
+          <MasonryGrid columns={6}>
             {Array.from({ length: 12 }).map((_, index) => (
               <StorySkeleton key={index} />
             ))}
@@ -199,7 +199,7 @@ export default function StoriesPage() {
 
           {/* Stories Grid Skeleton */}
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
-            <MasonryGrid>
+            <MasonryGrid columns={6}>
               {Array.from({ length: 12 }).map((_, index) => (
                 <StorySkeleton key={index} />
               ))}
