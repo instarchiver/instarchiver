@@ -112,32 +112,16 @@ export function StoryCard({ story, onPreview }: StoryCardProps) {
           onTouchStart={handleTouchStart}
         >
           {mediaIsVideo ? (
-            <>
-              {/* Video element */}
-              <video
-                ref={videoRef}
-                src={story.media}
-                poster={story.thumbnail}
-                muted
-                loop
-                playsInline
-                className="absolute inset-0 w-full h-full object-cover"
-                preload="metadata"
-              />
-              {/* Show thumbnail when not playing */}
-              {!isHovered && !isTouched && (
-                <Image
-                  src={story.thumbnail}
-                  alt="Story thumbnail"
-                  fill
-                  sizes="(max-width: 768px) 100vw, 33vw"
-                  className="object-cover pointer-events-none"
-                  priority
-                  blurDataURL={`data:image/png;base64,${story.blur_data_url}`}
-                  placeholder={story.blur_data_url ? 'blur' : 'empty'}
-                />
-              )}
-            </>
+            <video
+              ref={videoRef}
+              src={story.media}
+              poster={story.thumbnail}
+              muted
+              loop
+              playsInline
+              className="absolute inset-0 w-full h-full object-cover"
+              preload="metadata"
+            />
           ) : (
             <Image
               src={story.thumbnail}
