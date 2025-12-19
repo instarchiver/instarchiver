@@ -3,6 +3,7 @@
 import { StoryCard } from './StoryCard';
 import { InstagramStory } from '@/app/types/instagram/story';
 import { Card } from '@/components/ui/card';
+import { MasonryGrid } from '@/components/posts/MasonryGrid';
 
 interface StoriesGridProps {
   stories: InstagramStory[];
@@ -22,10 +23,10 @@ export function StoriesGrid({ stories, onStoryPreview }: StoriesGridProps) {
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-10">
+    <MasonryGrid>
       {stories.map(story => (
         <StoryCard key={story.story_id} story={story} onPreview={onStoryPreview} />
       ))}
-    </div>
+    </MasonryGrid>
   );
 }
