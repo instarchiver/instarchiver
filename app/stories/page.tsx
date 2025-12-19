@@ -4,7 +4,6 @@ import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { StoriesGrid, StorySkeleton } from './components';
 import { useInfiniteStories } from '@/hooks/useInfiniteStories';
-import { MasonryGrid } from '@/components/posts/MasonryGrid';
 import { useInView } from 'react-intersection-observer';
 import { Loader2, AlertCircle, Search, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -67,11 +66,11 @@ function StoriesPageContent() {
 
         {/* Stories Grid Skeleton */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
-          <MasonryGrid columns={5}>
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3 auto-rows-[200px]">
             {Array.from({ length: 12 }).map((_, index) => (
               <StorySkeleton key={index} />
             ))}
-          </MasonryGrid>
+          </div>
         </div>
       </div>
     );
@@ -199,11 +198,11 @@ export default function StoriesPage() {
 
           {/* Stories Grid Skeleton */}
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
-            <MasonryGrid columns={6}>
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3 auto-rows-[200px]">
               {Array.from({ length: 12 }).map((_, index) => (
                 <StorySkeleton key={index} />
               ))}
-            </MasonryGrid>
+            </div>
           </div>
         </div>
       }

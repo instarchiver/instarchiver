@@ -94,7 +94,7 @@ export function StoryCard({ story, onPreview }: StoryCardProps) {
   };
 
   return (
-    <Card className="w-full shadow-[var(--shadow)] bg-[var(--background)] mb-4 sm:mb-6">
+    <Card className="w-full h-full shadow-[var(--shadow)] bg-[var(--background)]">
       {/* Full-width media section - no padding */}
       <Link
         href={`/stories/${story.story_id}`}
@@ -104,9 +104,10 @@ export function StoryCard({ story, onPreview }: StoryCardProps) {
             e.preventDefault();
           }
         }}
+        className="block h-full"
       >
         <div
-          className="relative w-full border-t-2 border-[var(--border)] aspect-[9/16] cursor-pointer hover:opacity-90 transition-opacity"
+          className="relative w-full h-full border-t-2 border-[var(--border)] cursor-pointer hover:opacity-90 transition-opacity overflow-hidden"
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
           onTouchStart={handleTouchStart}
