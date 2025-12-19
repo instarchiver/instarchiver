@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { Card, CardFooter } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 
 import { InstagramStory } from '@/app/types/instagram/story';
 
@@ -12,19 +12,8 @@ interface StoryCardProps {
 }
 
 export function StoryCard({ story, onPreview }: StoryCardProps) {
-  const formatDate = (dateStr: string) => {
-    const date = new Date(dateStr);
-    return new Intl.DateTimeFormat('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    }).format(date);
-  };
-
   return (
-    <Card className="w-full shadow-[var(--shadow)] bg-[var(--background)]">
+    <Card className="w-full shadow-[var(--shadow)] bg-[var(--background)] mb-4 sm:mb-6">
       {/* Full-width media section - no padding */}
       <Link href={`/stories/${story.story_id}`}>
         <div className="relative w-full border-t-2 border-[var(--border)] aspect-[9/16] cursor-pointer hover:opacity-90 transition-opacity">
@@ -40,12 +29,6 @@ export function StoryCard({ story, onPreview }: StoryCardProps) {
           />
         </div>
       </Link>
-
-      <CardFooter className="border-t-2 border-[var(--border)] bg-[var(--secondary-background)] p-3">
-        <p className="text-sm font-[var(--font-weight-heading)] text-[var(--foreground)]">
-          {formatDate(story.story_created_at)}
-        </p>
-      </CardFooter>
     </Card>
   );
 }
