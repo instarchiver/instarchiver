@@ -46,7 +46,7 @@
     "date-fns": "^3.6.0",
     "disqus-react": "^1.1.6",
     "embla-carousel-react": "^8.6.0",
-    "firebase": "^12.6.0",
+    "firebase": "^12.7.0",
     "input-otp": "^1.4.2",
     "lucide-react": "^0.508.0",
     "next": "^16.1.0",
