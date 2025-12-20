@@ -12,15 +12,12 @@ import {
   Calendar,
   ChevronLeft,
   ChevronRight,
-  Volume2,
-  VolumeX,
 } from 'lucide-react';
 import { formatDistanceToNow, format } from 'date-fns';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { useState, useRef, useEffect } from 'react';
-import { useVideoPlayback } from '@/contexts/VideoPlaybackContext';
 
 interface PostCardProps {
   post: InstagramPost;
@@ -29,22 +26,14 @@ interface PostCardProps {
 export function PostCard({ post }: PostCardProps) {
   const router = useRouter();
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const { currentlyPlayingId, setCurrentlyPlaying, isMuted, toggleMute } = useVideoPlayback();
 
   // Handle card click for navigation
   const handleCardClick = () => {
     router.push(`/posts/${post.id}`);
   };
-
-  // Sync video muted state with context
-  useEffect(() => {
-    if (videoRef.current && post.variant === 'video') {
-      videoRef.current.muted = isMuted;
-    }
-  }, [isMuted, post.variant]);
 
   const getVariantIcon = () => {
     switch (post.variant) {
@@ -94,53 +83,30 @@ export function PostCard({ post }: PostCardProps) {
     setCurrentSlide(prev => (prev === post.media.length - 1 ? 0 : prev + 1));
   };
 
-  const handlePlayPauseClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    if (post.variant === 'video' && videoRef.current) {
-      if (isPlaying) {
-        videoRef.current.pause();
-        setIsPlaying(false);
-        setCurrentlyPlaying(null);
-      } else {
-        videoRef.current.play().catch(err => {
-          console.error('Error playing video:', err);
-        });
-        setIsPlaying(true);
-        setCurrentlyPlaying(post.id);
-      }
-    }
+  const handleMouseEnter = () => {
+    if (post.variant !== 'video' || !videoRef.current) return;
+    setIsHovered(true);
+    videoRef.current.play().catch(err => {
+      console.error('Error playing video:', err);
+    });
   };
 
-  const handleMuteClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    toggleMute();
+  const handleMouseLeave = () => {
+    if (post.variant !== 'video' || !videoRef.current) return;
+    setIsHovered(false);
+    videoRef.current.pause();
   };
 
-  // Pause this video if another video starts playing
-  useEffect(() => {
-    if (post.variant === 'video' && currentlyPlayingId !== post.id && isPlaying) {
-      if (videoRef.current) {
-        videoRef.current.pause();
-        setIsPlaying(false);
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentlyPlayingId, post.id, post.variant]);
-
-  // Auto-pause video when scrolled out of viewport
+  // Auto-pause video when scrolled out of viewport or on mouse leave
   useEffect(() => {
     if (post.variant !== 'video' || !containerRef.current) return;
 
     const observer = new IntersectionObserver(
       entries => {
         entries.forEach(entry => {
-          if (!entry.isIntersecting && videoRef.current && isPlaying) {
+          if (!entry.isIntersecting && videoRef.current) {
             videoRef.current.pause();
-            setIsPlaying(false);
-            setCurrentlyPlaying(null);
+            setIsHovered(false);
           }
         });
       },
@@ -152,7 +118,7 @@ export function PostCard({ post }: PostCardProps) {
     return () => {
       observer.disconnect();
     };
-  }, [post.variant, isPlaying, setCurrentlyPlaying]);
+  }, [post.variant]);
 
   // Get aspect ratio - prefer media dimensions over post dimensions
   const getAspectRatio = () => {
@@ -197,7 +163,7 @@ export function PostCard({ post }: PostCardProps) {
                     src={media.thumbnail || media.thumbnail_url}
                     alt={`Post by ${post.user.username} - Image ${index + 1}`}
                     fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-300"
+                    className="object-cover"
                     placeholder={media.blur_data_url ? 'blur' : 'empty'}
                     blurDataURL={
                       media.blur_data_url
@@ -212,51 +178,20 @@ export function PostCard({ post }: PostCardProps) {
             </div>
           ) : post.variant === 'video' ? (
             // Video element for video posts
-            <div className="relative w-full h-full cursor-pointer">
+            <div
+              className="relative w-full h-full cursor-pointer"
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
+            >
               <video
                 ref={videoRef}
                 src={post.media?.[0]?.media || post.media?.[0]?.media_url || ''}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                className="w-full h-full object-cover"
                 loop
-                muted={isMuted}
+                muted
                 playsInline
                 poster={getThumbnailSrc()}
               />
-              {/* Play/Pause Overlay */}
-              <div
-                className={`absolute inset-0 flex items-center justify-center bg-black/20 transition-opacity duration-200 ${isPlaying ? 'opacity-0 hover:opacity-100' : 'opacity-100'}`}
-              >
-                <div
-                  onClick={handlePlayPauseClick}
-                  className="bg-foreground/80 rounded-full p-4 border-2 border-border shadow-shadow cursor-pointer"
-                >
-                  {isPlaying ? (
-                    <svg
-                      className="w-8 h-8 text-secondary-background"
-                      fill="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z" />
-                    </svg>
-                  ) : (
-                    <svg
-                      className="w-8 h-8 text-secondary-background"
-                      fill="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M8 5v14l11-7z" />
-                    </svg>
-                  )}
-                </div>
-              </div>
-              {/* Mute/Unmute Button */}
-              <button
-                onClick={handleMuteClick}
-                className="absolute top-2 left-2 bg-foreground/80 hover:bg-foreground text-secondary-background rounded-full p-2 border-2 border-border shadow-shadow transition-all duration-200 z-10"
-                aria-label={isMuted ? 'Unmute' : 'Mute'}
-              >
-                {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
-              </button>
             </div>
           ) : (
             // Single image for normal posts
@@ -264,7 +199,7 @@ export function PostCard({ post }: PostCardProps) {
               src={getThumbnailSrc()}
               alt={`Post by ${post.user.username}`}
               fill
-              className="object-cover group-hover:scale-105 transition-transform duration-300"
+              className="object-cover"
               placeholder={post.blur_data_url ? 'blur' : 'empty'}
               blurDataURL={
                 post.blur_data_url ? `data:image/png;base64,${post.blur_data_url}` : undefined
