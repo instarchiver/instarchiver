@@ -118,10 +118,9 @@ function StoriesPageContent() {
       {/* Stories Grid */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
         {isLoadingData ? (
-          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3 auto-rows-[200px]">
-            {Array.from({ length: 12 }).map((_, index) => (
-              <StorySkeleton key={index} />
-            ))}
+          <div className="flex flex-col items-center justify-center py-20">
+            <Loader2 className="w-12 h-12 animate-spin text-main mb-4" />
+            <p className="text-lg font-medium text-foreground">Loading stories...</p>
           </div>
         ) : allStories.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20">
@@ -176,10 +175,9 @@ export default function StoriesPage() {
 
           {/* Stories Grid Skeleton */}
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
-            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3 auto-rows-[200px]">
-              {Array.from({ length: 12 }).map((_, index) => (
-                <StorySkeleton key={index} />
-              ))}
+            <div className="flex flex-col items-center justify-center py-20">
+              <Loader2 className="w-12 h-12 animate-spin text-main mb-4" />
+              <p className="text-lg font-medium text-foreground">Loading stories...</p>
             </div>
           </div>
         </div>
