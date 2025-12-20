@@ -265,46 +265,6 @@ export function PostCard({ post }: PostCardProps) {
             </div>
           )}
         </div>
-
-        {/* Post Info */}
-        <div className="p-4 space-y-3">
-          {/* User Info */}
-          <Link
-            href={`/users/${post.user.uuid}`}
-            className="flex items-center gap-2 group/user hover:opacity-80 transition-opacity"
-          >
-            <div className="w-8 h-8 rounded-full border-2 border-border overflow-hidden bg-background relative">
-              <Image
-                src={post.user.profile_picture}
-                alt={post.user.username}
-                fill
-                className="object-cover"
-                sizes="32px"
-              />
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-bold text-foreground truncate">{post.user.username}</p>
-              <p className="text-xs text-foreground/60 truncate">{post.user.full_name}</p>
-            </div>
-          </Link>
-
-          {/* Post Date */}
-          <div className="flex items-center gap-2 text-xs text-foreground/60">
-            <Calendar className="w-3 h-3" />
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <span className="cursor-help">
-                    {formatDistanceToNow(new Date(post.post_created_at), { addSuffix: true })}
-                  </span>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>{format(new Date(post.post_created_at), 'PPpp')}</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          </div>
-        </div>
       </Card>
     </div>
   );
