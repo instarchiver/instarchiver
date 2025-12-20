@@ -9,7 +9,6 @@ import { Button } from '@/components/ui/button';
 import { Loader2, AlertCircle, Grid3x3 } from 'lucide-react';
 import { useInView } from 'react-intersection-observer';
 import { useEffect, Suspense } from 'react';
-import { VideoPlaybackProvider } from '@/contexts/VideoPlaybackContext';
 import { useSearchParams } from 'next/navigation';
 
 function PostsPageContent() {
@@ -81,48 +80,46 @@ function PostsPageContent() {
   const allPosts = data?.pages.flatMap(page => page.results) ?? [];
 
   return (
-    <VideoPlaybackProvider>
-      <div className="min-h-[calc(100vh-4rem)] bg-background">
-        {/* Search Section */}
-        <PostsHeader />
+    <div className="min-h-[calc(100vh-4rem)] bg-background">
+      {/* Search Section */}
+      <PostsHeader />
 
-        {/* Posts Grid */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
-          {allPosts.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-20">
-              <div className="w-20 h-20 bg-secondary-background border-2 border-border rounded-full flex items-center justify-center mb-4">
-                <Grid3x3 className="w-10 h-10 text-foreground/40" />
-              </div>
-              <h2 className="text-xl font-bold text-foreground mb-2">No Posts Found</h2>
-              <p className="text-foreground/60">There are no posts to display at the moment.</p>
+      {/* Posts Grid */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
+        {allPosts.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-20">
+            <div className="w-20 h-20 bg-secondary-background border-2 border-border rounded-full flex items-center justify-center mb-4">
+              <Grid3x3 className="w-10 h-10 text-foreground/40" />
             </div>
-          ) : (
-            <>
-              <MasonryGrid>
-                {allPosts.map(post => (
-                  <PostCard key={post.id} post={post} />
-                ))}
-              </MasonryGrid>
+            <h2 className="text-xl font-bold text-foreground mb-2">No Posts Found</h2>
+            <p className="text-foreground/60">There are no posts to display at the moment.</p>
+          </div>
+        ) : (
+          <>
+            <MasonryGrid>
+              {allPosts.map(post => (
+                <PostCard key={post.id} post={post} />
+              ))}
+            </MasonryGrid>
 
-              {/* Infinite Scroll Trigger */}
-              <div ref={ref} className="flex justify-center py-8">
-                {isFetchingNextPage && (
-                  <div className="flex items-center gap-2 text-foreground">
-                    <Loader2 className="w-5 h-5 animate-spin" />
-                    <span className="font-medium">Loading more posts...</span>
-                  </div>
-                )}
-                {!hasNextPage && allPosts.length > 0 && (
-                  <div className="text-foreground/60 font-medium">
-                    You&apos;ve reached the end! 🎉
-                  </div>
-                )}
-              </div>
-            </>
-          )}
-        </div>
+            {/* Infinite Scroll Trigger */}
+            <div ref={ref} className="flex justify-center py-8">
+              {isFetchingNextPage && (
+                <div className="flex items-center gap-2 text-foreground">
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  <span className="font-medium">Loading more posts...</span>
+                </div>
+              )}
+              {!hasNextPage && allPosts.length > 0 && (
+                <div className="text-foreground/60 font-medium">
+                  You&apos;ve reached the end! 🎉
+                </div>
+              )}
+            </div>
+          </>
+        )}
       </div>
-    </VideoPlaybackProvider>
+    </div>
   );
 }
 
