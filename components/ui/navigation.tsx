@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useEffect, useState } from 'react';
 import { Button } from './button';
 import { Card } from './card';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from './sheet';
@@ -15,7 +14,6 @@ import { Menu, LogIn, Instagram } from 'lucide-react';
 
 export function Navigation() {
   const pathname = usePathname();
-  const [mounted] = useState(() => typeof window !== 'undefined');
   const { isAuthenticated, isLoading: authLoading, user } = useAuth();
 
   const isActive = (path: string) => {
@@ -55,95 +53,83 @@ export function Navigation() {
         </Link>
 
         {/* Mobile Menu Sheet */}
-        {mounted ? (
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button
-                variant="noShadow"
-                size="icon"
-                className="md:hidden"
-                aria-label="Open navigation menu"
-              >
-                <Menu strokeWidth={2} className="h-5 w-5" />
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="right" className="w-[280px] sm:w-[320px] p-0">
-              <div className="flex flex-col h-full">
-                <div className="p-6 border-b-2 border-border bg-secondary-background">
-                  <h2 className="font-heading text-lg font-bold text-foreground">NAVIGATION</h2>
-                </div>
-                <nav className="flex-1 p-4" aria-label="Mobile navigation">
-                  <div className="flex flex-col space-y-3">
-                    {navLinks.map(link => (
-                      <Button
-                        key={link.path}
-                        variant={isActive(link.path) ? 'default' : 'neutral'}
-                        size="lg"
-                        className="justify-start font-heading text-left h-12 px-4"
-                        asChild
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button
+              variant="noShadow"
+              size="icon"
+              className="md:hidden"
+              aria-label="Open navigation menu"
+            >
+              <Menu strokeWidth={2} className="h-5 w-5" />
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="right" className="w-[280px] sm:w-[320px] p-0">
+            <div className="flex flex-col h-full">
+              <div className="p-6 border-b-2 border-border bg-secondary-background">
+                <h2 className="font-heading text-lg font-bold text-foreground">NAVIGATION</h2>
+              </div>
+              <nav className="flex-1 p-4" aria-label="Mobile navigation">
+                <div className="flex flex-col space-y-3">
+                  {navLinks.map(link => (
+                    <Button
+                      key={link.path}
+                      variant={isActive(link.path) ? 'default' : 'neutral'}
+                      size="lg"
+                      className="justify-start font-heading text-left h-12 px-4"
+                      asChild
+                    >
+                      <Link
+                        href={link.path}
+                        aria-current={isActive(link.path) ? 'page' : undefined}
+                        aria-label={`Navigate to ${link.name} page`}
+                        scroll={true}
                       >
-                        <Link
-                          href={link.path}
-                          aria-current={isActive(link.path) ? 'page' : undefined}
-                          aria-label={`Navigate to ${link.name} page`}
-                          scroll={true}
-                        >
-                          {link.name.toUpperCase()}
-                        </Link>
+                        {link.name.toUpperCase()}
+                      </Link>
+                    </Button>
+                  ))}
+                  <div className="pt-3 mt-3 border-t-2 border-border">
+                    {authLoading ? (
+                      <Button
+                        variant="default"
+                        size="icon"
+                        className="w-full font-heading"
+                        disabled
+                      >
+                        <LogIn className="h-5 w-5" />
                       </Button>
-                    ))}
-                    <div className="pt-3 mt-3 border-t-2 border-border">
-                      {authLoading ? (
-                        <Button
-                          variant="default"
-                          size="icon"
-                          className="w-full font-heading"
-                          disabled
-                        >
+                    ) : isAuthenticated && user ? (
+                      <LogoutDialog>
+                        <Avatar className="h-10 w-10 border-2 border-border cursor-pointer hover:opacity-80 transition-opacity">
+                          <AvatarImage src={user.photo_url} alt={user.username} />
+                          <AvatarFallback className="font-heading text-sm">
+                            {user.username.substring(0, 2).toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
+                      </LogoutDialog>
+                    ) : (
+                      <LoginDialog>
+                        <Button variant="default" size="icon" className="w-full font-heading">
                           <LogIn className="h-5 w-5" />
                         </Button>
-                      ) : isAuthenticated && user ? (
-                        <LogoutDialog>
-                          <Avatar className="h-10 w-10 border-2 border-border cursor-pointer hover:opacity-80 transition-opacity">
-                            <AvatarImage src={user.photo_url} alt={user.username} />
-                            <AvatarFallback className="font-heading text-sm">
-                              {user.username.substring(0, 2).toUpperCase()}
-                            </AvatarFallback>
-                          </Avatar>
-                        </LogoutDialog>
-                      ) : (
-                        <LoginDialog>
-                          <Button variant="default" size="icon" className="w-full font-heading">
-                            <LogIn className="h-5 w-5" />
-                          </Button>
-                        </LoginDialog>
-                      )}
-                    </div>
-                    <div className="pt-3 mt-3 border-t-2 border-border">
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm font-heading text-foreground/70">THEME</span>
-                        <ThemeToggle />
-                      </div>
+                      </LoginDialog>
+                    )}
+                  </div>
+                  <div className="pt-3 mt-3 border-t-2 border-border">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-heading text-foreground/70">THEME</span>
+                      <ThemeToggle />
                     </div>
                   </div>
-                </nav>
-                <div className="p-4 border-t-2 border-border bg-secondary-background">
-                  <p className="text-sm text-foreground/70 font-heading">INSTA ARCHIVER</p>
                 </div>
+              </nav>
+              <div className="p-4 border-t-2 border-border bg-secondary-background">
+                <p className="text-sm text-foreground/70 font-heading">INSTA ARCHIVER</p>
               </div>
-            </SheetContent>
-          </Sheet>
-        ) : (
-          <Button
-            variant="noShadow"
-            size="icon"
-            className="md:hidden"
-            aria-label="Open navigation menu"
-            disabled
-          >
-            <Menu strokeWidth={2} className="h-5 w-5" />
-          </Button>
-        )}
+            </div>
+          </SheetContent>
+        </Sheet>
 
         {/* Desktop Menu */}
         <div className="hidden md:flex items-center">
