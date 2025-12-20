@@ -2,7 +2,8 @@
 
 import { DiscussionEmbed } from 'disqus-react';
 import { useTheme } from 'next-themes';
-import { useEffect, useState } from 'react';
+import * as React from 'react';
+import { useState } from 'react';
 
 interface DisqusWrapperProps {
   shortname: string;
@@ -24,19 +25,12 @@ interface DisqusWrapperProps {
  */
 export function DisqusWrapper({ shortname, config }: DisqusWrapperProps) {
   const { resolvedTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-  const [key, setKey] = useState(0);
+  const [mounted] = useState(() => typeof window !== 'undefined');
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  // Force Disqus to reload when theme changes
-  useEffect(() => {
-    if (mounted) {
-      // Reset Disqus by changing the key
-      setKey(prev => prev + 1);
-    }
+  // Generate a stable key that changes when theme changes
+  // We use theme as part of the key to force Disqus to remount
+  const key = React.useMemo(() => {
+    return mounted ? `disqus-${resolvedTheme}` : 'disqus-initial';
   }, [resolvedTheme, mounted]);
 
   // Prevent hydration mismatch

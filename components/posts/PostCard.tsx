@@ -127,7 +127,8 @@ export function PostCard({ post }: PostCardProps) {
         setIsPlaying(false);
       }
     }
-  }, [currentlyPlayingId, post.id, post.variant, isPlaying]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentlyPlayingId, post.id, post.variant]);
 
   // Auto-pause video when scrolled out of viewport
   useEffect(() => {

@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Instagram Stories Archive | Instarchiver',
+  title: 'Instagram Stories | Instarchiver',
   description:
     'Browse and archive Instagram stories. Search through saved stories and discover content from Instagram users.',
   keywords: [
@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     'browse stories',
   ],
   openGraph: {
-    title: 'Instagram Stories Archive',
+    title: 'Instagram Stories',
     description: 'Browse and archive Instagram stories from users around the world.',
     type: 'website',
   },

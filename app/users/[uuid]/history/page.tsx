@@ -27,16 +27,11 @@ export default function UserHistoryPage({ params }: UserHistoryPageProps) {
   const searchParams = useSearchParams();
   const queryClient = useQueryClient();
 
-  const [cursor, setCursor] = useState<string | null>(null);
+  // Derive cursor from URL params directly instead of using state
+  const cursor = React.useMemo(() => searchParams.get('cursor'), [searchParams]);
 
   // Fetch history data using the useUserHistory hook with cursor
   const { data, isLoading, error } = useUserHistory(uuid, cursor);
-
-  // Initialize cursor from URL params on mount and when URL changes
-  useEffect(() => {
-    const urlCursor = searchParams.get('cursor');
-    setCursor(urlCursor);
-  }, [searchParams]);
 
   const historyRecords = data ? data.results : [];
   const nextCursor = data?.next ? extractCursor(data.next) : null;
@@ -58,7 +53,6 @@ export default function UserHistoryPage({ params }: UserHistoryPageProps) {
 
   const handlePrevPage = () => {
     if (previousCursor) {
-      setCursor(previousCursor);
       const params = new URLSearchParams();
       params.set('cursor', previousCursor);
       router.push(`/users/${uuid}/history?${params.toString()}`);
@@ -68,7 +62,6 @@ export default function UserHistoryPage({ params }: UserHistoryPageProps) {
 
   const handleNextPage = () => {
     if (nextCursor) {
-      setCursor(nextCursor);
       const params = new URLSearchParams();
       params.set('cursor', nextCursor);
       router.push(`/users/${uuid}/history?${params.toString()}`);

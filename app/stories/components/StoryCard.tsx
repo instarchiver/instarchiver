@@ -1,9 +1,10 @@
 'use client';
 
+import { useRef, useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Card, CardHeader, CardFooter, CardTitle, CardDescription } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+
 import { InstagramStory } from '@/app/types/instagram/story';
 
 interface StoryCardProps {
@@ -11,71 +12,131 @@ interface StoryCardProps {
   onPreview?: (story: InstagramStory) => void;
 }
 
+// Custom event to ensure only one video plays at a time
+const VIDEO_PLAY_EVENT = 'story-video-play';
+
 export function StoryCard({ story, onPreview }: StoryCardProps) {
-  const formatDate = (dateStr: string) => {
-    const date = new Date(dateStr);
-    return new Intl.DateTimeFormat('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    }).format(date);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [isHovered, setIsHovered] = useState(false);
+  const [isTouched, setIsTouched] = useState(false);
+
+  // Check if media is a video
+  const isVideo = (mediaUrl: string) => {
+    return mediaUrl.endsWith('.mp4') || mediaUrl.endsWith('.mov');
+  };
+
+  const mediaIsVideo = isVideo(story.media);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    // Handler for when another video starts playing
+    const handleOtherVideoPlay = (event: Event) => {
+      const customEvent = event as CustomEvent;
+      if (customEvent.detail.videoElement !== video) {
+        video.pause();
+        setIsHovered(false);
+        setIsTouched(false);
+      }
+    };
+
+    // Listen for other videos playing
+    window.addEventListener(VIDEO_PLAY_EVENT, handleOtherVideoPlay);
+
+    return () => {
+      window.removeEventListener(VIDEO_PLAY_EVENT, handleOtherVideoPlay);
+    };
+  }, []);
+
+  const handleMouseEnter = () => {
+    if (!mediaIsVideo || !videoRef.current) return;
+    setIsHovered(true);
+    playVideo();
+  };
+
+  const handleMouseLeave = () => {
+    if (!mediaIsVideo || !videoRef.current) return;
+    setIsHovered(false);
+    videoRef.current.pause();
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (!mediaIsVideo || !videoRef.current) return;
+
+    // Prevent default to avoid triggering link navigation immediately
+    if (!videoRef.current.paused) {
+      e.preventDefault();
+      setIsTouched(false);
+      videoRef.current.pause();
+    } else {
+      e.preventDefault();
+      setIsTouched(true);
+      playVideo();
+    }
+  };
+
+  const playVideo = () => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    // Dispatch event to pause other videos
+    window.dispatchEvent(
+      new CustomEvent(VIDEO_PLAY_EVENT, {
+        detail: { videoElement: video },
+      })
+    );
+
+    // Play the video
+    video.play().catch(error => {
+      console.error('Error playing video:', error);
+    });
   };
 
   return (
-    <Card className="w-full shadow-[var(--shadow)] bg-[var(--background)]">
-      <CardHeader className="py-3 bg-[var(--main)]">
-        <div className="flex items-center gap-2">
-          {/* Profile image */}
-          <div className="relative min-w-[48px] min-h-[48px] border-2 border-[var(--border)] rounded-full overflow-hidden bg-[var(--secondary-background)]">
-            <Image
-              src={story.user.profile_picture}
-              alt={story.user.username}
-              fill
-              sizes="48px"
-              className="object-cover"
-            />
-          </div>
-          <div className="flex-1 overflow-hidden">
-            <CardTitle className="text-lg text-[var(--foreground)] font-[var(--font-weight-heading)] truncate">
-              @{story.user.username}
-            </CardTitle>
-            <CardDescription className="text-sm font-[var(--font-weight-base)] text-[var(--foreground)] truncate">
-              {story.user.full_name}
-            </CardDescription>
-          </div>
-        </div>
-      </CardHeader>
-
+    <Card className="w-full h-full shadow-[var(--shadow)] bg-[var(--background)]">
       {/* Full-width media section - no padding */}
-      <Link href={`/stories/${story.story_id}`}>
-        <div className="relative w-full border-t-2 border-[var(--border)] aspect-[9/16] cursor-pointer hover:opacity-90 transition-opacity">
-          <Image
-            src={story.thumbnail}
-            alt="Story thumbnail"
-            fill
-            sizes="(max-width: 768px) 100vw, 33vw"
-            className="object-cover"
-            priority
-            blurDataURL={`data:image/png;base64,${story.blur_data_url}`}
-            placeholder={story.blur_data_url ? 'blur' : 'empty'}
-          />
+      <Link
+        href={`/stories/${story.story_id}`}
+        onClick={e => {
+          // On mobile, if video is playing, prevent navigation on first click
+          if (isTouched && videoRef.current && !videoRef.current.paused) {
+            e.preventDefault();
+          }
+        }}
+        className="block h-full"
+      >
+        <div
+          className="relative w-full h-full border-t-2 border-[var(--border)] cursor-pointer hover:opacity-90 transition-opacity overflow-hidden"
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+          onTouchStart={handleTouchStart}
+        >
+          {mediaIsVideo ? (
+            <video
+              ref={videoRef}
+              src={story.media}
+              poster={story.thumbnail}
+              muted
+              loop
+              playsInline
+              className="absolute inset-0 w-full h-full object-cover"
+              preload="metadata"
+            />
+          ) : (
+            <Image
+              src={story.thumbnail}
+              alt="Story thumbnail"
+              fill
+              sizes="(max-width: 768px) 100vw, 33vw"
+              className="object-cover"
+              priority
+              blurDataURL={`data:image/png;base64,${story.blur_data_url}`}
+              placeholder={story.blur_data_url ? 'blur' : 'empty'}
+            />
+          )}
         </div>
       </Link>
-
-      <CardFooter className="border-t-2 border-[var(--border)] bg-[var(--secondary-background)] flex-col gap-2 p-3">
-        <div className="flex w-full justify-between items-center">
-          <p className="text-sm font-[var(--font-weight-heading)] text-[var(--foreground)]">
-            {formatDate(story.story_created_at)}
-          </p>
-        </div>
-        <div className="flex w-full">
-          <Link href={`/stories/${story.story_id}`} className="w-full">
-            <Button className="w-full">VIEW FULL STORY</Button>
-          </Link>
-        </div>
-      </CardFooter>
     </Card>
   );
 }

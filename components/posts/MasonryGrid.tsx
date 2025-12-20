@@ -6,12 +6,13 @@ import Masonry from 'react-masonry-css';
 interface MasonryGridProps {
   children: ReactNode;
   className?: string;
+  columns?: number; // Number of columns for large screens
 }
 
-export function MasonryGrid({ children, className = '' }: MasonryGridProps) {
+export function MasonryGrid({ children, className = '', columns = 4 }: MasonryGridProps) {
   const breakpointColumns = {
-    default: 4, // 4 columns on extra large screens
-    1280: 4, // 4 columns on large screens (xl)
+    default: columns, // Customizable columns on extra large screens
+    1280: columns, // Customizable columns on large screens (xl)
     1024: 3, // 3 columns on medium-large screens (lg)
     768: 2, // 2 columns on tablets (md)
     640: 1, // 1 column on mobile (sm and below)
