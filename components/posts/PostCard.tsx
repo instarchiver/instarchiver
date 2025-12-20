@@ -35,28 +35,6 @@ export function PostCard({ post }: PostCardProps) {
     router.push(`/posts/${post.id}`);
   };
 
-  const getVariantIcon = () => {
-    switch (post.variant) {
-      case 'video':
-        return <Video className="w-4 h-4" />;
-      case 'carousel':
-        return <Images className="w-4 h-4" />;
-      default:
-        return <ImageIcon className="w-4 h-4" />;
-    }
-  };
-
-  const getVariantColor = () => {
-    switch (post.variant) {
-      case 'video':
-        return 'bg-chart-4 text-main-foreground';
-      case 'carousel':
-        return 'bg-chart-2 text-main-foreground';
-      default:
-        return 'bg-chart-1 text-main-foreground';
-    }
-  };
-
   // Use thumbnail if available, otherwise fallback to thumbnail_url
   const getThumbnailSrc = () => {
     return post.thumbnail || post.thumbnail_url;
@@ -242,18 +220,6 @@ export function PostCard({ post }: PostCardProps) {
               </div>
             </>
           )}
-
-          {/* Variant Badge */}
-          <div className="absolute top-2 right-2">
-            <Badge
-              className={`${getVariantColor()} border-2 border-border shadow-shadow flex items-center gap-1`}
-            >
-              {getVariantIcon()}
-              <span className="capitalize text-xs font-bold">
-                {post.variant === 'normal' ? 'Image' : post.variant}
-              </span>
-            </Badge>
-          </div>
 
           {/* Media Count for Carousel */}
           {post.variant === 'carousel' && post.media_count > 1 && (
