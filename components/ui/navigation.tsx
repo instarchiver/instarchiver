@@ -15,12 +15,8 @@ import { Menu, LogIn, Instagram } from 'lucide-react';
 
 export function Navigation() {
   const pathname = usePathname();
-  const [mounted, setMounted] = useState(false);
+  const [mounted] = useState(() => typeof window !== 'undefined');
   const { isAuthenticated, isLoading: authLoading, user } = useAuth();
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const isActive = (path: string) => {
     return pathname === path;
