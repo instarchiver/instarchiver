@@ -5,10 +5,10 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 export function StorySkeleton() {
   return (
-    <Card className="w-full shadow-[var(--shadow)] bg-[var(--background)] mb-4 sm:mb-6">
-      {/* Full-width media section - no padding */}
-      <div className="relative w-full border-t-2 border-[var(--border)] aspect-[9/16]">
-        <Skeleton className="h-full w-full !rounded-none border-0 bg-[var(--secondary-background)]" />
+    <Card className="w-full h-full shadow-[var(--shadow)] bg-[var(--background)]">
+      {/* Full-width media section - no padding, fills the entire card */}
+      <div className="relative w-full h-full border-t-2 border-[var(--border)]">
+        <Skeleton className="absolute inset-0 w-full h-full !rounded-none border-0 bg-[var(--secondary-background)]" />
       </div>
     </Card>
   );

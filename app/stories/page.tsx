@@ -15,7 +15,7 @@ function StoriesPageContent() {
 
   const [searchInput, setSearchInput] = useState(searchQuery);
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading, isError, error } =
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isPending, isError, error } =
     useInfiniteStories(searchQuery);
   const { ref, inView } = useInView();
 
@@ -47,35 +47,6 @@ function StoriesPageContent() {
     router.push('/stories');
   };
 
-  // Loading state
-  if (isLoading) {
-    return (
-      <div className="min-h-[calc(100vh-4rem)] bg-background">
-        {/* Search Section Skeleton */}
-        <div className="w-full py-12 sm:py-16 lg:py-20">
-          <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex flex-col items-center gap-6">
-              <div className="h-12 w-80 bg-foreground/10 rounded animate-pulse" />
-              <div className="w-full max-w-2xl">
-                <div className="h-14 w-full bg-foreground/10 rounded-full animate-pulse" />
-              </div>
-              <div className="h-4 w-32 bg-foreground/10 rounded animate-pulse" />
-            </div>
-          </div>
-        </div>
-
-        {/* Stories Grid Skeleton */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
-          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3 auto-rows-[200px]">
-            {Array.from({ length: 12 }).map((_, index) => (
-              <StorySkeleton key={index} />
-            ))}
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   // Error state
   if (isError) {
     return (
@@ -99,6 +70,7 @@ function StoriesPageContent() {
   }
 
   const allStories = data?.pages.flatMap(page => page.results) ?? [];
+  const isLoadingData = isPending || (allStories.length === 0 && isFetchingNextPage);
 
   return (
     <div className="min-h-[calc(100vh-4rem)] bg-background">
@@ -145,7 +117,13 @@ function StoriesPageContent() {
 
       {/* Stories Grid */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
-        {allStories.length === 0 ? (
+        {isLoadingData ? (
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3 auto-rows-[200px]">
+            {Array.from({ length: 12 }).map((_, index) => (
+              <StorySkeleton key={index} />
+            ))}
+          </div>
+        ) : allStories.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20">
             <div className="w-20 h-20 bg-secondary-background border-2 border-border rounded-full flex items-center justify-center mb-4">
               <AlertCircle className="w-10 h-10 text-foreground/40" />
