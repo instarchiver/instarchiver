@@ -114,7 +114,7 @@ export function PostCard({ post }: PostCardProps) {
 
   return (
     <div className="break-inside-avoid mb-4 sm:mb-6">
-      <Card className="group overflow-hidden border-2 border-border shadow-shadow hover:shadow-[4px_4px_0px_0px_var(--border)] transition-all duration-200 bg-secondary-background">
+      <Card className="group overflow-hidden border-2 border-border shadow-shadow transition-all duration-200 bg-secondary-background">
         {/* Thumbnail */}
         <div
           ref={containerRef}
