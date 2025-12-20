@@ -9,7 +9,7 @@ interface MasonryGridProps {
   columns?: number; // Number of columns for large screens
 }
 
-export function MasonryGrid({ children, className = '', columns = 4 }: MasonryGridProps) {
+export function MasonryGrid({ children, className = '', columns = 5 }: MasonryGridProps) {
   const breakpointColumns = {
     default: columns, // Customizable columns on extra large screens
     1280: columns, // Customizable columns on large screens (xl)
