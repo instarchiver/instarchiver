@@ -50,7 +50,7 @@ function StoriesPageContent() {
   // Error state
   if (isError) {
     return (
-      <div className="min-h-[calc(100vh-4rem)] bg-background flex items-center justify-center p-4">
+      <div className="min-h-screen bg-background flex items-center justify-center p-4">
         <div className="max-w-md w-full bg-secondary-background border-2 border-border rounded-xl p-8 shadow-shadow">
           <div className="flex flex-col items-center gap-4 text-center">
             <div className="w-16 h-16 bg-chart-4 rounded-full flex items-center justify-center">
@@ -73,9 +73,11 @@ function StoriesPageContent() {
   const isLoadingData = isPending || (allStories.length === 0 && isFetchingNextPage);
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] bg-background">
+    <div
+      className={`bg-background ${isLoadingData ? 'h-screen overflow-hidden flex flex-col' : 'min-h-screen'}`}
+    >
       {/* Search Section */}
-      <div className="w-full py-8 sm:py-8 lg:py-12">
+      <div className={`w-full ${isLoadingData ? 'py-6' : 'py-8 sm:py-8 lg:py-12'}`}>
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col items-center gap-6">
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground text-center">
@@ -116,9 +118,11 @@ function StoriesPageContent() {
       </div>
 
       {/* Stories Grid */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
+      <div
+        className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ${isLoadingData ? 'flex-1 flex items-center justify-center' : 'pb-8'}`}
+      >
         {isLoadingData ? (
-          <div className="flex flex-col items-center justify-center py-20">
+          <div className="flex flex-col items-center justify-center">
             <Loader2 className="w-12 h-12 animate-spin text-main mb-4" />
             <p className="text-lg font-medium text-foreground">Loading stories...</p>
           </div>
@@ -159,7 +163,7 @@ export default function StoriesPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-[calc(100vh-4rem)] bg-background">
+        <div className="min-h-screen bg-background">
           {/* Search Section Skeleton */}
           <div className="w-full py-12 sm:py-16 lg:py-20">
             <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
