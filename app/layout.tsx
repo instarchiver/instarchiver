@@ -6,6 +6,7 @@ import { QueryProvider } from '@/components/providers/query-provider';
 import { ThemeProvider } from '@/components/providers/theme-provider';
 import { AuthProvider } from '@/components/providers/auth-provider';
 import { Navigation } from '@/components/ui/navigation';
+import { ClarityProvider } from '@/components/providers/clarity-provider';
 
 const redHatText = Red_Hat_Text({
   variable: '--font-red-hat-text',
@@ -62,6 +63,9 @@ export default function RootLayout({
           `}
         </Script>
         {/* Google Analytics */}
+
+        {/* Microsoft Clarity */}
+        <ClarityProvider />
 
         <ThemeProvider
           attribute="class"
