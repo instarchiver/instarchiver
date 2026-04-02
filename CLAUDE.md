@@ -105,7 +105,6 @@ When adding authenticated API calls, use the `axiosInstance` from `lib/axios.ts`
 **Two different pagination patterns are used:**
 
 1. **Cursor Pagination** (Stories):
-
    - Uses `cursor` parameter extracted from API response URLs
    - Implemented in `lib/api/stories.api.ts` with `extractCursor()` utility
    - Enables infinite scroll and efficient large dataset handling

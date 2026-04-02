@@ -22,7 +22,7 @@ Go to [http://localhost:3000](http://localhost:3000). If it errors, read again f
 
 ```bash
 # Optional, already has a default
-NEXT_PUBLIC_INSTAGRAM_API_BASE_URL=https://api.animemoe.us
+NEXT_PUBLIC_INSTAGRAM_API_BASE_URL=https://api.instarchiver.net
 ```
 
 ## Commands
