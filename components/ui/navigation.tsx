@@ -26,6 +26,7 @@ export function Navigation() {
     { name: 'Users', path: '/users' },
     { name: 'Stories', path: '/stories' },
     { name: 'Posts', path: '/posts' },
+    { name: 'Pricing', path: '/pricing' },
   ];
 
   return (
