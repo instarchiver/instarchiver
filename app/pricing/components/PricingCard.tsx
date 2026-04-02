@@ -49,7 +49,9 @@ export function PricingCard({ plan }: PricingCardProps) {
               )}
               <span
                 className={
-                  feature.is_available ? 'text-sm font-base' : 'text-sm font-base text-foreground/40'
+                  feature.is_available
+                    ? 'text-sm font-base'
+                    : 'text-sm font-base text-foreground/40'
                 }
               >
                 {feature.label}
