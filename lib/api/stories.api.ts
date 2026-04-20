@@ -114,6 +114,33 @@ export async function fetchStoryById(storyId: string): Promise<InstagramStory> {
 }
 
 /**
+ * Fetch similar stories for a given story ID
+ */
+export async function fetchSimilarStories(
+  storyId: string,
+  page: number = 1
+): Promise<InstagramStoriesResponse> {
+  try {
+    const params: Record<string, string> = {};
+    if (page > 1) params.page = page.toString();
+
+    const response = await axiosInstance.get<InstagramStoriesResponse>(
+      `/instagram/stories/${storyId}/similar/`,
+      { params }
+    );
+    return response.data;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      throw new APIError(
+        error.response?.status || 500,
+        error.response?.data?.message || 'Failed to fetch similar stories'
+      );
+    }
+    throw new Error('Failed to fetch similar stories from API');
+  }
+}
+
+/**
  * Download a story media to the user's device
  */
 export async function downloadStoryMedia(story: InstagramStory): Promise<void> {

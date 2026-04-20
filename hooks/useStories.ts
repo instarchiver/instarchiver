@@ -6,6 +6,7 @@ import { InstagramStory } from '@/app/types/instagram/story';
 import {
   fetchStoriesWithOptions,
   fetchStoryById,
+  fetchSimilarStories,
   downloadStoryMedia,
   type StoriesQueryOptions,
   type OrderingOption,
@@ -54,6 +55,18 @@ export function useStoryByIdQuery(storyId: string) {
     queryFn: () => fetchStoryById(storyId),
     staleTime: 5 * 60 * 1000,
     enabled: !!storyId, // Only run query if storyId is provided
+  });
+}
+
+/**
+ * Hook for fetching similar stories
+ */
+export function useSimilarStoriesQuery(storyId: string, page: number = 1) {
+  return useQuery({
+    queryKey: ['similar-stories', storyId, page],
+    queryFn: () => fetchSimilarStories(storyId, page),
+    staleTime: 5 * 60 * 1000,
+    enabled: !!storyId,
   });
 }
 
