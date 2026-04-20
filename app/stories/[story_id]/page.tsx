@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import Image from 'next/image';
 import Link from 'next/link';
 import { DisqusWrapper } from '@/components/ui/disqus-wrapper';
-import { StoryDetailSkeleton } from './components';
+import { StoryDetailSkeleton, SimilarStories } from './components';
 
 interface StoryDetailPageProps {
   params: Promise<{
@@ -177,6 +177,9 @@ export default function StoryDetailPage({ params }: StoryDetailPageProps) {
               )}
             </CardContent>
           </Card>
+
+          {/* Similar Stories */}
+          <SimilarStories storyId={story_id} />
         </div>
       </div>
     </div>
