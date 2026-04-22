@@ -1,184 +1,80 @@
-@import 'tailwindcss';
-@import 'tw-animate-css';
+@import "tailwindcss";
 
-@custom-variant dark (&:is(.dark *));
+/* Class-based dark mode */
+@variant dark (&:where(.dark, .dark *));
 
+/* ─── Semantic tokens (change per theme) ─── */
 :root {
-  --background: oklch(93.88% 0.033 300.19);
-  --secondary-background: oklch(100% 0 0);
-  --foreground: oklch(0% 0 0);
-  --main-foreground: oklch(0% 0 0);
-  --main: oklch(70.28% 0.1753 295.36);
-  --border: oklch(0% 0 0);
-  --ring: oklch(0% 0 0);
-  --overlay: oklch(0% 0 0 / 0.8);
-  --shadow: 2px 2px 0px 0px var(--border);
-  --chart-1: #a985ff;
-  --chart-2: #00d696;
-  --chart-3: #facc00;
-  --chart-4: #ff4d50;
-  --chart-5: #0099ff;
-  --chart-active-dot: #000;
-  --sb-track-color: #ffffff;
-  --sb-thumb-color: #000000;
+  --surface:      #FAF4F0;
+  --on-surface:   #000000;
+  --outline:      #000000;
+  --shadow-color: #000000;
 }
 
 .dark {
-  --background: oklch(30.14% 0.0826 296.5);
-  --secondary-background: oklch(23.93% 0 0);
-  --foreground: oklch(92.49% 0 0);
-  --main-foreground: oklch(0% 0 0);
-  --main: oklch(70.28% 0.1753 295.36);
-  --border: oklch(0% 0 0);
-  --ring: oklch(100% 0 0);
-  --shadow: 2px 2px 0px 0px var(--border);
-  --chart-1: #a985ff;
-  --chart-2: #00bd84;
-  --chart-3: #e0b700;
-  --chart-4: #ff6669;
-  --chart-5: #008ae5;
-  --chart-active-dot: #fff;
-  --chart-active-dot: #fff;
-  --sb-track-color: #1f1f1f;
-  --sb-thumb-color: #e6e6e6;
+  --surface:      #161616;
+  --on-surface:   #FFFFFF;
+  --outline:      #FFFFFF;
+  --shadow-color: rgba(255, 255, 255, 0.25);
 }
 
+/* ─── Static brand tokens → Tailwind utilities ─── */
+/* bg-primary, text-primary, bg-green-badge, etc.  */
 @theme inline {
-  --color-main: var(--main);
-  --color-background: var(--background);
-  --color-secondary-background: var(--secondary-background);
-  --color-foreground: var(--foreground);
-  --color-main-foreground: var(--main-foreground);
-  --color-border: var(--border);
-  --color-overlay: var(--overlay);
-  --color-ring: var(--ring);
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
+  --color-primary:      #AE7AFF;
+  --color-yellow-badge: #FAE8A4;
+  --color-green-badge:  #98E9AB;
+  --color-red-accent:   #E99898;
+  --color-muted:        #5F646D;
+  --color-sidebar:      #000000;
+  --color-active-item:  #161616;
 
-  --spacing-boxShadowX: 2px;
-  --spacing-boxShadowY: 2px;
-  --spacing-reverseBoxShadowX: -2px;
-  --spacing-reverseBoxShadowY: -2px;
-  --radius-base: 5px;
-  --shadow-shadow: var(--shadow);
-  --font-weight-base: 500;
-  --font-weight-heading: 700;
+  --font-sans: var(--font-roboto-flex);
+  --font-mono: var(--font-geist-mono);
 }
 
-@layer base {
-  body {
-    @apply text-foreground font-base bg-background;
+/* ─── Semantic color utilities (theme-aware via CSS vars) ─── */
+/* bg-surface, text-on-surface, border-outline, shadow-hard-* */
+@layer utilities {
+  .bg-surface        { background-color: var(--surface); }
+  .text-surface      { color: var(--surface); }
+
+  .bg-on-surface     { background-color: var(--on-surface); }
+  .text-on-surface   { color: var(--on-surface); }
+
+  .border-outline    { border-color: var(--outline); }
+
+  .shadow-hard-sm    { box-shadow: 4px 4px 0 var(--shadow-color); }
+  .shadow-hard       { box-shadow: 6px 6px 0 var(--shadow-color); }
+  .shadow-hard-lg    { box-shadow: 8px 8px 0 var(--shadow-color); }
+
+  /* Safe-area insets for notch / home-indicator on mobile */
+  .pt-safe { padding-top: env(safe-area-inset-top); }
+  .pb-safe { padding-bottom: env(safe-area-inset-bottom); }
+  .pl-safe { padding-left: env(safe-area-inset-left); }
+  .pr-safe { padding-right: env(safe-area-inset-right); }
+
+  /* Auth decorative panel gradient background */
+  .bg-auth-panel {
+    background-color: var(--surface);
+    background-image:
+      radial-gradient(ellipse 65% 55% at 55% 38%, rgba(174, 122, 255, 0.5) 0%, transparent 65%),
+      radial-gradient(ellipse 60% 65% at 78% 62%, rgba(220, 100, 180, 0.4) 0%, transparent 65%);
   }
 
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    @apply font-heading;
+  /* Custom checkbox — relies on adjacent-sibling CSS selector */
+  .auth-checkbox:checked + .auth-checkbox-box {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
   }
-}
-
-/* Update default scrollbar */
-body::-webkit-scrollbar {
-  width: 20px;
-}
-
-body::-webkit-scrollbar-track {
-  background: var(--sb-track-color);
-  border-left: 4px solid var(--border);
-}
-
-body::-webkit-scrollbar-thumb {
-  background: var(--sb-thumb-color);
-  border-radius: 2px;
-}
-
-.scrollbar::-webkit-scrollbar {
-  width: 16px;
-}
-
-.scrollbar::-webkit-scrollbar-track {
-  background: var(--sb-track-color);
-}
-
-.scrollbar::-webkit-scrollbar-thumb {
-  background: var(--sb-thumb-color);
-  border-radius: 2px;
-}
-
-/* Mobile optimized scrollbars */
-@media (max-width: 768px) {
-  body::-webkit-scrollbar {
-    width: 8px;
-  }
-
-  body::-webkit-scrollbar-track {
-    background: var(--sb-track-color);
-    border-left: 2px solid var(--border);
-  }
-
-  body::-webkit-scrollbar-thumb {
-    background: var(--sb-thumb-color);
-    border-radius: 4px;
-    min-height: 40px;
-  }
-
-  .scrollbar::-webkit-scrollbar {
-    width: 6px;
-  }
-
-  .scrollbar::-webkit-scrollbar-track {
-    background: var(--sb-track-color);
-  }
-
-  .scrollbar::-webkit-scrollbar-thumb {
-    background: var(--sb-thumb-color);
-    border-radius: 3px;
-    min-height: 30px;
-  }
-
-  /* Better touch support on mobile */
-  body::-webkit-scrollbar-thumb:hover {
-    background: var(--sb-thumb-color);
-  }
-
-  .scrollbar::-webkit-scrollbar-thumb:hover {
-    background: var(--sb-thumb-color);
+  .auth-checkbox:checked + .auth-checkbox-box .auth-checkbox-icon {
+    opacity: 1;
   }
 }
 
-@supports not selector(::-webkit-scrollbar) {
-  body,
-  .scrollbar {
-    scrollbar-color: var(--sb-thumb-color) var(--sb-track-color);
-    scrollbar-width: thin;
-  }
-}
-
-/* Masonry Grid Styles */
-.masonry-grid {
-  display: flex;
-  margin-left: -1rem; /* gutter size offset */
-  width: auto;
-}
-
-.masonry-grid-column {
-  padding-left: 1rem; /* gutter size */
-  background-clip: padding-box;
-}
-
-/* Responsive gap adjustments */
-@media (min-width: 640px) {
-  .masonry-grid {
-    margin-left: -1.5rem;
-  }
-
-  .masonry-grid-column {
-    padding-left: 1.5rem;
-  }
+/* ─── Base ─── */
+body {
+  background-color: var(--surface);
+  color: var(--on-surface);
+  font-family: var(--font-roboto-flex), sans-serif;
 }
