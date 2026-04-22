@@ -87,9 +87,9 @@ export default function DashboardPage() {
       </div>
 
       {/* ── Hero: title + search + example hint + suggested tags (172-4821) ─ */}
-      <div className="relative flex flex-col gap-6 items-center w-full max-w-[660px] mt-[84px] px-4">
+      <div className="relative flex flex-col gap-6 items-center w-full max-w-[660px] mt-0 lg:mt-[84px] px-6 lg:px-4">
         <h1
-          className="text-[48px] font-extrabold leading-[56px] text-on-surface whitespace-nowrap"
+          className="text-[48px] font-extrabold leading-[56px] text-on-surface whitespace-normal lg:whitespace-nowrap text-center lg:text-left"
           style={{ fontVariationSettings: FONT_VAR }}
         >
           Explore Topics and Skills
@@ -118,8 +118,8 @@ export default function DashboardPage() {
           <span className="font-bold">UI and UX development</span>
         </div>
 
-        {/* Suggested tags — 172-4821 */}
-        <div className="flex flex-wrap gap-1.5 items-center justify-center">
+        {/* Suggested tags — 172-4821, hidden on mobile */}
+        <div className="hidden lg:flex flex-wrap gap-1.5 items-center justify-center">
           {SUGGESTED_TAGS.map((tag) => (
             <button
               key={tag}
@@ -132,15 +132,15 @@ export default function DashboardPage() {
       </div>
 
       {/* ── Content sections ──────────────────────────────────────────────── */}
-      <div className="relative flex flex-col items-start px-[70px] w-full gap-6 mt-6 pb-8">
+      <div className="relative flex flex-col items-start px-6 lg:px-[70px] w-full gap-6 mt-6 pb-8">
 
         {/* ── Trending today ──────────────────────────────────────────────── */}
         <div className="flex flex-col gap-3.5 w-full">
           <h2 className="text-sm font-bold text-on-surface">Trending today</h2>
 
-          <div className="flex gap-5 items-start w-full">
-            {/* Left: tall Data Science card */}
-            <div className="flex-1 h-[296px] relative rounded-[2px] overflow-hidden shrink-0">
+          <div className="flex flex-col lg:flex-row gap-5 items-start w-full">
+            {/* Left: tall Data Science card — desktop only */}
+            <div className="hidden lg:block lg:flex-1 h-[296px] relative rounded-[2px] overflow-hidden shrink-0">
               <img
                 src={IMG_DATA_SCIENCE}
                 alt=""
@@ -159,8 +159,8 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            {/* Middle column: Business Management + Technologies */}
-            <div className="flex-1 flex flex-col gap-5 self-stretch min-w-0">
+            {/* Middle column: Business Management + Technologies — full width on mobile */}
+            <div className="w-full lg:flex-1 flex flex-col gap-5 self-stretch min-w-0 h-[296px] lg:h-auto">
               <TrendingCard
                 title="Business Management"
                 duration="12 – 18 months"
@@ -175,8 +175,8 @@ export default function DashboardPage() {
               />
             </div>
 
-            {/* Right column: Development + Computer Science */}
-            <div className="flex-1 flex flex-col gap-5 self-stretch min-w-0">
+            {/* Right column: Development + Computer Science — desktop only */}
+            <div className="hidden lg:flex lg:flex-1 flex-col gap-5 self-stretch min-w-0">
               <TrendingCard
                 title="Development"
                 duration="18 – 24 months"
@@ -198,24 +198,32 @@ export default function DashboardPage() {
           <h2 className="text-sm font-bold text-on-surface">Earn Your Degree</h2>
 
           <div className="flex gap-5 items-start w-full">
-            <DegreeCard
-              image={IMG_DEGREE_MBA}
-              title="Master of Business Administration"
-              university="University of Urbana-Champaign"
-              logo={LOGO_GOOGLE}
-            />
-            <DegreeCard
-              image={IMG_DEGREE_CS}
-              title="Online Master of Computer Science"
-              university="Arizona State University"
-              logo={LOGO_SERVICES}
-            />
-            <DegreeCard
-              image={IMG_DEGREE_MBA}
-              title="Global Master of Public Health and Science"
-              university="Imperial College London"
-              logo={LOGO_SHAPE}
-            />
+            {/* Mobile: full width; Desktop: flex-1 */}
+            <div className="flex-1 min-w-0">
+              <DegreeCard
+                image={IMG_DEGREE_MBA}
+                title="Master of Business Administration"
+                university="University of Urbana-Champaign"
+                logo={LOGO_GOOGLE}
+              />
+            </div>
+            {/* Desktop only */}
+            <div className="hidden lg:block flex-1 min-w-0">
+              <DegreeCard
+                image={IMG_DEGREE_CS}
+                title="Online Master of Computer Science"
+                university="Arizona State University"
+                logo={LOGO_SERVICES}
+              />
+            </div>
+            <div className="hidden lg:block flex-1 min-w-0">
+              <DegreeCard
+                image={IMG_DEGREE_MBA}
+                title="Global Master of Public Health and Science"
+                university="Imperial College London"
+                logo={LOGO_SHAPE}
+              />
+            </div>
           </div>
 
           {/* Pagination */}
@@ -286,7 +294,7 @@ function DegreeCard({
   logo: string;
 }) {
   return (
-    <article className="flex-1 flex flex-col gap-4 overflow-hidden border border-black rounded-sm bg-white pb-5 min-w-0">
+    <article className="w-full flex flex-col gap-4 overflow-hidden border border-black rounded-sm bg-white pb-5 min-w-0">
       <div className="h-[214px] relative shrink-0 w-full">
         <img
           src={image}
