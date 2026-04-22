@@ -1,4 +1,4 @@
-import { NAV_LINKS, TEAM_MEMBERS, CURRENT_USER, APP_NAME } from "@/app/lib/config";
+import { NAV_LINKS, TEAM_MEMBERS, CURRENT_USER, APP_NAME } from "@/lib/config";
 
 export function Sidebar() {
   return (

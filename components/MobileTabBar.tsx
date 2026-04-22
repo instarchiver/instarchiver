@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { MOBILE_TABS } from "@/app/lib/config";
+import { MOBILE_TABS } from "@/lib/config";
 
 export function MobileTabBar() {
   const [activeTab, setActiveTab] = useState(0);

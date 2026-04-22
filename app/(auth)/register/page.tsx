@@ -1,8 +1,8 @@
 import Link from "next/link";
-import { DecorativePanel } from "@/app/components/auth/DecorativePanel";
-import { PasswordField } from "@/app/components/auth/PasswordField";
-import { ThemeToggle } from "@/app/components/auth/ThemeToggle";
-import { APP_NAME } from "@/app/lib/config";
+import { DecorativePanel } from "@/components/auth/DecorativePanel";
+import { PasswordField } from "@/components/auth/PasswordField";
+import { ThemeToggle } from "@/components/auth/ThemeToggle";
+import { APP_NAME } from "@/lib/config";
 
 export const metadata = { title: `Sign up — ${APP_NAME}+` };
 

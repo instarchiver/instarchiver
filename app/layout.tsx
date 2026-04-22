@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Roboto_Flex, Geist_Mono } from "next/font/google";
-import { ThemeProvider } from "@/app/providers/ThemeProvider";
+import { ThemeProvider } from "@/providers/ThemeProvider";
 import "./globals.css";
 
 const robotoFlex = Roboto_Flex({

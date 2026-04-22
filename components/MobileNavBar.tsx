@@ -1,4 +1,4 @@
-import { CURRENT_USER } from "@/app/lib/config";
+import { CURRENT_USER } from "@/lib/config";
 
 export function MobileNavBar({
   subtitle = "Overview",

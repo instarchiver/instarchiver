@@ -1,9 +1,9 @@
-import { Sidebar } from "@/app/components/Sidebar";
-import { SidebarCompact } from "@/app/components/SidebarCompact";
-import { TopBar } from "@/app/components/TopBar";
-import { Footer } from "@/app/components/Footer";
-import { MobileNavBar } from "@/app/components/MobileNavBar";
-import { MobileTabBar } from "@/app/components/MobileTabBar";
+import { Sidebar } from "@/components/Sidebar";
+import { SidebarCompact } from "@/components/SidebarCompact";
+import { TopBar } from "@/components/TopBar";
+import { Footer } from "@/components/Footer";
+import { MobileNavBar } from "@/components/MobileNavBar";
+import { MobileTabBar } from "@/components/MobileTabBar";
 
 export default function DashboardLayout({
   children,

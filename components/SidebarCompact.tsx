@@ -1,4 +1,4 @@
-import { NAV_LINKS, COMPACT_TEAM_AVATARS, COMPACT_USER_AVATAR } from "@/app/lib/config";
+import { NAV_LINKS, COMPACT_TEAM_AVATARS, COMPACT_USER_AVATAR } from "@/lib/config";
 
 export function SidebarCompact() {
   return (

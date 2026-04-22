@@ -1,7 +1,7 @@
 "use client";
 
-import { useTheme } from "@/app/providers/ThemeProvider";
-import { FOOTER_LINKS } from "@/app/lib/config";
+import { useTheme } from "@/providers/ThemeProvider";
+import { FOOTER_LINKS } from "@/lib/config";
 
 export function Footer() {
   const { theme, toggleTheme } = useTheme();
