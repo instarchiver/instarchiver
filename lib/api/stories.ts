@@ -35,9 +35,10 @@ export function extractCursor(nextUrl: string | null): string | undefined {
   return url.searchParams.get("cursor") ?? undefined;
 }
 
-export async function fetchStories(cursor?: string): Promise<StoriesResponse> {
+export async function fetchStories(cursor?: string, search?: string): Promise<StoriesResponse> {
   const params: Record<string, string> = { format: "json", page_size: "12" };
   if (cursor) params.cursor = cursor;
+  if (search) params.search = search;
   const { data } = await api.get<StoriesResponse>("/instagram/stories/", { params });
   return data;
 }

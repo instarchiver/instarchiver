@@ -79,6 +79,12 @@ export default function StoriesPage() {
   const { theme } = useTheme();
   const isDark = theme === "dark";
   const [searchValue, setSearchValue] = useState("");
+  const [activeSearch, setActiveSearch] = useState("");
+
+  useEffect(() => {
+    const timer = setTimeout(() => setActiveSearch(searchValue.trim()), 400);
+    return () => clearTimeout(timer);
+  }, [searchValue]);
 
   const [stories, setStories] = useState<Story[]>([]);
   const [nextCursor, setNextCursor] = useState<string | undefined>(undefined);
@@ -86,22 +92,27 @@ export default function StoriesPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchStories().then((res) => {
+    setLoading(true);
+    setStories([]);
+    setNextCursor(undefined);
+    fetchStories(undefined, activeSearch || undefined).then((res) => {
       setStories(res.results);
-      const cursor = extractCursor(res.next);
-      setNextCursor(cursor);
+      setNextCursor(extractCursor(res.next));
       setHasMore(res.next !== null);
       setLoading(false);
     });
-  }, []);
+  }, [activeSearch]);
 
   function loadMore() {
-    fetchStories(nextCursor).then((res) => {
+    fetchStories(nextCursor, activeSearch || undefined).then((res) => {
       setStories((prev) => [...prev, ...res.results]);
-      const cursor = extractCursor(res.next);
-      setNextCursor(cursor);
+      setNextCursor(extractCursor(res.next));
       setHasMore(res.next !== null);
     });
+  }
+
+  function handleSearch() {
+    setActiveSearch(searchValue.trim());
   }
 
   return (
@@ -155,10 +166,12 @@ export default function StoriesPage() {
             type="text"
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && handleSearch()}
             placeholder="Search for stories..."
             className="flex-1 bg-transparent text-base font-medium text-on-surface placeholder:text-on-surface/50 outline-none"
           />
           <button
+            onClick={handleSearch}
             className="flex-none flex items-center justify-center w-8 h-8 bg-primary border border-black rounded-sm"
             aria-label="Search"
           >
