@@ -7,11 +7,6 @@ export const NAV_LINKS: Array<{
   { label: "Explore Courses", icon: "\uE80C", href: "/dashboard",                badge: null },
   { label: "Stories",         icon: "auto_stories", href: "/dashboard/stories",  badge: null },
   { label: "Users",           icon: "group",   href: "/dashboard/users",         badge: null },
-  { label: "Degrees",         icon: "\uEB3F", href: "/dashboard/degrees",        badge: null },
-  { label: "Students",        icon: "\uF233", href: "/dashboard/students",       badge: null },
-  { label: "Universities",    icon: "\uE666", href: "/dashboard/universities",   badge: null },
-  { label: "Schedule",        icon: "\uF1C3", href: "/dashboard/schedule",       badge: null },
-  { label: "Knowledge Base",  icon: "\uE3A0", href: "/dashboard/knowledge-base", badge: null },
 ];
 
 export const MOBILE_TABS: Array<{
@@ -21,8 +16,6 @@ export const MOBILE_TABS: Array<{
 }> = [
   { icon: "\uE80C",     label: "Courses",      href: "/dashboard" },
   { icon: "auto_stories", label: "Stories",    href: "/dashboard/stories" },
-  { icon: "\uEB3F",     label: "Degrees",      href: "/dashboard/degrees" },
-  { icon: "\uF233",     label: "Students",     href: "/dashboard/students" },
   { icon: "group",      label: "Users",       href: "/dashboard/users" },
 ];
 

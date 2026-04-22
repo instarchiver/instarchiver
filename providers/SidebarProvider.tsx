@@ -8,12 +8,12 @@ type SidebarContextType = {
 };
 
 const SidebarContext = createContext<SidebarContextType>({
-  collapsed: false,
+  collapsed: true,
   toggleCollapsed: () => {},
 });
 
 export function SidebarProvider({ children }: { children: React.ReactNode }) {
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
 
   useEffect(() => {
     const stored = localStorage.getItem("sidebarCollapsed");

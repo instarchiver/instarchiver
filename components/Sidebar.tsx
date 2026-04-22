@@ -17,8 +17,10 @@ export function Sidebar() {
     >
       <div className="flex flex-col gap-5">
         {/* Logo */}
-        <div
-          className={`flex items-center py-6 ${
+        <button
+          onClick={toggleCollapsed}
+          aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+          className={`flex items-center py-6 cursor-pointer ${
             collapsed ? "justify-center px-[15px]" : "px-[34px]"
           }`}
         >
@@ -32,22 +34,7 @@ export function Sidebar() {
               <span className="text-primary">+</span>
             </span>
           )}
-        </div>
-
-        {/* Collapse toggle */}
-        <div
-          className={`flex ${collapsed ? "justify-center px-[15px]" : "px-[34px]"}`}
-        >
-          <button
-            onClick={toggleCollapsed}
-            className="flex items-center justify-center w-8 h-8 text-white/60 hover:text-white transition-colors rounded-sm hover:bg-white/10"
-            aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-          >
-            <span className="material-icons text-base leading-none">
-              {collapsed ? "chevron_right" : "chevron_left"}
-            </span>
-          </button>
-        </div>
+        </button>
 
         {/* Navigation */}
         <div className="flex flex-col gap-3">
