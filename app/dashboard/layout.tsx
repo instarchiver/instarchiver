@@ -17,7 +17,7 @@ export default function DashboardLayout({
         <Sidebar />
 
         {/* Right content column */}
-        <div className="flex flex-col flex-1 min-w-0 h-full">
+        <div className="flex flex-col flex-1 min-w-0 h-full relative overflow-hidden">
           {/* Desktop/tablet top bar */}
           <TopBar title="Courses" />
 

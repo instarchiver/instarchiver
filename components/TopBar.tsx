@@ -1,6 +1,6 @@
 export function TopBar({ title = "Dashboard" }: { title?: string }) {
   return (
-    <header className="hidden lg:flex items-center justify-between px-10 xl:px-[70px] py-4 border-b border-outline shrink-0">
+    <header className="hidden lg:flex items-center justify-between px-10 xl:px-[70px] py-4 absolute top-0 left-0 right-0 z-10">
       <h1 className="text-[30px] font-extrabold leading-[38px] text-on-surface whitespace-nowrap">
         {title}
       </h1>
