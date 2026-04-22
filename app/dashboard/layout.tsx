@@ -1,7 +1,6 @@
 import { Sidebar } from "@/components/Sidebar";
-import { TopBar } from "@/components/TopBar";
+import { DashboardHeader } from "@/components/DashboardHeader";
 import { Footer } from "@/components/Footer";
-import { MobileNavBar } from "@/components/MobileNavBar";
 import { MobileTabBar } from "@/components/MobileTabBar";
 import { SidebarProvider } from "@/providers/SidebarProvider";
 
@@ -18,11 +17,8 @@ export default function DashboardLayout({
 
         {/* Right content column */}
         <div className="flex flex-col flex-1 min-w-0 h-full relative overflow-hidden">
-          {/* Desktop/tablet top bar */}
-          <TopBar title="Courses" />
-
-          {/* Mobile top nav */}
-          <MobileNavBar subtitle="Overview" title="Courses" />
+          {/* Dynamic header (title derived from pathname) */}
+          <DashboardHeader />
 
           {/* Page content */}
           <main className="flex-1 overflow-y-auto">{children}</main>

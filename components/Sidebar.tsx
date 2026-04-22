@@ -1,10 +1,13 @@
 "use client";
 
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { NAV_LINKS, TEAM_MEMBERS, CURRENT_USER, APP_NAME } from "@/lib/config";
 import { useSidebar } from "@/providers/SidebarProvider";
 
 export function Sidebar() {
   const { collapsed, toggleCollapsed } = useSidebar();
+  const pathname = usePathname();
 
   return (
     <aside
@@ -56,42 +59,49 @@ export function Sidebar() {
             </div>
           )}
           <div className={`flex flex-col gap-1.5 px-[17px] ${collapsed ? "items-center" : ""}`}>
-            {NAV_LINKS.map((link) => (
-              <div
-                key={link.label}
-                className={collapsed ? "flex w-full items-center justify-center" : "px-[17px]"}
-              >
-                <div
-                  className={`flex items-center rounded-sm ${
-                    collapsed
-                      ? `justify-center px-[16px] py-[11px] ${link.active ? "bg-active-item" : ""}`
-                      : `justify-between px-[17px] py-2 w-full ${link.active ? "bg-active-item" : ""}`
-                  }`}
+            {NAV_LINKS.map((link) => {
+              const isActive =
+                link.href === "/dashboard"
+                  ? pathname === "/dashboard"
+                  : pathname.startsWith(link.href);
+              return (
+                <Link
+                  key={link.label}
+                  href={link.href}
+                  className={collapsed ? "flex w-full items-center justify-center" : "px-[17px]"}
                 >
                   <div
-                    className={`flex items-center ${collapsed ? "" : "gap-3"} ${
-                      link.active ? "text-primary" : "text-white"
+                    className={`flex items-center rounded-sm ${
+                      collapsed
+                        ? `justify-center px-[16px] py-[11px] ${isActive ? "bg-active-item" : ""}`
+                        : `justify-between px-[17px] py-2 w-full ${isActive ? "bg-active-item" : ""}`
                     }`}
                   >
-                    <span className="material-icons text-base leading-none">
-                      {link.icon}
-                    </span>
-                    {!collapsed && (
-                      <span className="text-sm font-bold leading-6 whitespace-nowrap">
-                        {link.label}
+                    <div
+                      className={`flex items-center ${collapsed ? "" : "gap-3"} ${
+                        isActive ? "text-primary" : "text-white"
+                      }`}
+                    >
+                      <span className="material-icons text-base leading-none">
+                        {link.icon}
+                      </span>
+                      {!collapsed && (
+                        <span className="text-sm font-bold leading-6 whitespace-nowrap">
+                          {link.label}
+                        </span>
+                      )}
+                    </div>
+                    {!collapsed && link.badge && (
+                      <span
+                        className={`${link.badge.color} text-black text-xs font-bold px-2 py-px`}
+                      >
+                        {link.badge.count}
                       </span>
                     )}
                   </div>
-                  {!collapsed && link.badge && (
-                    <span
-                      className={`${link.badge.color} text-black text-xs font-bold px-2 py-px`}
-                    >
-                      {link.badge.count}
-                    </span>
-                  )}
-                </div>
-              </div>
-            ))}
+                </Link>
+              );
+            })}
           </div>
         </div>
 
