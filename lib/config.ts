@@ -52,3 +52,73 @@ export const FOOTER_LINKS = [
 ] as const;
 
 export const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME ?? "Instarchiver";
+
+// ─── Dashboard / Courses page ────────────────────────────────────────────────
+
+export const SUGGESTED_TAGS = [
+  "Founder",
+  "Co-founder",
+  "Project manager",
+  "Board member",
+  "Developer",
+  "Entrepreneur in residence",
+  "Managing director",
+  "Founding partner",
+] as const;
+
+export const COURSES = [
+  {
+    id: 1,
+    title: "Developing Applications with Google Cloud Platform",
+    university: "University of Urbana-Champaign",
+    type: "Course",
+    duration: "4-6 Weeks",
+    iconCodepoint: "\uEA8D",
+    image: "https://www.figma.com/api/mcp/asset/e8c611fc-1c2c-46c0-bb1e-c1ac86a58f87",
+  },
+  {
+    id: 2,
+    title: "Full Stack Web Development with Angular Specialization",
+    university: "The Hong Kong University of Science",
+    type: "Lesson",
+    duration: "2 Weeks",
+    iconCodepoint: "\uE9A7",
+    image: "https://www.figma.com/api/mcp/asset/d85ffd47-77ff-49b9-859f-13025f591fe9",
+  },
+  {
+    id: 3,
+    title: "Web Design for Everybody: Basics of Web Development",
+    university: "University of Michigan",
+    type: "Course",
+    duration: "6-8 Weeks",
+    iconCodepoint: "\uEA6C",
+    image: "https://www.figma.com/api/mcp/asset/49749b0b-82ff-4c14-a931-715bc04c26a3",
+  },
+  {
+    id: 4,
+    title: "Responsive Development and Design Specialization",
+    university: "Goldsmiths, University of London",
+    type: "Course",
+    duration: "3-5 Weeks",
+    iconCodepoint: "\uEA7E",
+    image: "https://www.figma.com/api/mcp/asset/ee7d7f60-8662-456c-9ce9-487b78dc0e52",
+  },
+  {
+    id: 5,
+    title: "Web Applications for Everybody Specialization",
+    university: "University of Urbana-Champaign",
+    type: "Lesson",
+    duration: "1 Week",
+    iconCodepoint: "\uEA25",
+    image: "https://www.figma.com/api/mcp/asset/0544b0a5-0937-4afa-af23-a4a48443e30a",
+  },
+  {
+    id: 6,
+    title: "Development and Design Specialization",
+    university: "Goldsmiths, University of London",
+    type: "Course",
+    duration: "4-6 Weeks",
+    iconCodepoint: "\uE508",
+    image: "https://www.figma.com/api/mcp/asset/7facd395-086d-4d92-8b07-d6ffee6af957",
+  },
+] as const;
