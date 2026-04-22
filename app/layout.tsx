@@ -1,24 +1,27 @@
-import type { Metadata } from 'next';
-import { Red_Hat_Text } from 'next/font/google';
-import Script from 'next/script';
-import './globals.css';
-import { QueryProvider } from '@/components/providers/query-provider';
-import { ThemeProvider } from '@/components/providers/theme-provider';
-import { AuthProvider } from '@/components/providers/auth-provider';
-import { Navigation } from '@/components/ui/navigation';
-import { ClarityProvider } from '@/components/providers/clarity-provider';
+import type { Metadata, Viewport } from "next";
+import { Roboto_Flex, Geist_Mono } from "next/font/google";
+import { ThemeProvider } from "@/providers/ThemeProvider";
+import "./globals.css";
 
-const redHatText = Red_Hat_Text({
-  variable: '--font-red-hat-text',
-  subsets: ['latin'],
+const robotoFlex = Roboto_Flex({
+  variable: "--font-roboto-flex",
+  subsets: ["latin"],
+});
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
-  title: 'Instagram Archiver',
-  description: 'Archive and browse Instagram user profiles and content',
-  other: {
-    'google-adsense-account': 'ca-pub-3865845660755241',
-  },
+  title: "Dashboard",
+  description: "Instarchiver dashboard",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({
@@ -27,59 +30,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={`${robotoFlex.variable} ${geistMono.variable} h-full`}
+    >
       <head>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              try {
-                const theme = localStorage.getItem('theme') || 'system';
-                const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-                const appliedTheme = theme === 'system' ? systemTheme : theme;
-                if (appliedTheme === 'dark') {
-                  document.documentElement.classList.add('dark');
-                } else {
-                  document.documentElement.classList.remove('dark');
-                }
-              } catch (e) {}
-            `,
-          }}
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/icon?family=Material+Icons"
         />
       </head>
-      <body
-        className={`${redHatText.variable} antialiased bg-background text-foreground font-base`}
-      >
-        {/* Google Analytics */}
-        <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-6CJW2BM9NS"
-          strategy="afterInteractive"
-        />
-        <Script id="google-analytics" strategy="afterInteractive">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'G-6CJW2BM9NS');
-          `}
-        </Script>
-        {/* Google Analytics */}
-
-        {/* Microsoft Clarity */}
-        <ClarityProvider />
-
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange={false}
-        >
-          <QueryProvider>
-            <AuthProvider>
-              <Navigation />
-              <div className="pt-16">{children}</div>
-            </AuthProvider>
-          </QueryProvider>
-        </ThemeProvider>
+      <body className="h-full">
+        <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>
   );
