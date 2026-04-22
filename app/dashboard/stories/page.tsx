@@ -8,14 +8,11 @@ import { useTheme } from "@/providers/ThemeProvider";
 import { fetchStories, extractCursor, type Story } from "@/lib/api/stories";
 
 // ── Background decoration assets ─────────────────────────────────────────────
-const BG_LIGHT_GRADIENT =
-  "https://www.figma.com/api/mcp/asset/66293d29-cbad-42dd-a92a-1751f532beaa";
-const BG_LIGHT_PATTERN =
-  "https://www.figma.com/api/mcp/asset/e4dcbbf0-de74-44e7-9525-f4b4d2c396e7";
-const BG_DARK_MAIN =
-  "https://www.figma.com/api/mcp/asset/134a0591-10cd-47be-bd9d-aa7ebf14ecef";
-const BG_DARK_PATTERN =
-  "https://www.figma.com/api/mcp/asset/230dcb1c-27ca-4106-b102-40ee164b50ee";
+const BG_NOISE =
+  "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' " +
+  "width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' " +
+  "baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E" +
+  "%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")";
 
 const FONT_VAR =
   "'GRAD' 0, 'XOPQ' 96, 'XTRA' 468, 'YOPQ' 79, 'YTAS' 750, 'YTDE' -203, 'YTFI' 738, 'YTLC' 514, 'YTUC' 712, 'wdth' 100";
@@ -120,32 +117,39 @@ export default function StoriesPage() {
       {/* ── Decorative background (top-right) ─────────────────────────────── */}
       <div
         aria-hidden="true"
-        className="absolute top-0 right-0 w-[min(694px,50%)] h-[610px] pointer-events-none overflow-hidden"
+        className="fixed top-0 right-0 w-[min(694px,50%)] h-[610px] pointer-events-none overflow-hidden"
+        style={{ maskImage: "radial-gradient(ellipse 100% 100% at top right, black 35%, transparent 80%)" }}
       >
         {isDark ? (
           <>
-            <img
-              src={BG_DARK_MAIN}
-              alt=""
-              className="absolute inset-0 w-full h-full object-cover opacity-35"
+            <div
+              className="absolute inset-0 opacity-35"
+              style={{
+                background:
+                  "radial-gradient(ellipse 55% 50% at  25% 45%, #FAF0A0 0%, transparent 60%), " +
+                  "radial-gradient(ellipse 45% 45% at  55% 10%, #DC3258 0%, transparent 55%), " +
+                  "radial-gradient(ellipse 50% 60% at 100% 65%, #AE7AFF 0%, transparent 60%)",
+              }}
             />
-            <img
-              src={BG_DARK_PATTERN}
-              alt=""
-              className="absolute inset-0 w-full h-full object-cover mix-blend-overlay opacity-80"
+            <div
+              className="absolute inset-0 mix-blend-overlay opacity-80"
+              style={{ backgroundImage: BG_NOISE, backgroundSize: "200px 200px" }}
             />
           </>
         ) : (
           <>
-            <img
-              src={BG_LIGHT_GRADIENT}
-              alt=""
-              className="absolute inset-0 w-full h-full object-cover rotate-180"
+            <div
+              className="absolute inset-0"
+              style={{
+                background:
+                  "radial-gradient(ellipse 65% 55% at  25% 35%, rgba(245,215,120,.60) 0%, transparent 65%), " +
+                  "radial-gradient(ellipse 40% 40% at  50%  8%, rgba(215, 95,105,.40) 0%, transparent 55%), " +
+                  "radial-gradient(ellipse 55% 65% at 105% 75%, rgba(174,122,255,.50) 0%, transparent 65%)",
+              }}
             />
-            <img
-              src={BG_LIGHT_PATTERN}
-              alt=""
-              className="absolute inset-0 w-full h-full object-cover mix-blend-overlay opacity-80"
+            <div
+              className="absolute inset-0 mix-blend-overlay opacity-80"
+              style={{ backgroundImage: BG_NOISE, backgroundSize: "200px 200px" }}
             />
           </>
         )}
