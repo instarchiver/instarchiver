@@ -2,10 +2,10 @@ import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { getSimilarStories, getStories, getStory } from "@/lib/api/stories";
 import { queryKeys } from "@/lib/query-keys";
 
-export function useInfiniteStories(userUuid?: string) {
+export function useInfiniteStories(userUuid?: string, search?: string) {
   return useInfiniteQuery({
-    queryKey: queryKeys.stories.list(userUuid),
-    queryFn: ({ pageParam }) => getStories(pageParam, userUuid),
+    queryKey: queryKeys.stories.list(userUuid, search),
+    queryFn: ({ pageParam }) => getStories(pageParam, userUuid, search),
     initialPageParam: null as string | null,
     getNextPageParam: (lastPage) => lastPage.next,
   });

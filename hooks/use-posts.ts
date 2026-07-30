@@ -2,10 +2,10 @@ import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { getPost, getPosts, getSimilarPosts } from "@/lib/api/posts";
 import { queryKeys } from "@/lib/query-keys";
 
-export function useInfinitePosts(userUuid?: string) {
+export function useInfinitePosts(userUuid?: string, search?: string) {
   return useInfiniteQuery({
-    queryKey: queryKeys.posts.list(userUuid),
-    queryFn: ({ pageParam }) => getPosts(pageParam, userUuid),
+    queryKey: queryKeys.posts.list(userUuid, search),
+    queryFn: ({ pageParam }) => getPosts(pageParam, userUuid, search),
     initialPageParam: null as string | null,
     getNextPageParam: (lastPage) => lastPage.next,
   });

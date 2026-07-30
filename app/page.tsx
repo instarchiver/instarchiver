@@ -6,7 +6,12 @@ import {
   UsersThree,
 } from "@phosphor-icons/react/ssr";
 import { getStatistics } from "@/lib/api/stats";
+import { getPosts } from "@/lib/api/posts";
+import { getStories } from "@/lib/api/stories";
 import { formatCount } from "@/lib/format";
+import { PostCard } from "@/components/posts/post-card";
+import { StoryCard } from "@/components/stories/story-card";
+import { COLUMNS_2_3_4_5 } from "@/components/ui/grid-columns";
 
 const SECTIONS = [
   {
@@ -32,8 +37,23 @@ const SECTIONS = [
   },
 ];
 
+async function safeFetch<T>(fn: () => Promise<T>): Promise<T | null> {
+  try {
+    return await fn();
+  } catch {
+    return null;
+  }
+}
+
 export default async function Home() {
-  const stats = await getStatistics();
+  const [stats, postsPage, storiesPage] = await Promise.all([
+    getStatistics(),
+    safeFetch(() => getPosts()),
+    safeFetch(() => getStories()),
+  ]);
+
+  const recentPosts = postsPage?.results.slice(0, 20) ?? [];
+  const recentStories = storiesPage?.results.slice(0, 20) ?? [];
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
@@ -75,6 +95,48 @@ export default async function Home() {
           </Link>
         ))}
       </div>
+
+      {recentStories.length > 0 && (
+        <section className="mt-16">
+          <div className="flex items-center justify-between">
+            <h2 className="text-2xl font-semibold text-foreground">
+              Recently Archived Stories
+            </h2>
+            <Link
+              href="/stories"
+              className="flex items-center gap-1 text-sm font-medium text-accent hover:underline"
+            >
+              View all <ArrowRight size={16} />
+            </Link>
+          </div>
+          <div className={`mt-6 grid gap-4 ${COLUMNS_2_3_4_5.className}`}>
+            {recentStories.map((story) => (
+              <StoryCard key={story.story_id} story={story} />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {recentPosts.length > 0 && (
+        <section className="mt-16">
+          <div className="flex items-center justify-between">
+            <h2 className="text-2xl font-semibold text-foreground">
+              Recently Archived Posts
+            </h2>
+            <Link
+              href="/posts"
+              className="flex items-center gap-1 text-sm font-medium text-accent hover:underline"
+            >
+              View all <ArrowRight size={16} />
+            </Link>
+          </div>
+          <div className={`mt-6 grid gap-4 ${COLUMNS_2_3_4_5.className}`}>
+            {recentPosts.map((post) => (
+              <PostCard key={post.id} post={post} />
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   );
 }

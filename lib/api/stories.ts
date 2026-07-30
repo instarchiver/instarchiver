@@ -1,10 +1,18 @@
 import { buildApiUrl, fetchJson } from "./client";
 import type { Paginated, Story } from "./types";
 
-export function getStories(cursorUrl?: string | null, userUuid?: string) {
+export function getStories(
+  cursorUrl?: string | null,
+  userUuid?: string,
+  search?: string
+) {
   const url =
     cursorUrl ??
-    buildApiUrl("/instagram/stories/", { page_size: "24", user: userUuid });
+    buildApiUrl("/instagram/stories/", {
+      page_size: "24",
+      user: userUuid,
+      search: search || undefined,
+    });
   return fetchJson<Paginated<Story>>(url);
 }
 

@@ -5,13 +5,14 @@ export const queryKeys = {
     detail: (uuid: string) => ["users", "detail", uuid] as const,
   },
   posts: {
-    list: (userUuid?: string) => ["posts", "list", userUuid ?? null] as const,
+    list: (userUuid?: string, search?: string) =>
+      ["posts", "list", userUuid ?? null, search?.trim() || null] as const,
     detail: (id: string) => ["posts", "detail", id] as const,
     similar: (id: string) => ["posts", "similar", id] as const,
   },
   stories: {
-    list: (userUuid?: string) =>
-      ["stories", "list", userUuid ?? null] as const,
+    list: (userUuid?: string, search?: string) =>
+      ["stories", "list", userUuid ?? null, search?.trim() || null] as const,
     detail: (storyId: string) => ["stories", "detail", storyId] as const,
     similar: (storyId: string) => ["stories", "similar", storyId] as const,
   },
