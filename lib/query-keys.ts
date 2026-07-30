@@ -12,5 +12,6 @@ export const queryKeys = {
     list: (userUuid?: string) =>
       ["stories", "list", userUuid ?? null] as const,
     detail: (storyId: string) => ["stories", "detail", storyId] as const,
+    similar: (storyId: string) => ["stories", "similar", storyId] as const,
   },
 };
