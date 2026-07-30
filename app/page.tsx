@@ -1,91 +1,79 @@
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { ArrowRight, Code, Globe } from 'lucide-react';
-import Star32 from '@/components/stars/s32';
-import Star11 from '@/components/stars/s11';
+import Link from "next/link";
+import {
+  ArrowRight,
+  GridFour,
+  CirclesFour,
+  UsersThree,
+} from "@phosphor-icons/react/ssr";
+import { getStatistics } from "@/lib/api/stats";
+import { formatCount } from "@/lib/format";
 
-export default function Home() {
+const SECTIONS = [
+  {
+    href: "/users",
+    label: "Users",
+    description: "Browse archived Instagram profiles.",
+    icon: UsersThree,
+    statKey: "total_users" as const,
+  },
+  {
+    href: "/stories",
+    label: "Stories",
+    description: "Browse archived stories from every user.",
+    icon: CirclesFour,
+    statKey: "total_stories" as const,
+  },
+  {
+    href: "/posts",
+    label: "Posts",
+    description: "Browse the full archived post gallery.",
+    icon: GridFour,
+    statKey: "total_posts" as const,
+  },
+];
+
+export default async function Home() {
+  const stats = await getStatistics();
+
   return (
-    <div className="h-[calc(100vh-4rem)] bg-gradient-to-br from-main via-main to-main p-4 sm:p-6 lg:p-8 flex items-center justify-center overflow-hidden">
-      <div className="max-w-6xl mx-auto w-full">
-        {/* Main Card */}
-        <div className="bg-secondary-background rounded-3xl p-6 sm:p-8 lg:p-12 shadow-2xl border-2 border-border">
-          {/* Logo and Since Badge */}
-          <div className="flex flex-col sm:flex-row justify-between items-center mb-8 sm:mb-12 gap-4 sm:gap-0">
-            <div className="flex items-center space-x-3">
-              <div className="w-12 h-12 bg-foreground rounded-full flex items-center justify-center">
-                <Star32 size={32} color="white" />
-              </div>
-              <span className="text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground">
-                InstArchiver
+    <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
+      <div className="mx-auto max-w-2xl text-center">
+        <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
+          Your Instagram archive, browsable.
+        </h1>
+        <p className="mt-4 text-base leading-7 text-muted-foreground">
+          InstArchiver keeps a searchable record of archived Instagram users,
+          their stories, and their posts &mdash; explore the collection below.
+        </p>
+      </div>
+
+      <div className="mt-12 grid gap-4 sm:grid-cols-3">
+        {SECTIONS.map(({ href, label, description, icon: Icon, statKey }) => (
+          <Link
+            key={href}
+            href={href}
+            className="group flex flex-col gap-4 rounded-xl border border-border bg-card p-6 transition-all hover:-translate-y-0.5 hover:shadow-md"
+          >
+            <div className="flex items-center justify-between">
+              <span className="flex h-11 w-11 items-center justify-center rounded-lg bg-muted text-accent">
+                <Icon size={22} weight="bold" />
               </span>
+              <ArrowRight
+                size={18}
+                className="text-muted-foreground transition-transform group-hover:translate-x-0.5"
+              />
             </div>
-            <div className="bg-foreground text-secondary-background px-4 py-2 sm:px-6 rounded-full text-sm sm:text-lg font-medium">
-              Since 2024
+            <div>
+              <p className="text-lg font-semibold text-foreground">{label}</p>
+              <p className="mt-1 text-sm text-muted-foreground">
+                {description}
+              </p>
             </div>
-          </div>
-
-          {/* Main Title */}
-          <div className="text-center mb-8 sm:mb-12">
-            <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black text-foreground leading-tight tracking-tight">
-              INSTAGRAM ARCHIVER
-            </h1>
-          </div>
-
-          {/* Navigation Arrows and Service Badge */}
-          <div className="flex flex-col sm:flex-row justify-between items-center mb-8 sm:mb-16 gap-6 sm:gap-4">
-            <div className="flex space-x-4">
-              <Button variant="default" size="icon" asChild>
-                <Link href="/users">
-                  <ArrowRight size={20} />
-                </Link>
-              </Button>
-              <Button variant="default" size="icon" asChild>
-                <Link href="/stories">
-                  <ArrowRight size={20} />
-                </Link>
-              </Button>
-              <Button variant="default" size="icon" asChild>
-                <Link href="/posts">
-                  <ArrowRight size={20} />
-                </Link>
-              </Button>
-            </div>
-
-            <div className="bg-main text-main-foreground px-4 py-2 sm:px-6 lg:px-8 sm:py-3 rounded-full text-sm sm:text-base lg:text-lg font-semibold flex items-center space-x-2 text-center">
-              <div className="w-6 h-6 bg-foreground rounded flex items-center justify-center">
-                <Star11 size={16} color="white" />
-              </div>
-              <span>Content Archiving & Management</span>
-            </div>
-          </div>
-
-          {/* Contact/Info Bar */}
-          <div className="bg-secondary-background border-2 border-border rounded-full p-4 sm:p-6">
-            <div className="flex flex-col sm:flex-row justify-between items-center text-foreground gap-4 sm:gap-2">
-              <div className="flex items-center space-x-3">
-                <Code className="w-5 h-5" />
-                <span className="text-sm sm:text-base lg:text-lg font-medium">
-                  Open Source Project
-                </span>
-              </div>
-
-              <div className="flex items-center space-x-3">
-                <Globe className="w-5 h-5" />
-                <span className="text-sm sm:text-base lg:text-lg font-medium">
-                  Next.js • React Query
-                </span>
-              </div>
-
-              <div className="flex items-center space-x-3">
-                <div className="w-5 h-5 bg-main rounded-full"></div>
-                <span className="text-sm sm:text-base lg:text-lg font-medium">
-                  Neo Brutalist Design
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
+            <p className="text-2xl font-semibold tabular-nums text-foreground">
+              {stats ? formatCount(stats[statKey]) : "—"}
+            </p>
+          </Link>
+        ))}
       </div>
     </div>
   );

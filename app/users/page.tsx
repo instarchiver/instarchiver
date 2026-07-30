@@ -1,129 +1,91 @@
-'use client';
+"use client";
 
-import React, { useEffect, useState, Suspense } from 'react';
-import { useQueryClient } from '@tanstack/react-query';
-import { extractCursor, API_CONSTANTS } from '@/lib/api/users.api';
-import { useUsers } from '@/hooks/useUsers';
-import { useUrlState } from '@/hooks/useUrlState';
+import { Suspense } from "react";
+import { UsersThree } from "@phosphor-icons/react";
+import { useInfiniteUsers } from "@/hooks/use-users";
+import { useDebouncedSearchParam } from "@/components/hooks/use-debounced-search-param";
+import { InfiniteGrid } from "@/components/ui/infinite-grid";
+import { SearchInput } from "@/components/ui/search-input";
+import { UserCard } from "@/components/users/user-card";
 
-const { COUNT_PER_PAGE } = API_CONSTANTS;
+function UsersPageFallback() {
+  return (
+    <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
+      <h1 className="text-2xl font-semibold text-foreground">Users</h1>
+      <p className="mt-1 text-sm text-muted-foreground">
+        Every archived Instagram profile.
+      </p>
+      <div className="mt-8">
+        <div className="min-h-11 animate-pulse rounded-lg border border-border bg-card" />
+      </div>
+    </div>
+  );
+}
 
-// Import components from the components directory
-import {
-  UserSkeleton,
-  UsersList,
-  PaginationControls,
-  InstagramPage,
-  AddUserModal,
-} from './components';
+function UsersPageContent() {
+  const { value: search, debouncedValue: debouncedSearch, setValue: setSearch } =
+    useDebouncedSearchParam("q");
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+    isError,
+    refetch,
+  } = useInfiniteUsers(debouncedSearch);
 
-// Main Instagram Users page component
-export default function InstagramUsersList() {
-  const queryClient = useQueryClient();
-  const { search: searchQuery, cursor: currentCursor, updateParams, resetParams } = useUrlState();
-  const [viewMode, setViewMode] = useState<'compact' | 'detailed'>('detailed');
-  const [isAddUserModalOpen, setIsAddUserModalOpen] = useState(false);
-
-  const { data, isLoading, error } = useUsers({
-    cursor: searchQuery ? null : currentCursor,
-    searchQuery,
-  });
-
-  useEffect(() => {
-    if (data?.next && !searchQuery) {
-      const nextCursor = extractCursor(data.next);
-      if (nextCursor) {
-        queryClient.prefetchQuery({
-          queryKey: ['users', nextCursor, searchQuery, undefined, undefined],
-          queryFn: () =>
-            import('@/lib/api/users.api').then(mod =>
-              mod.fetchUsersWithOptions({ cursor: nextCursor, searchQuery })
-            ),
-        });
-      }
-    }
-  }, [data, queryClient, searchQuery]);
-
-  const handleNextPage = (): void => {
-    if (data?.next && !searchQuery) {
-      const nextCursor = extractCursor(data.next);
-      if (nextCursor) {
-        updateParams({ cursor: nextCursor });
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }
-    }
-  };
-
-  const handlePrevPage = (): void => {
-    if (data?.previous && !searchQuery) {
-      const prevCursor = extractCursor(data.previous);
-      // If there's no previous cursor, it means we're going back to the first page
-      updateParams({ cursor: prevCursor || undefined });
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-  };
-
-  const handleRetry = () => {
-    resetParams();
-  };
+  const users = data?.pages.flatMap((page) => page.results) ?? [];
+  const isSearching = debouncedSearch.trim().length > 0;
 
   return (
-    <>
-      <InstagramPage
-        totalCount={data?.count || 0}
-        currentPage={1} // Not used with cursor pagination, but kept for compatibility
-        viewMode={viewMode}
-        onViewModeChange={setViewMode}
-        onAddUser={() => setIsAddUserModalOpen(true)}
-        usersList={
-          <Suspense
-            fallback={
-              <div
-                className={
-                  viewMode === 'compact'
-                    ? 'space-y-3'
-                    : 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'
-                }
-              >
-                {[...Array(COUNT_PER_PAGE)].map((_, index) => (
-                  <UserSkeleton key={`skeleton-${index}`} index={index} variant={viewMode} />
-                ))}
-              </div>
-            }
-          >
-            <UsersList
-              users={data?.results || []}
-              isLoading={isLoading}
-              error={error instanceof Error ? error : null}
-              count={COUNT_PER_PAGE}
-              onRetry={handleRetry}
-              searchQuery={searchQuery}
-              viewMode={viewMode}
-            />
-          </Suspense>
-        }
-        pagination={
-          <Suspense
-            fallback={
-              <div className="mt-12 flex justify-center">
-                <div className="bg-gray-200 border-4 border-black h-12 w-64 animate-pulse"></div>
-              </div>
-            }
-          >
-            {!isLoading && data && !searchQuery && (
-              <PaginationControls
-                hasPrevious={!!data.previous}
-                hasNext={!!data.next}
-                onPrevPage={handlePrevPage}
-                onNextPage={handleNextPage}
-              />
-            )}
-          </Suspense>
-        }
-      />
+    <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
+      <h1 className="text-2xl font-semibold text-foreground">Users</h1>
+      <p className="mt-1 text-sm text-muted-foreground">
+        Every archived Instagram profile.
+      </p>
 
-      {/* Add User Modal */}
-      <AddUserModal isOpen={isAddUserModalOpen} onClose={() => setIsAddUserModalOpen(false)} />
-    </>
+      <div className="mt-6 max-w-sm">
+        <SearchInput
+          value={search}
+          onChange={setSearch}
+          onClear={() => setSearch("")}
+          placeholder="Search users..."
+          aria-label="Search users"
+        />
+      </div>
+
+      <div className="mt-8">
+        <InfiniteGrid
+          items={users}
+          getKey={(user) => user.uuid}
+          renderItem={(user) => <UserCard user={user} />}
+          hasNextPage={Boolean(hasNextPage)}
+          isFetchingNextPage={isFetchingNextPage}
+          fetchNextPage={fetchNextPage}
+          isLoading={isLoading}
+          isError={isError}
+          onRetry={refetch}
+          emptyIcon={UsersThree}
+          emptyTitle={
+            isSearching ? "No users match your search" : "No users archived yet"
+          }
+          emptyDescription={
+            isSearching
+              ? `No results for "${debouncedSearch}". Try a different username or name.`
+              : undefined
+          }
+          columnsClassName="grid-cols-2 sm:grid-cols-3 md:grid-cols-4"
+        />
+      </div>
+    </div>
+  );
+}
+
+export default function UsersPage() {
+  return (
+    <Suspense fallback={<UsersPageFallback />}>
+      <UsersPageContent />
+    </Suspense>
   );
 }

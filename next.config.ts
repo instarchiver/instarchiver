@@ -1,16 +1,18 @@
-import type { NextConfig } from 'next';
+import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
-    unoptimized: true, // Disable Next.js image optimization for self-hosted deployment
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: '**',
+        protocol: "http",
+        hostname: "localhost",
+        port: "8000",
+        pathname: "/**",
       },
       {
-        protocol: 'http',
-        hostname: '**',
+        protocol: "https",
+        hostname: "cdn.instarchiver.net",
+        pathname: "/**",
       },
     ],
   },

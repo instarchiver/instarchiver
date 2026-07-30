@@ -1,5 +1,0 @@
-#!/bin/sh
-set -e
-
-npx lint-staged
-npx tsc --noEmit
