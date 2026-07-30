@@ -7,6 +7,7 @@ export const queryKeys = {
   posts: {
     list: (userUuid?: string) => ["posts", "list", userUuid ?? null] as const,
     detail: (id: string) => ["posts", "detail", id] as const,
+    similar: (id: string) => ["posts", "similar", id] as const,
   },
   stories: {
     list: (userUuid?: string) =>

@@ -87,6 +87,8 @@ export function InfiniteGrid<T>({
     estimateSize: () => 280,
     overscan: 3,
     scrollMargin,
+    // avoids "flushSync called during render" warning from tanstack-virtual's default sync measurement
+    useFlushSync: false,
   });
 
   if (isLoading) return <CardSkeletonGrid />;

@@ -1,5 +1,5 @@
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
-import { getPost, getPosts } from "@/lib/api/posts";
+import { getPost, getPosts, getSimilarPosts } from "@/lib/api/posts";
 import { queryKeys } from "@/lib/query-keys";
 
 export function useInfinitePosts(userUuid?: string) {
@@ -15,5 +15,14 @@ export function usePost(id: string) {
   return useQuery({
     queryKey: queryKeys.posts.detail(id),
     queryFn: () => getPost(id),
+  });
+}
+
+export function useSimilarPosts(postId: string) {
+  return useInfiniteQuery({
+    queryKey: queryKeys.posts.similar(postId),
+    queryFn: ({ pageParam }) => getSimilarPosts(postId, pageParam),
+    initialPageParam: null as string | null,
+    getNextPageParam: (lastPage) => lastPage.next,
   });
 }
