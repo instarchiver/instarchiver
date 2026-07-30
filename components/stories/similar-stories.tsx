@@ -3,6 +3,7 @@
 import { CirclesFour } from "@phosphor-icons/react";
 import { useSimilarStories } from "@/hooks/use-stories";
 import { InfiniteGrid } from "@/components/ui/infinite-grid";
+import { COLUMNS_2_3_4_5 } from "@/components/ui/grid-columns";
 import { StoryCard } from "./story-card";
 
 export function SimilarStories({ storyId }: { storyId: string }) {
@@ -34,7 +35,7 @@ export function SimilarStories({ storyId }: { storyId: string }) {
           onRetry={refetch}
           emptyIcon={CirclesFour}
           emptyTitle="No similar stories found"
-          columnsClassName="grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5"
+          columns={COLUMNS_2_3_4_5}
         />
       </div>
     </div>

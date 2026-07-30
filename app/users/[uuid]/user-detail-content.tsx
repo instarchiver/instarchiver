@@ -7,6 +7,7 @@ import { useInfinitePosts } from "@/hooks/use-posts";
 import { useInfiniteStories } from "@/hooks/use-stories";
 import { UserProfileHeader } from "@/components/users/user-profile-header";
 import { InfiniteGrid } from "@/components/ui/infinite-grid";
+import { COLUMNS_2_3_4, COLUMNS_3_4_5 } from "@/components/ui/grid-columns";
 import { PostCard } from "@/components/posts/post-card";
 import { StoryCard } from "@/components/stories/story-card";
 import { ErrorState } from "@/components/ui/error-state";
@@ -100,7 +101,7 @@ export function UserDetailContent({ uuid }: { uuid: string }) {
             onRetry={() => postsQuery.refetch()}
             emptyIcon={GridFour}
             emptyTitle="No posts from this user yet"
-            columnsClassName="grid-cols-2 sm:grid-cols-3 md:grid-cols-4"
+            columns={COLUMNS_2_3_4}
           />
         ) : (
           <InfiniteGrid
@@ -115,7 +116,7 @@ export function UserDetailContent({ uuid }: { uuid: string }) {
             onRetry={() => storiesQuery.refetch()}
             emptyIcon={CirclesFour}
             emptyTitle="No stories from this user yet"
-            columnsClassName="grid-cols-3 sm:grid-cols-4 md:grid-cols-5"
+            columns={COLUMNS_3_4_5}
           />
         )}
       </div>

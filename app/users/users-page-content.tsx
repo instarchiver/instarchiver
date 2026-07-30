@@ -6,6 +6,7 @@ import { useInfiniteUsers } from "@/hooks/use-users";
 import { useDebouncedSearchParam } from "@/components/hooks/use-debounced-search-param";
 import { useSearchParamState } from "@/components/hooks/use-search-param-state";
 import { InfiniteGrid } from "@/components/ui/infinite-grid";
+import { COLUMNS_2_3_4 } from "@/components/ui/grid-columns";
 import { SearchInput } from "@/components/ui/search-input";
 import { UserCard } from "@/components/users/user-card";
 import {
@@ -87,7 +88,7 @@ function UsersList() {
               ? `No results for "${debouncedSearch}". Try a different username or name.`
               : undefined
           }
-          columnsClassName="grid-cols-2 sm:grid-cols-3 md:grid-cols-4"
+          columns={COLUMNS_2_3_4}
         />
       </div>
     </div>

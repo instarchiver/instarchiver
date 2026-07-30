@@ -3,6 +3,7 @@
 import { GridFour } from "@phosphor-icons/react";
 import { useInfinitePosts } from "@/hooks/use-posts";
 import { InfiniteGrid } from "@/components/ui/infinite-grid";
+import { COLUMNS_2_3_4_5 } from "@/components/ui/grid-columns";
 import { PostCard } from "@/components/posts/post-card";
 
 export function PostsPageContent() {
@@ -38,7 +39,7 @@ export function PostsPageContent() {
           onRetry={refetch}
           emptyIcon={GridFour}
           emptyTitle="No posts archived yet"
-          columnsClassName="grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5"
+          columns={COLUMNS_2_3_4_5}
         />
       </div>
     </div>
