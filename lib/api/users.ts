@@ -1,12 +1,17 @@
 import { buildApiUrl, fetchJson } from "./client";
 import type { InstagramUser, Paginated } from "./types";
 
-export function getUsers(cursorUrl?: string | null, search?: string) {
+export function getUsers(
+  cursorUrl?: string | null,
+  search?: string,
+  ordering?: string
+) {
   const url =
     cursorUrl ??
     buildApiUrl("/instagram/users/", {
       page_size: "24",
       search: search || undefined,
+      ordering: ordering || undefined,
     });
   return fetchJson<Paginated<InstagramUser>>(url);
 }

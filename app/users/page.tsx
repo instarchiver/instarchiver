@@ -4,9 +4,14 @@ import { Suspense } from "react";
 import { UsersThree } from "@phosphor-icons/react";
 import { useInfiniteUsers } from "@/hooks/use-users";
 import { useDebouncedSearchParam } from "@/components/hooks/use-debounced-search-param";
+import { useSearchParamState } from "@/components/hooks/use-search-param-state";
 import { InfiniteGrid } from "@/components/ui/infinite-grid";
 import { SearchInput } from "@/components/ui/search-input";
 import { UserCard } from "@/components/users/user-card";
+import {
+  DEFAULT_USER_ORDERING,
+  UserSortSelect,
+} from "@/components/users/user-sort-select";
 
 function UsersPageFallback() {
   return (
@@ -25,6 +30,10 @@ function UsersPageFallback() {
 function UsersPageContent() {
   const { value: search, debouncedValue: debouncedSearch, setValue: setSearch } =
     useDebouncedSearchParam("q");
+  const { value: ordering, setValue: setOrdering } = useSearchParamState(
+    "ordering",
+    DEFAULT_USER_ORDERING
+  );
   const {
     data,
     fetchNextPage,
@@ -33,7 +42,7 @@ function UsersPageContent() {
     isLoading,
     isError,
     refetch,
-  } = useInfiniteUsers(debouncedSearch);
+  } = useInfiniteUsers(debouncedSearch, ordering);
 
   const users = data?.pages.flatMap((page) => page.results) ?? [];
   const isSearching = debouncedSearch.trim().length > 0;
@@ -45,14 +54,17 @@ function UsersPageContent() {
         Every archived Instagram profile.
       </p>
 
-      <div className="mt-6 max-w-sm">
-        <SearchInput
-          value={search}
-          onChange={setSearch}
-          onClear={() => setSearch("")}
-          placeholder="Search users..."
-          aria-label="Search users"
-        />
+      <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
+        <div className="sm:max-w-sm sm:flex-1">
+          <SearchInput
+            value={search}
+            onChange={setSearch}
+            onClear={() => setSearch("")}
+            placeholder="Search users..."
+            aria-label="Search users"
+          />
+        </div>
+        <UserSortSelect value={ordering} onChange={setOrdering} />
       </div>
 
       <div className="mt-8">
