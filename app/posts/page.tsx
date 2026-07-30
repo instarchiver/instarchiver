@@ -1,123 +1,20 @@
-'use client';
+import { Suspense } from "react";
+import type { Metadata } from "next";
+import { PostsPageContent } from "./posts-page-content";
 
-import { usePosts } from '@/hooks/usePosts';
-import { PostCard } from '@/components/posts/PostCard';
-import { PostCardSkeleton } from '@/components/posts/PostCardSkeleton';
-import { MasonryGrid } from '@/components/posts/MasonryGrid';
-import { PostsHeader } from '@/components/posts/PostsHeader';
-import { Button } from '@/components/ui/button';
-import { Loader2, AlertCircle, Grid3x3 } from 'lucide-react';
-import { useInView } from 'react-intersection-observer';
-import { useEffect, Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
+export const metadata: Metadata = {
+  title: "Posts",
+};
 
-function PostsPageContent() {
-  const searchParams = useSearchParams();
-  const searchQuery = searchParams.get('search') || '';
-
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading, isError, error } =
-    usePosts(searchQuery);
-  const { ref, inView } = useInView();
-
-  // Auto-fetch next page when scrolling to bottom
-  useEffect(() => {
-    if (inView && hasNextPage && !isFetchingNextPage) {
-      fetchNextPage();
-    }
-  }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
-
-  // Loading state
-  if (isLoading) {
-    return (
-      <div className="min-h-[calc(100vh-4rem)] bg-background">
-        {/* Search Section Skeleton */}
-        <div className="w-full py-12 sm:py-16 lg:py-20">
-          <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex flex-col items-center gap-6">
-              <div className="h-12 w-80 bg-foreground/10 rounded animate-pulse" />
-              <div className="w-full max-w-2xl">
-                <div className="h-14 w-full bg-foreground/10 rounded-full animate-pulse" />
-              </div>
-              <div className="h-4 w-32 bg-foreground/10 rounded animate-pulse" />
-            </div>
-          </div>
-        </div>
-
-        {/* Posts Grid Skeleton */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
-          <MasonryGrid>
-            {Array.from({ length: 12 }).map((_, index) => (
-              <PostCardSkeleton key={index} />
-            ))}
-          </MasonryGrid>
-        </div>
-      </div>
-    );
-  }
-
-  // Error state
-  if (isError) {
-    return (
-      <div className="min-h-[calc(100vh-4rem)] bg-background flex items-center justify-center p-4">
-        <div className="max-w-md w-full bg-secondary-background border-2 border-border rounded-xl p-8 shadow-shadow">
-          <div className="flex flex-col items-center gap-4 text-center">
-            <div className="w-16 h-16 bg-chart-4 rounded-full flex items-center justify-center">
-              <AlertCircle className="w-8 h-8 text-main-foreground" />
-            </div>
-            <h2 className="text-2xl font-bold text-foreground">Failed to Load Posts</h2>
-            <p className="text-foreground/60">
-              {error instanceof Error ? error.message : 'An unexpected error occurred'}
-            </p>
-            <Button onClick={() => window.location.reload()} className="mt-4">
-              Try Again
-            </Button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  const allPosts = data?.pages.flatMap(page => page.results) ?? [];
-
+function PostsPageFallback() {
   return (
-    <div className="min-h-[calc(100vh-4rem)] bg-background">
-      {/* Search Section */}
-      <PostsHeader />
-
-      {/* Posts Grid */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
-        {allPosts.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-20">
-            <div className="w-20 h-20 bg-secondary-background border-2 border-border rounded-full flex items-center justify-center mb-4">
-              <Grid3x3 className="w-10 h-10 text-foreground/40" />
-            </div>
-            <h2 className="text-xl font-bold text-foreground mb-2">No Posts Found</h2>
-            <p className="text-foreground/60">There are no posts to display at the moment.</p>
-          </div>
-        ) : (
-          <>
-            <MasonryGrid>
-              {allPosts.map(post => (
-                <PostCard key={post.id} post={post} />
-              ))}
-            </MasonryGrid>
-
-            {/* Infinite Scroll Trigger */}
-            <div ref={ref} className="flex justify-center py-8">
-              {isFetchingNextPage && (
-                <div className="flex items-center gap-2 text-foreground">
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                  <span className="font-medium">Loading more posts...</span>
-                </div>
-              )}
-              {!hasNextPage && allPosts.length > 0 && (
-                <div className="text-foreground/60 font-medium">
-                  You&apos;ve reached the end! 🎉
-                </div>
-              )}
-            </div>
-          </>
-        )}
+    <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
+      <h1 className="text-2xl font-semibold text-foreground">Posts</h1>
+      <p className="mt-1 text-sm text-muted-foreground">
+        Every archived post, from every user.
+      </p>
+      <div className="mt-8">
+        <div className="min-h-11 animate-pulse rounded-lg border border-border bg-card" />
       </div>
     </div>
   );
@@ -125,33 +22,7 @@ function PostsPageContent() {
 
 export default function PostsPage() {
   return (
-    <Suspense
-      fallback={
-        <div className="min-h-[calc(100vh-4rem)] bg-background">
-          {/* Search Section Skeleton */}
-          <div className="w-full py-12 sm:py-16 lg:py-20">
-            <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="flex flex-col items-center gap-6">
-                <div className="h-12 w-80 bg-foreground/10 rounded animate-pulse" />
-                <div className="w-full max-w-2xl">
-                  <div className="h-14 w-full bg-foreground/10 rounded-full animate-pulse" />
-                </div>
-                <div className="h-4 w-32 bg-foreground/10 rounded animate-pulse" />
-              </div>
-            </div>
-          </div>
-
-          {/* Posts Grid Skeleton */}
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
-            <MasonryGrid>
-              {Array.from({ length: 12 }).map((_, index) => (
-                <PostCardSkeleton key={index} />
-              ))}
-            </MasonryGrid>
-          </div>
-        </div>
-      }
-    >
+    <Suspense fallback={<PostsPageFallback />}>
       <PostsPageContent />
     </Suspense>
   );
