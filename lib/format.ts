@@ -1,3 +1,5 @@
+import type { InstagramUser, Post, Story } from "@/lib/api/types";
+
 const compactNumber = new Intl.NumberFormat("en-US", {
   notation: "compact",
   maximumFractionDigits: 1,
@@ -54,4 +56,21 @@ export function toBlurDataUrl(
   if (!blurDataUrl) return undefined;
   if (blurDataUrl.startsWith("data:")) return blurDataUrl;
   return `data:image/jpeg;base64,${blurDataUrl}`;
+}
+
+export function formatPostTitle(post: Post): string {
+  const caption = post.caption?.trim();
+  if (!caption) return `Post by @${post.user.username}`;
+  const truncated =
+    caption.length > 60 ? `${caption.slice(0, 60).trimEnd()}…` : caption;
+  return `${truncated} — @${post.user.username}`;
+}
+
+export function formatUserTitle(user: InstagramUser): string {
+  const name = user.full_name?.trim();
+  return name ? `${name} (@${user.username})` : `@${user.username}`;
+}
+
+export function formatStoryTitle(story: Story): string {
+  return `Story by @${story.user.username} — ${formatDate(story.story_created_at)}`;
 }

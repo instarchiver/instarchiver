@@ -16,7 +16,10 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "InstArchiver",
+  title: {
+    template: "%s | InstArchiver",
+    default: "InstArchiver",
+  },
   description: "Browse archived Instagram users, stories, and posts.",
 };
 
