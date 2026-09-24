@@ -11,6 +11,13 @@ export function useInfinitePosts(userUuid?: string, search?: string) {
   });
 }
 
+export function useRecentPosts() {
+  return useQuery({
+    queryKey: queryKeys.posts.recent(),
+    queryFn: () => getPosts(),
+  });
+}
+
 export function usePost(id: string) {
   return useQuery({
     queryKey: queryKeys.posts.detail(id),

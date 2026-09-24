@@ -11,6 +11,13 @@ export function useInfiniteStories(userUuid?: string, search?: string) {
   });
 }
 
+export function useRecentStories() {
+  return useQuery({
+    queryKey: queryKeys.stories.recent(),
+    queryFn: () => getStories(),
+  });
+}
+
 export function useStory(storyId: string) {
   return useQuery({
     queryKey: queryKeys.stories.detail(storyId),
