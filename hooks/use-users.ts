@@ -1,5 +1,5 @@
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
-import { getUser, getUsers } from "@/lib/api/users";
+import { getUser, getUserHistory, getUsers } from "@/lib/api/users";
 import { queryKeys } from "@/lib/query-keys";
 
 export function useInfiniteUsers(search?: string, ordering?: string) {
@@ -15,5 +15,14 @@ export function useUser(uuid: string) {
   return useQuery({
     queryKey: queryKeys.users.detail(uuid),
     queryFn: () => getUser(uuid),
+  });
+}
+
+export function useInfiniteUserHistory(uuid: string) {
+  return useInfiniteQuery({
+    queryKey: queryKeys.users.history(uuid),
+    queryFn: ({ pageParam }) => getUserHistory(uuid, pageParam),
+    initialPageParam: null as string | null,
+    getNextPageParam: (lastPage) => lastPage.next,
   });
 }

@@ -1,3 +1,5 @@
+import Link from "next/link";
+import { ClockCounterClockwise } from "@phosphor-icons/react";
 import type { InstagramUser } from "@/lib/api/types";
 import { Avatar } from "./avatar";
 import { PrivateBadge, VerifiedBadge } from "./verified-badge";
@@ -29,6 +31,15 @@ export function UserProfileHeader({ user }: { user: InstagramUser }) {
           <p className="max-w-lg whitespace-pre-line text-sm text-foreground">
             {user.biography}
           </p>
+        )}
+        {user.has_history && (
+          <Link
+            href={`/users/${user.uuid}/history`}
+            className="inline-flex min-h-11 items-center gap-2 text-sm font-medium text-accent transition-colors hover:text-foreground"
+          >
+            <ClockCounterClockwise size={16} />
+            View profile history
+          </Link>
         )}
       </div>
     </div>
