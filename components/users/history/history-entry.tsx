@@ -2,7 +2,7 @@ import { Avatar } from "@/components/users/avatar";
 import { UserStatsRow } from "@/components/users/user-stats-row";
 import type { InstagramUserHistory } from "@/lib/api/types";
 import { formatDate, formatRelativeTime } from "@/lib/format";
-import { diffSnapshots } from "@/lib/history-diff";
+import type { HistoryChange } from "@/lib/history-diff";
 import { HistoryChangeRow } from "./history-change-row";
 
 function FirstSnapshot({ entry }: { entry: InstagramUserHistory }) {
@@ -27,47 +27,35 @@ function FirstSnapshot({ entry }: { entry: InstagramUserHistory }) {
 }
 
 /**
- * `previous` is the next-older snapshot. When it is missing and more pages
- * exist, the diff stays hidden until that page loads.
+ * `changes` is the diff against the next-older snapshot. `isFirst` marks the
+ * oldest snapshot we have, which has nothing to diff against.
  */
 export function HistoryEntry({
   entry,
-  previous,
-  isOldest,
+  changes,
+  isFirst,
 }: {
   entry: InstagramUserHistory;
-  previous: InstagramUserHistory | undefined;
-  isOldest: boolean;
+  changes: HistoryChange[];
+  isFirst: boolean;
 }) {
-  const changes = previous ? diffSnapshots(entry, previous) : [];
-
   let title = "Profile updated";
-  if (entry.history_type === "+" || (isOldest && !previous)) {
-    title = "First recorded snapshot";
-  } else if (entry.history_type === "-") {
-    title = "Profile removed";
-  }
+  if (entry.history_type === "-") title = "Profile removed";
+  else if (isFirst || entry.history_type === "+") title = "First recorded snapshot";
 
-  let body: React.ReactNode = null;
-  if (!previous) {
-    if (isOldest) body = <FirstSnapshot entry={entry} />;
-  } else if (changes.length === 0) {
-    body = <p className="text-sm text-muted-foreground">No visible changes.</p>;
-  } else {
-    body = (
-      <div className="flex flex-col gap-3">
-        {changes.map((change) => (
-          <HistoryChangeRow
-            key={change.kind === "image" ? "image" : change.field}
-            change={change}
-            username={entry.username}
-          />
-        ))}
-      </div>
-    );
-  }
-
-  const muted = previous && changes.length === 0;
+  const body = isFirst ? (
+    <FirstSnapshot entry={entry} />
+  ) : changes.length > 0 ? (
+    <div className="flex flex-col gap-3">
+      {changes.map((change) => (
+        <HistoryChangeRow
+          key={change.kind === "image" ? "image" : change.field}
+          change={change}
+          username={entry.username}
+        />
+      ))}
+    </div>
+  ) : null;
 
   return (
     <li className="group relative pb-6 pl-8 last:pb-0">
@@ -77,15 +65,9 @@ export function HistoryEntry({
       />
       <span
         aria-hidden="true"
-        className={`absolute left-0 top-1.5 h-[15px] w-[15px] rounded-full border-2 border-background ${
-          muted ? "bg-muted-foreground/40" : "bg-accent"
-        }`}
+        className="absolute left-0 top-1.5 h-[15px] w-[15px] rounded-full border-2 border-background bg-accent"
       />
-      <div
-        className={`rounded-xl border border-border p-4 ${
-          muted ? "bg-transparent" : "bg-card"
-        }`}
-      >
+      <div className="rounded-xl border border-border bg-card p-4">
         <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
           <h2 className="text-sm font-semibold text-foreground">{title}</h2>
           <time
