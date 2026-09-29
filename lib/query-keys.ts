@@ -1,5 +1,8 @@
 export const queryKeys = {
   stats: ["stats"] as const,
+  auth: {
+    me: ["auth", "me"] as const,
+  },
   users: {
     list: (search?: string, ordering?: string) =>
       ["users", "list", search?.trim() || null, ordering || null] as const,

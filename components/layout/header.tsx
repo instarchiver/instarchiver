@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { House, UsersThree, CirclesFour, GridFour } from "@phosphor-icons/react";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { UserMenu } from "@/components/layout/user-menu";
 
 const NAV_LINKS = [
   { href: "/", label: "Home", icon: House },
@@ -50,8 +51,9 @@ export function Header() {
           })}
         </nav>
 
-        <div className="shrink-0">
+        <div className="flex shrink-0 items-center gap-1">
           <ThemeToggle />
+          <UserMenu />
         </div>
       </div>
     </header>
