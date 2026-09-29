@@ -1,5 +1,10 @@
 import { buildApiUrl, fetchJson } from "./client";
-import type { InstagramUser, InstagramUserHistory, Paginated } from "./types";
+import type {
+  CreateInstagramUserPayload,
+  InstagramUser,
+  InstagramUserHistory,
+  Paginated,
+} from "./types";
 
 export function getUsers(
   cursorUrl?: string | null,
@@ -18,6 +23,14 @@ export function getUsers(
 
 export function getUser(uuid: string) {
   return fetchJson<InstagramUser>(buildApiUrl(`/instagram/users/${uuid}/`));
+}
+
+export function createUser(payload: CreateInstagramUserPayload) {
+  return fetchJson<InstagramUser>(buildApiUrl("/instagram/users/"), {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
 }
 
 export function getUserHistory(uuid: string, cursorUrl?: string | null) {
