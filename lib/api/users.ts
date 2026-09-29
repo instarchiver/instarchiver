@@ -1,5 +1,5 @@
 import { buildApiUrl, fetchJson } from "./client";
-import type { InstagramUser, Paginated } from "./types";
+import type { InstagramUser, InstagramUserHistory, Paginated } from "./types";
 
 export function getUsers(
   cursorUrl?: string | null,
@@ -18,4 +18,9 @@ export function getUsers(
 
 export function getUser(uuid: string) {
   return fetchJson<InstagramUser>(buildApiUrl(`/instagram/users/${uuid}/`));
+}
+
+export function getUserHistory(uuid: string, cursorUrl?: string | null) {
+  const url = cursorUrl ?? buildApiUrl(`/instagram/users/${uuid}/history/`);
+  return fetchJson<Paginated<InstagramUserHistory>>(url);
 }

@@ -4,6 +4,7 @@ export const queryKeys = {
     list: (search?: string, ordering?: string) =>
       ["users", "list", search?.trim() || null, ordering || null] as const,
     detail: (uuid: string) => ["users", "detail", uuid] as const,
+    history: (uuid: string) => ["users", "history", uuid] as const,
   },
   posts: {
     list: (userUuid?: string, search?: string) =>

@@ -30,6 +30,25 @@ export interface InstagramUser {
   updated_at_from_api?: string | null;
 }
 
+// "+" created, "~" changed, "-" deleted (django-simple-history)
+export type HistoryType = "+" | "~" | "-";
+
+export interface InstagramUserHistory
+  extends Omit<
+    InstagramUser,
+    | "has_stories"
+    | "has_history"
+    | "original_profile_picture_url"
+    | "auto_update_stories_limit_count"
+    | "auto_update_profile_limit_count"
+    | "updated_at_from_api"
+  > {
+  history_id: number;
+  history_date: string;
+  history_change_reason: string | null;
+  history_type: HistoryType;
+}
+
 export type PostVariant = "normal" | "carousel" | "video";
 
 export interface PostMedia {
