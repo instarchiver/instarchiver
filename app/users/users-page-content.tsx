@@ -8,6 +8,7 @@ import { useSearchParamState } from "@/components/hooks/use-search-param-state";
 import { InfiniteGrid } from "@/components/ui/infinite-grid";
 import { COLUMNS_2_3_4 } from "@/components/ui/grid-columns";
 import { SearchInput } from "@/components/ui/search-input";
+import { AddUserButton } from "@/components/users/add-user-dialog";
 import { UserCard } from "@/components/users/user-card";
 import {
   DEFAULT_USER_ORDERING,
@@ -66,6 +67,7 @@ function UsersList() {
           />
         </div>
         <UserSortSelect value={ordering} onChange={setOrdering} />
+        <AddUserButton className="w-full justify-center sm:ml-auto sm:w-auto" />
       </div>
 
       <div className="mt-8">

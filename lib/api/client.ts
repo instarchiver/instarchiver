@@ -20,11 +20,25 @@ export function buildApiUrl(
 export class ApiError extends Error {
   constructor(
     public readonly status: number,
-    url: string
+    url: string,
+    public readonly body?: unknown
   ) {
     super(`Request failed (${status}): ${url}`);
     this.name = "ApiError";
   }
+}
+
+// DRF error bodies are either {"detail": "..."} or {"field": ["...", ...]}.
+export function getApiErrorMessage(error: unknown, fallback: string): string {
+  if (!(error instanceof ApiError)) return fallback;
+  const body = error.body;
+  if (typeof body !== "object" || body === null) return fallback;
+
+  if ("detail" in body && typeof body.detail === "string") return body.detail;
+  for (const value of Object.values(body)) {
+    if (Array.isArray(value) && typeof value[0] === "string") return value[0];
+  }
+  return fallback;
 }
 
 export interface FetchJsonInit extends RequestInit {
@@ -110,7 +124,8 @@ export async function fetchJson<T>(
   }
 
   if (!res.ok) {
-    throw new ApiError(res.status, url);
+    const body: unknown = await res.json().catch(() => undefined);
+    throw new ApiError(res.status, url, body);
   }
   return res.json() as Promise<T>;
 }

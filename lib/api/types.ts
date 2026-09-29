@@ -82,6 +82,10 @@ export interface Post {
   user: InstagramUser;
 }
 
+export interface CreateInstagramUserPayload {
+  username: string;
+}
+
 export interface Story {
   story_id: string;
   user: InstagramUser;
