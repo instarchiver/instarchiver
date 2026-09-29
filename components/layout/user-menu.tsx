@@ -4,21 +4,12 @@ import { useEffect, useRef, useState } from "react";
 import { SignOut } from "@phosphor-icons/react";
 import { useMounted } from "@/components/hooks/use-mounted";
 import { Avatar } from "@/components/users/avatar";
-import { useLoginWithGoogle, useLogout, useMe } from "@/hooks/use-auth";
-
-const CANCELLED_POPUP_CODES = new Set([
-  "auth/popup-closed-by-user",
-  "auth/cancelled-popup-request",
-]);
-
-function isCancelledPopup(error: unknown) {
-  return (
-    typeof error === "object" &&
-    error !== null &&
-    "code" in error &&
-    CANCELLED_POPUP_CODES.has(String(error.code))
-  );
-}
+import {
+  isCancelledPopup,
+  useLoginWithGoogle,
+  useLogout,
+  useMe,
+} from "@/hooks/use-auth";
 
 export function UserMenu() {
   const mounted = useMounted();

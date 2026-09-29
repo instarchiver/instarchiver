@@ -36,6 +36,21 @@ export function useMe() {
   };
 }
 
+const CANCELLED_POPUP_CODES = new Set([
+  "auth/popup-closed-by-user",
+  "auth/cancelled-popup-request",
+]);
+
+// Closing the Google popup is a user choice, not a failure worth reporting.
+export function isCancelledPopup(error: unknown) {
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    "code" in error &&
+    CANCELLED_POPUP_CODES.has(String(error.code))
+  );
+}
+
 export function useLoginWithGoogle() {
   const queryClient = useQueryClient();
 
