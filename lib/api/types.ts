@@ -98,3 +98,16 @@ export interface SiteStatistics {
   total_stories: number;
   total_posts: number;
 }
+
+export interface AuthTokens {
+  access: string;
+  refresh: string;
+}
+
+export interface AuthUser {
+  id: number;
+  username: string;
+  email: string;
+  name: string;
+  photo_url: string;
+}
