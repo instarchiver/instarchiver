@@ -10,24 +10,26 @@ import { ErrorState } from "@/components/ui/error-state";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatDate } from "@/lib/format";
 
-export function PostDetailContent({ id }: { id: string }) {
-  const { data: post, isLoading, isError, refetch } = usePost(id);
-
-  if (isLoading) {
-    return (
-      <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
-        <div className="mx-auto max-w-4xl">
-          <div className="grid gap-6 sm:grid-cols-2">
-            <Skeleton className="aspect-square w-full" />
-            <div className="space-y-3">
-              <Skeleton className="h-6 w-40" />
-              <Skeleton className="h-20 w-full" />
-            </div>
+export function PostDetailSkeleton() {
+  return (
+    <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
+      <div className="mx-auto max-w-4xl">
+        <div className="grid gap-6 sm:grid-cols-2">
+          <Skeleton className="aspect-square w-full" />
+          <div className="space-y-3">
+            <Skeleton className="h-6 w-40" />
+            <Skeleton className="h-20 w-full" />
           </div>
         </div>
       </div>
-    );
-  }
+    </div>
+  );
+}
+
+export function PostDetailContent({ id }: { id: string }) {
+  const { data: post, isLoading, isError, refetch } = usePost(id);
+
+  if (isLoading) return <PostDetailSkeleton />;
 
   if (isError || !post) {
     return (

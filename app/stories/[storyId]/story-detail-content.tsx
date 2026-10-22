@@ -10,18 +10,20 @@ import { ErrorState } from "@/components/ui/error-state";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatDate } from "@/lib/format";
 
+export function StoryDetailSkeleton() {
+  return (
+    <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
+      <div className="mx-auto max-w-md">
+        <Skeleton className="aspect-[9/16] w-full" />
+      </div>
+    </div>
+  );
+}
+
 export function StoryDetailContent({ storyId }: { storyId: string }) {
   const { data: story, isLoading, isError, refetch } = useStory(storyId);
 
-  if (isLoading) {
-    return (
-      <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
-        <div className="mx-auto max-w-md">
-          <Skeleton className="aspect-[9/16] w-full" />
-        </div>
-      </div>
-    );
-  }
+  if (isLoading) return <StoryDetailSkeleton />;
 
   if (isError || !story) {
     return (
