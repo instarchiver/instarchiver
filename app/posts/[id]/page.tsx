@@ -1,5 +1,9 @@
 import type { Metadata } from "next";
-import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query";
+import {
+  dehydrate,
+  HydrationBoundary,
+  QueryClient,
+} from "@tanstack/react-query";
 import { loadPost } from "@/lib/api/server";
 import { formatPostTitle, formatUserTitle, truncate } from "@/lib/format";
 import { queryKeys } from "@/lib/query-keys";
@@ -13,6 +17,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { id } = await params;
   const post = await loadPost(id);
+  if (!post) return { title: "Post" };
   const title = formatPostTitle(post);
   const caption = post.caption?.trim();
   const description = caption
@@ -43,26 +48,28 @@ export default async function PostDetailPage({
   const { id } = await params;
   const post = await loadPost(id);
   const queryClient = new QueryClient();
-  queryClient.setQueryData(queryKeys.posts.detail(id), post);
+  if (post) queryClient.setQueryData(queryKeys.posts.detail(id), post);
 
   return (
     <>
-      <JsonLd
-        data={{
-          "@context": "https://schema.org",
-          "@type": "SocialMediaPosting",
-          headline: formatPostTitle(post),
-          articleBody: post.caption || undefined,
-          datePublished: post.post_created_at,
-          dateModified: post.updated_at,
-          image: post.thumbnail || undefined,
-          author: {
-            "@type": "Person",
-            name: post.user.full_name || post.user.username,
-            alternateName: `@${post.user.username}`,
-          },
-        }}
-      />
+      {post && (
+        <JsonLd
+          data={{
+            "@context": "https://schema.org",
+            "@type": "SocialMediaPosting",
+            headline: formatPostTitle(post),
+            articleBody: post.caption || undefined,
+            datePublished: post.post_created_at,
+            dateModified: post.updated_at,
+            image: post.thumbnail || undefined,
+            author: {
+              "@type": "Person",
+              name: post.user.full_name || post.user.username,
+              alternateName: `@${post.user.username}`,
+            },
+          }}
+        />
+      )}
       <HydrationBoundary state={dehydrate(queryClient)}>
         <PostDetailContent id={id} />
       </HydrationBoundary>

@@ -1,0 +1,7 @@
+services:
+  nextjs:
+    image: ghcr.io/instarchiver/instarchiver/nextjs:latest
+    restart: unless-stopped
+    mem_limit: 512m
+    ports:
+      - 100.73.60.108:58300:3000

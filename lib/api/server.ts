@@ -5,13 +5,18 @@ import { getUser } from "./users";
 import { getPost } from "./posts";
 import { getStory } from "./stories";
 
-// A missing record becomes a real 404 instead of a 200 error page.
-async function orNotFound<T>(promise: Promise<T>): Promise<T> {
+// A missing record becomes a real 404. Any other failure returns null so the
+// page falls back to fetching in the browser instead of answering 500.
+async function orNotFound<T>(promise: Promise<T>): Promise<T | null> {
   try {
     return await promise;
   } catch (error) {
     if (error instanceof ApiError && error.status === 404) notFound();
-    throw error;
+    console.error(
+      "[ssr] API fetch failed, falling back to client render",
+      error,
+    );
+    return null;
   }
 }
 
@@ -19,5 +24,5 @@ async function orNotFound<T>(promise: Promise<T>): Promise<T> {
 export const loadUser = cache((uuid: string) => orNotFound(getUser(uuid)));
 export const loadPost = cache((id: string) => orNotFound(getPost(id)));
 export const loadStory = cache((storyId: string) =>
-  orNotFound(getStory(storyId))
+  orNotFound(getStory(storyId)),
 );

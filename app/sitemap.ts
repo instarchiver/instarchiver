@@ -20,7 +20,7 @@ export function generateSitemaps() {
 }
 
 async function collect<T>(
-  fetchPage: (cursor: string | null) => Promise<Paginated<T>>
+  fetchPage: (cursor: string | null) => Promise<Paginated<T>>,
 ): Promise<T[]> {
   const items: T[] = [];
   let cursor: string | null = null;
@@ -31,9 +31,10 @@ async function collect<T>(
       if (!data.next) break;
       cursor = data.next;
     }
-  } catch {
+  } catch (error) {
     // Keep what we have so a backend hiccup (or no backend at build time)
     // doesn't fail the whole sitemap.
+    console.error(`[sitemap] stopped after ${items.length} items`, error);
   }
   return items;
 }
@@ -52,21 +53,21 @@ const builders: Record<SitemapId, () => Promise<MetadataRoute.Sitemap>> = {
       (user) => ({
         url: `${SITE_URL}/users/${user.uuid}`,
         lastModified: user.updated_at,
-      })
+      }),
     ),
   posts: async () =>
     (await collect((c) => getPosts(c, undefined, undefined, 100))).map(
       (post) => ({
         url: `${SITE_URL}/posts/${post.id}`,
         lastModified: post.updated_at,
-      })
+      }),
     ),
   stories: async () =>
     (await collect((c) => getStories(c, undefined, undefined, 100))).map(
       (story) => ({
         url: `${SITE_URL}/stories/${story.story_id}`,
         lastModified: story.created_at,
-      })
+      }),
     ),
 };
 
