@@ -1,5 +1,9 @@
 import type { Metadata } from "next";
-import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query";
+import {
+  dehydrate,
+  HydrationBoundary,
+  QueryClient,
+} from "@tanstack/react-query";
 import { loadStory } from "@/lib/api/server";
 import { formatDate, formatStoryTitle, formatUserTitle } from "@/lib/format";
 import { queryKeys } from "@/lib/query-keys";
@@ -13,6 +17,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { storyId } = await params;
   const story = await loadStory(storyId);
+  if (!story) return { title: "Story" };
   const title = formatStoryTitle(story);
   const description = `Archived Instagram story by ${formatUserTitle(story.user)}, posted ${formatDate(story.story_created_at)}.`;
   const images = story.thumbnail ? [story.thumbnail] : undefined;
@@ -39,24 +44,26 @@ export default async function StoryDetailPage({
   const { storyId } = await params;
   const story = await loadStory(storyId);
   const queryClient = new QueryClient();
-  queryClient.setQueryData(queryKeys.stories.detail(storyId), story);
+  if (story) queryClient.setQueryData(queryKeys.stories.detail(storyId), story);
 
   return (
     <>
-      <JsonLd
-        data={{
-          "@context": "https://schema.org",
-          "@type": "SocialMediaPosting",
-          headline: formatStoryTitle(story),
-          datePublished: story.story_created_at,
-          image: story.thumbnail || undefined,
-          author: {
-            "@type": "Person",
-            name: story.user.full_name || story.user.username,
-            alternateName: `@${story.user.username}`,
-          },
-        }}
-      />
+      {story && (
+        <JsonLd
+          data={{
+            "@context": "https://schema.org",
+            "@type": "SocialMediaPosting",
+            headline: formatStoryTitle(story),
+            datePublished: story.story_created_at,
+            image: story.thumbnail || undefined,
+            author: {
+              "@type": "Person",
+              name: story.user.full_name || story.user.username,
+              alternateName: `@${story.user.username}`,
+            },
+          }}
+        />
+      )}
       <HydrationBoundary state={dehydrate(queryClient)}>
         <StoryDetailContent storyId={storyId} />
       </HydrationBoundary>
