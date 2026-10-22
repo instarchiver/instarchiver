@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -6,6 +7,10 @@ import {
   UsersThree,
 } from "@phosphor-icons/react/ssr";
 import { RecentPosts, RecentStories, StatCount } from "./home-sections";
+
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
 
 const SECTIONS = [
   {

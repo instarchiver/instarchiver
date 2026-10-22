@@ -4,12 +4,13 @@ import type { Paginated, Post } from "./types";
 export function getPosts(
   cursorUrl?: string | null,
   userUuid?: string,
-  search?: string
+  search?: string,
+  pageSize = 24
 ) {
   const url =
     cursorUrl ??
     buildApiUrl("/instagram/posts/", {
-      page_size: "24",
+      page_size: String(pageSize),
       user: userUuid,
       search: search || undefined,
     });

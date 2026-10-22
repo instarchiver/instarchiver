@@ -4,6 +4,8 @@ import { PostsPageContent } from "./posts-page-content";
 
 export const metadata: Metadata = {
   title: "Posts",
+  description: "Every archived Instagram post, from every user.",
+  alternates: { canonical: "/posts" },
 };
 
 function PostsPageFallback() {

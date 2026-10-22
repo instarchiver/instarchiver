@@ -6,6 +6,7 @@ import { Providers } from "./providers";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { ScrollToTop } from "@/components/scroll-to-top";
+import { SITE_URL } from "@/lib/api/client";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -18,11 +19,15 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: {
     template: "%s | InstArchiver",
     default: "InstArchiver",
   },
-  description: "Browse archived Instagram users, stories, and posts.",
+  description:
+    "InstArchiver keeps a searchable archive of Instagram profiles, stories, and posts, including profile history over time.",
+  openGraph: { siteName: "InstArchiver", type: "website" },
+  twitter: { card: "summary_large_image" },
 };
 
 export default function RootLayout({

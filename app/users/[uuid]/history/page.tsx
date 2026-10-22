@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
-import { getUser } from "@/lib/api/users";
+import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query";
+import { loadUser } from "@/lib/api/server";
 import { formatUserTitle } from "@/lib/format";
+import { queryKeys } from "@/lib/query-keys";
 import { UserHistoryContent } from "./user-history-content";
 
 export async function generateMetadata({
@@ -9,12 +11,15 @@ export async function generateMetadata({
   params: Promise<{ uuid: string }>;
 }): Promise<Metadata> {
   const { uuid } = await params;
-  try {
-    const user = await getUser(uuid);
-    return { title: `${formatUserTitle(user)} · Profile history` };
-  } catch {
-    return { title: "Profile history" };
-  }
+  const user = await loadUser(uuid);
+  const title = `${formatUserTitle(user)} · Profile history`;
+  const description = `How @${user.username}'s Instagram profile changed over time: username, bio, follower and post counts.`;
+  return {
+    title,
+    description,
+    alternates: { canonical: `/users/${uuid}/history` },
+    openGraph: { title, description, images: user.profile_picture || undefined },
+  };
 }
 
 export default async function UserHistoryPage({
@@ -23,5 +28,13 @@ export default async function UserHistoryPage({
   params: Promise<{ uuid: string }>;
 }) {
   const { uuid } = await params;
-  return <UserHistoryContent uuid={uuid} />;
+  const user = await loadUser(uuid);
+  const queryClient = new QueryClient();
+  queryClient.setQueryData(queryKeys.users.detail(uuid), user);
+
+  return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <UserHistoryContent uuid={uuid} />
+    </HydrationBoundary>
+  );
 }

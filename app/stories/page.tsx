@@ -4,6 +4,8 @@ import { StoriesPageContent } from "./stories-page-content";
 
 export const metadata: Metadata = {
   title: "Stories",
+  description: "Every archived Instagram story, from every user.",
+  alternates: { canonical: "/stories" },
 };
 
 function StoriesPageFallback() {

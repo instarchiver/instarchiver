@@ -58,12 +58,14 @@ export function toBlurDataUrl(
   return `data:image/jpeg;base64,${blurDataUrl}`;
 }
 
+export function truncate(text: string, max: number): string {
+  return text.length > max ? `${text.slice(0, max).trimEnd()}…` : text;
+}
+
 export function formatPostTitle(post: Post): string {
   const caption = post.caption?.trim();
   if (!caption) return `Post by @${post.user.username}`;
-  const truncated =
-    caption.length > 60 ? `${caption.slice(0, 60).trimEnd()}…` : caption;
-  return `${truncated} — @${post.user.username}`;
+  return `${truncate(caption, 60)} — @${post.user.username}`;
 }
 
 export function formatUserTitle(user: InstagramUser): string {
