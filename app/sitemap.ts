@@ -7,9 +7,17 @@ import { getStories } from "@/lib/api/stories";
 
 export const revalidate = 86400;
 
-// ponytail: walks the cursor API, capped at MAX_PAGES * 100 URLs per type.
-// Switch to generateSitemaps with a sitemap index once the archive outgrows it.
-const MAX_PAGES = 50;
+export const SITEMAP_IDS = ["pages", "users", "posts", "stories"] as const;
+type SitemapId = (typeof SITEMAP_IDS)[number];
+
+// ponytail: one sitemap per type. Google caps a sitemap at 50,000 URLs, and the
+// cursor API can't jump to page N, so a type past 50k needs a backend endpoint
+// with page-number pagination before it can be chunked.
+const MAX_PAGES = 500;
+
+export function generateSitemaps() {
+  return SITEMAP_IDS.map((id) => ({ id }));
+}
 
 async function collect<T>(
   fetchPage: (cursor: string | null) => Promise<Paginated<T>>
@@ -30,31 +38,41 @@ async function collect<T>(
   return items;
 }
 
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [users, posts, stories] = await Promise.all([
-    collect((cursor) => getUsers(cursor, undefined, undefined, 100)),
-    collect((cursor) => getPosts(cursor, undefined, undefined, 100)),
-    collect((cursor) => getStories(cursor, undefined, undefined, 100)),
-  ]);
-
-  return [
+const builders: Record<SitemapId, () => Promise<MetadataRoute.Sitemap>> = {
+  pages: async () => [
     { url: SITE_URL, changeFrequency: "daily", priority: 1 },
     ...["users", "posts", "stories"].map((path) => ({
       url: `${SITE_URL}/${path}`,
       changeFrequency: "daily" as const,
       priority: 0.8,
     })),
-    ...users.map((user) => ({
-      url: `${SITE_URL}/users/${user.uuid}`,
-      lastModified: user.updated_at,
-    })),
-    ...posts.map((post) => ({
-      url: `${SITE_URL}/posts/${post.id}`,
-      lastModified: post.updated_at,
-    })),
-    ...stories.map((story) => ({
-      url: `${SITE_URL}/stories/${story.story_id}`,
-      lastModified: story.created_at,
-    })),
-  ];
+  ],
+  users: async () =>
+    (await collect((c) => getUsers(c, undefined, undefined, 100))).map(
+      (user) => ({
+        url: `${SITE_URL}/users/${user.uuid}`,
+        lastModified: user.updated_at,
+      })
+    ),
+  posts: async () =>
+    (await collect((c) => getPosts(c, undefined, undefined, 100))).map(
+      (post) => ({
+        url: `${SITE_URL}/posts/${post.id}`,
+        lastModified: post.updated_at,
+      })
+    ),
+  stories: async () =>
+    (await collect((c) => getStories(c, undefined, undefined, 100))).map(
+      (story) => ({
+        url: `${SITE_URL}/stories/${story.story_id}`,
+        lastModified: story.created_at,
+      })
+    ),
+};
+
+export default async function sitemap(props: {
+  id: Promise<string>;
+}): Promise<MetadataRoute.Sitemap> {
+  const id = (await props.id) as SitemapId;
+  return builders[id]?.() ?? [];
 }
