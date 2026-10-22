@@ -13,7 +13,8 @@ ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL \
     NEXT_TELEMETRY_DISABLED=1
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-RUN npm run build
+# public/ is empty and untracked by git, so it may be missing from the checkout.
+RUN mkdir -p public && npm run build
 
 FROM node:24-alpine AS runner
 WORKDIR /app
