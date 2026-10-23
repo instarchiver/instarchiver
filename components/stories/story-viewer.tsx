@@ -8,6 +8,7 @@ export function StoryViewer({ story }: { story: Story }) {
         src={story.media}
         alt={`Story by ${story.user.username}`}
         blurDataUrl={story.blur_data_url}
+        poster={story.thumbnail}
         sizes="384px"
         priority
         controls
