@@ -7,6 +7,7 @@ import {
 import { loadPost } from "@/lib/api/server";
 import { formatPostTitle, formatUserTitle, truncate } from "@/lib/format";
 import { queryKeys } from "@/lib/query-keys";
+import { SITE_URL } from "@/lib/api/client";
 import { JsonLd } from "@/components/json-ld";
 import { PostDetailContent } from "./post-detail-content";
 
@@ -57,6 +58,7 @@ export default async function PostDetailPage({
           data={{
             "@context": "https://schema.org",
             "@type": "SocialMediaPosting",
+            url: `${SITE_URL}/posts/${id}`,
             headline: formatPostTitle(post),
             articleBody: post.caption || undefined,
             datePublished: post.post_created_at,
@@ -66,6 +68,7 @@ export default async function PostDetailPage({
               "@type": "Person",
               name: post.user.full_name || post.user.username,
               alternateName: `@${post.user.username}`,
+              url: `${SITE_URL}/users/${post.user.uuid}`,
             },
           }}
         />
