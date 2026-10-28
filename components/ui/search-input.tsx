@@ -18,7 +18,7 @@ export function SearchInput({
   "aria-label": ariaLabel = "Search",
 }: SearchInputProps) {
   return (
-    <div className="relative flex min-h-11 items-center rounded-lg border border-border bg-card focus-within:ring-2 focus-within:ring-ring">
+    <div className="relative flex min-h-11 items-center rounded-lg border border-input bg-card focus-within:ring-2 focus-within:ring-ring">
       <MagnifyingGlass
         size={18}
         className="pointer-events-none absolute left-3 text-muted-foreground"

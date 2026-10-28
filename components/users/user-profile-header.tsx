@@ -4,6 +4,7 @@ import type { InstagramUser } from "@/lib/api/types";
 import { Avatar } from "./avatar";
 import { PrivateBadge, VerifiedBadge } from "./verified-badge";
 import { UserStatsRow } from "./user-stats-row";
+import { formatDay } from "@/lib/format";
 
 export function UserProfileHeader({ user }: { user: InstagramUser }) {
   return (
@@ -32,6 +33,9 @@ export function UserProfileHeader({ user }: { user: InstagramUser }) {
             {user.biography}
           </p>
         )}
+        <p className="text-xs text-muted-foreground">
+          In the archive since {formatDay(user.created_at)}
+        </p>
         {user.has_history && (
           <Link
             href={`/users/${user.uuid}/history`}

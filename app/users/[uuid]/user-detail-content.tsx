@@ -21,7 +21,7 @@ const TABS = [
   { id: "stories", label: "Stories", icon: CirclesFour },
 ] as const;
 
-function UserDetailFallback() {
+export function UserDetailFallback() {
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
       <div className="flex flex-col items-center gap-6 sm:flex-row">

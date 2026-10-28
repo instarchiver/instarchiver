@@ -65,11 +65,19 @@ export function HistoryEntry({
       />
       <span
         aria-hidden="true"
-        className="absolute left-0 top-1.5 h-[15px] w-[15px] rounded-full border-2 border-background bg-accent"
+        className={`absolute left-0 top-1.5 h-[15px] w-[15px] rounded-full border-2 border-background ${
+          entry.history_type === "-" ? "bg-destructive" : "bg-accent"
+        }`}
       />
       <div className="rounded-xl border border-border bg-card p-4">
         <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
-          <h2 className="text-sm font-semibold text-foreground">{title}</h2>
+          <h2
+            className={`text-sm font-semibold ${
+              entry.history_type === "-" ? "text-destructive" : "text-foreground"
+            }`}
+          >
+            {title}
+          </h2>
           <time
             dateTime={entry.history_date}
             title={formatDate(entry.history_date)}

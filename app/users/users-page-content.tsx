@@ -23,7 +23,7 @@ function UsersPageFallback() {
         Every archived Instagram profile.
       </p>
       <div className="mt-8">
-        <div className="min-h-11 animate-pulse rounded-lg border border-border bg-card" />
+        <div className="min-h-11 animate-pulse rounded-lg border border-input bg-card" />
       </div>
     </div>
   );

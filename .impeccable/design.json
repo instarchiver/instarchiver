@@ -1,0 +1,475 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-28T07:19:10.797821+00:00",
+  "title": "Design System: InstArchiver",
+  "extensions": {
+    "colorMeta": {
+      "archive-indigo": {
+        "role": "primary",
+        "displayName": "Archive Indigo",
+        "tonalRamp": [
+          "#312e81",
+          "#3730a3",
+          "#4338ca",
+          "#4f46e5",
+          "#6366f1",
+          "#818cf8",
+          "#a5b4fc",
+          "#e0e7ff"
+        ]
+      },
+      "archive-indigo-dark": {
+        "role": "primary",
+        "displayName": "Archive Indigo (dark theme)",
+        "tonalRamp": [
+          "#312e81",
+          "#3730a3",
+          "#4338ca",
+          "#4f46e5",
+          "#6366f1",
+          "#818cf8",
+          "#a5b4fc",
+          "#e0e7ff"
+        ]
+      },
+      "page-mist": {
+        "role": "neutral",
+        "displayName": "Page Mist",
+        "tonalRamp": [
+          "#18181b",
+          "#27272a",
+          "#3f3f46",
+          "#52525b",
+          "#71717a",
+          "#a1a1aa",
+          "#e4e4e7",
+          "#fafafa"
+        ]
+      },
+      "page-mist-dark": {
+        "role": "neutral",
+        "displayName": "Page Mist (dark theme)",
+        "tonalRamp": [
+          "#18181b",
+          "#27272a",
+          "#3f3f46",
+          "#52525b",
+          "#71717a",
+          "#a1a1aa",
+          "#e4e4e7",
+          "#fafafa"
+        ]
+      },
+      "card-white": {
+        "role": "neutral",
+        "displayName": "Card White",
+        "tonalRamp": [
+          "#18181b",
+          "#27272a",
+          "#3f3f46",
+          "#52525b",
+          "#71717a",
+          "#a1a1aa",
+          "#e4e4e7",
+          "#fafafa"
+        ]
+      },
+      "card-white-dark": {
+        "role": "neutral",
+        "displayName": "Card White (dark theme)",
+        "tonalRamp": [
+          "#18181b",
+          "#27272a",
+          "#3f3f46",
+          "#52525b",
+          "#71717a",
+          "#a1a1aa",
+          "#e4e4e7",
+          "#fafafa"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "tonalRamp": [
+          "#18181b",
+          "#27272a",
+          "#3f3f46",
+          "#52525b",
+          "#71717a",
+          "#a1a1aa",
+          "#e4e4e7",
+          "#fafafa"
+        ]
+      },
+      "ink-dark": {
+        "role": "neutral",
+        "displayName": "Ink (dark theme)",
+        "tonalRamp": [
+          "#18181b",
+          "#27272a",
+          "#3f3f46",
+          "#52525b",
+          "#71717a",
+          "#a1a1aa",
+          "#e4e4e7",
+          "#fafafa"
+        ]
+      },
+      "hairline": {
+        "role": "neutral",
+        "displayName": "Hairline",
+        "tonalRamp": [
+          "#18181b",
+          "#27272a",
+          "#3f3f46",
+          "#52525b",
+          "#71717a",
+          "#a1a1aa",
+          "#e4e4e7",
+          "#fafafa"
+        ]
+      },
+      "hairline-dark": {
+        "role": "neutral",
+        "displayName": "Hairline (dark theme)",
+        "tonalRamp": [
+          "#18181b",
+          "#27272a",
+          "#3f3f46",
+          "#52525b",
+          "#71717a",
+          "#a1a1aa",
+          "#e4e4e7",
+          "#fafafa"
+        ]
+      },
+      "well": {
+        "role": "neutral",
+        "displayName": "Well",
+        "tonalRamp": [
+          "#18181b",
+          "#27272a",
+          "#3f3f46",
+          "#52525b",
+          "#71717a",
+          "#a1a1aa",
+          "#e4e4e7",
+          "#fafafa"
+        ]
+      },
+      "well-dark": {
+        "role": "neutral",
+        "displayName": "Well (dark theme)",
+        "tonalRamp": [
+          "#18181b",
+          "#27272a",
+          "#3f3f46",
+          "#52525b",
+          "#71717a",
+          "#a1a1aa",
+          "#e4e4e7",
+          "#fafafa"
+        ]
+      },
+      "quiet-text": {
+        "role": "neutral",
+        "displayName": "Quiet Text",
+        "tonalRamp": [
+          "#18181b",
+          "#27272a",
+          "#3f3f46",
+          "#52525b",
+          "#71717a",
+          "#a1a1aa",
+          "#e4e4e7",
+          "#fafafa"
+        ]
+      },
+      "quiet-text-dark": {
+        "role": "neutral",
+        "displayName": "Quiet Text (dark theme)",
+        "tonalRamp": [
+          "#18181b",
+          "#27272a",
+          "#3f3f46",
+          "#52525b",
+          "#71717a",
+          "#a1a1aa",
+          "#e4e4e7",
+          "#fafafa"
+        ]
+      },
+      "loss-red": {
+        "role": "semantic",
+        "displayName": "Loss Red",
+        "tonalRamp": [
+          "#7f1d1d",
+          "#991b1b",
+          "#b91c1c",
+          "#dc2626",
+          "#ef4444",
+          "#f87171",
+          "#fca5a5",
+          "#fee2e2"
+        ]
+      },
+      "loss-red-dark": {
+        "role": "semantic",
+        "displayName": "Loss Red (dark theme)",
+        "tonalRamp": [
+          "#7f1d1d",
+          "#991b1b",
+          "#b91c1c",
+          "#dc2626",
+          "#ef4444",
+          "#f87171",
+          "#fca5a5",
+          "#fee2e2"
+        ]
+      },
+      "gain-green": {
+        "role": "semantic",
+        "displayName": "Gain Green",
+        "tonalRamp": [
+          "#064e3b",
+          "#065f46",
+          "#047857",
+          "#059669",
+          "#10b981",
+          "#34d399",
+          "#6ee7b7",
+          "#d1fae5"
+        ]
+      },
+      "gain-green-dark": {
+        "role": "semantic",
+        "displayName": "Gain Green (dark theme)",
+        "tonalRamp": [
+          "#064e3b",
+          "#065f46",
+          "#047857",
+          "#059669",
+          "#10b981",
+          "#34d399",
+          "#6ee7b7",
+          "#d1fae5"
+        ]
+      },
+      "field-edge": {
+        "role": "neutral",
+        "displayName": "Field Edge",
+        "tonalRamp": [
+          "#18181b",
+          "#27272a",
+          "#3f3f46",
+          "#52525b",
+          "#71717a",
+          "#a1a1aa",
+          "#e4e4e7",
+          "#fafafa"
+        ]
+      },
+      "field-edge-dark": {
+        "role": "neutral",
+        "displayName": "Field Edge (dark theme)",
+        "tonalRamp": [
+          "#18181b",
+          "#27272a",
+          "#3f3f46",
+          "#52525b",
+          "#71717a",
+          "#a1a1aa",
+          "#e4e4e7",
+          "#fafafa"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "The home page headline only."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Section titles and archive totals on home cards."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "The username on a profile page."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Default for nearly all UI text."
+      },
+      "body-lead": {
+        "displayName": "Body Lead",
+        "purpose": "Intro paragraphs under a page headline, about 65ch wide."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Counts on cards, timestamps, delta badges, history field names."
+      }
+    },
+    "shadows": [
+      {
+        "name": "lift",
+        "value": "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)",
+        "purpose": "Hover state on clickable cards and media tiles, paired with a 2px upward translate."
+      },
+      {
+        "name": "float",
+        "value": "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)",
+        "purpose": "Dropdown menus, the account menu, and the add-user dialog."
+      }
+    ],
+    "motion": [
+      {
+        "name": "skeleton-pulse",
+        "value": "animate-pulse (2s cubic-bezier(0.4, 0, 0.6, 1) infinite)",
+        "purpose": "Loading placeholders."
+      },
+      {
+        "name": "tile-morph",
+        "value": "420ms cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Shared-element morph from a post or story tile into its detail hero, via React <ViewTransition share=\"morph\">. Disabled under prefers-reduced-motion."
+      },
+      {
+        "name": "ease-out-expo",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "The system curve for movement: card lift, floating-layer entrances, the tile morph. Exposed as the Tailwind utility ease-out-expo."
+      },
+      {
+        "name": "card-lift",
+        "value": "200ms ease-out-expo on translate and box-shadow",
+        "purpose": "Hover lift on clickable cards and tiles; :active settles flat. No translate under reduced motion."
+      },
+      {
+        "name": "float-enter",
+        "value": "150ms (menus) / 200ms (dialog) ease-out-expo from scale 0.95 and opacity 0 via @starting-style",
+        "purpose": "Dropdowns, the account menu and the add-user dialog. Dialog exits in 150ms. Reduced motion keeps the fade only."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "sm",
+        "value": "640px"
+      },
+      {
+        "name": "md",
+        "value": "768px"
+      },
+      {
+        "name": "lg",
+        "value": "1024px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Archive Indigo action button, e.g. Add user or Try again.",
+      "html": "<button class=\"ds-btn-primary\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 256 256\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"16\" stroke-linecap=\"round\"><circle cx=\"108\" cy=\"100\" r=\"60\"/><path d=\"M22 200c20-30 52-48 86-48s66 18 86 48\"/><line x1=\"200\" y1=\"112\" x2=\"248\" y2=\"112\"/><line x1=\"224\" y1=\"88\" x2=\"224\" y2=\"136\"/></svg>Add user</button>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 16px; border: none; border-radius: 8px; background: var(--accent); color: var(--accent-foreground); font: 500 14px/20px var(--font-geist-sans, system-ui, sans-serif); cursor: pointer; transition: opacity 150ms; } .ds-btn-primary:hover { opacity: 0.9; } .ds-btn-primary:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Secondary action with no fill, e.g. Cancel or Login.",
+      "html": "<button class=\"ds-btn-ghost\">Cancel</button>",
+      "css": ".ds-btn-ghost { display: inline-flex; align-items: center; min-height: 44px; padding: 0 16px; border: none; border-radius: 8px; background: transparent; color: var(--muted-foreground); font: 500 14px/20px var(--font-geist-sans, system-ui, sans-serif); cursor: pointer; transition: background-color 150ms, color 150ms; } .ds-btn-ghost:hover { background: var(--muted); color: var(--foreground); } .ds-btn-ghost:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }"
+    },
+    {
+      "name": "Search Input",
+      "kind": "input",
+      "refersTo": "input-search",
+      "description": "Search field used on the Users, Stories and Posts grids.",
+      "html": "<label class=\"ds-input-search\"><span class=\"ds-input-search-icon\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 256 256\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"16\" stroke-linecap=\"round\"><circle cx=\"112\" cy=\"112\" r=\"80\"/><line x1=\"168.6\" y1=\"168.6\" x2=\"224\" y2=\"224\"/></svg></span><input type=\"text\" placeholder=\"Search users\" aria-label=\"Search users\"></label>",
+      "css": ".ds-input-search { position: relative; display: flex; align-items: center; min-height: 44px; width: 320px; border: 1px solid var(--input); border-radius: 8px; background: var(--card); } .ds-input-search:focus-within { box-shadow: 0 0 0 2px var(--ring); } .ds-input-search-icon { position: absolute; left: 12px; display: flex; color: var(--muted-foreground); pointer-events: none; } .ds-input-search input { width: 100%; min-height: 44px; padding: 8px 40px; border: none; background: transparent; color: var(--foreground); font: 400 14px/20px var(--font-geist-sans, system-ui, sans-serif); outline: none; } .ds-input-search input::placeholder { color: var(--muted-foreground); }"
+    },
+    {
+      "name": "Navigation",
+      "kind": "nav",
+      "refersTo": "nav-link",
+      "description": "Header nav links with icon; the active link gets a Well fill.",
+      "html": "<nav class=\"ds-nav\"><a class=\"ds-nav-link\" href=\"#\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 256 256\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"16\" stroke-linecap=\"round\"><circle cx=\"128\" cy=\"140\" r=\"40\"/><path d=\"M64 216a72 72 0 0 1 128 0\"/></svg><span>Users</span></a><a class=\"ds-nav-link is-active\" aria-current=\"page\" href=\"#\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 256 256\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"16\"><rect x=\"40\" y=\"40\" width=\"72\" height=\"72\" rx=\"8\"/><rect x=\"144\" y=\"40\" width=\"72\" height=\"72\" rx=\"8\"/><rect x=\"40\" y=\"144\" width=\"72\" height=\"72\" rx=\"8\"/><rect x=\"144\" y=\"144\" width=\"72\" height=\"72\" rx=\"8\"/></svg><span>Posts</span></a></nav>",
+      "css": ".ds-nav { display: flex; gap: 4px; } .ds-nav-link { display: flex; align-items: center; gap: 6px; min-height: 44px; padding: 8px 12px; border-radius: 8px; color: var(--muted-foreground); font: 500 14px/20px var(--font-geist-sans, system-ui, sans-serif); text-decoration: none; transition: background-color 150ms, color 150ms; } .ds-nav-link:hover, .ds-nav-link.is-active { background: var(--muted); color: var(--foreground); } .ds-nav-link:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }"
+    },
+    {
+      "name": "User Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Bordered card for an archived profile; lifts on hover.",
+      "html": "<a class=\"ds-user-card\" href=\"#\"><span class=\"ds-avatar\"></span><span class=\"ds-user-name\">natgeo <svg width=\"16\" height=\"16\" viewBox=\"0 0 256 256\"><circle cx=\"128\" cy=\"128\" r=\"104\" fill=\"currentColor\"/><polyline points=\"88,132 116,160 172,104\" fill=\"none\" stroke=\"#fff\" stroke-width=\"20\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg></span><span class=\"ds-user-full\">National Geographic</span><span class=\"ds-user-meta\">283M followers</span></a>",
+      "css": ".ds-user-card { display: flex; flex-direction: column; align-items: center; gap: 4px; width: 200px; padding: 16px; border: 1px solid var(--border); border-radius: 12px; background: var(--card); text-align: center; text-decoration: none; transition: translate 200ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 200ms cubic-bezier(0.16, 1, 0.3, 1); } .ds-user-card:hover { translate: 0 -2px; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); } .ds-user-card:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; } .ds-avatar { width: 96px; height: 96px; margin-bottom: 8px; border-radius: 9999px; background: var(--muted); } .ds-user-name { display: inline-flex; align-items: center; gap: 4px; color: var(--foreground); font: 500 16px/24px var(--font-geist-sans, system-ui, sans-serif); } .ds-user-name svg { color: var(--accent); } .ds-user-full { color: var(--muted-foreground); font: 400 14px/20px var(--font-geist-sans, system-ui, sans-serif); } .ds-user-meta { color: var(--muted-foreground); font: 400 12px/16px var(--font-geist-sans, system-ui, sans-serif); font-variant-numeric: tabular-nums; }"
+    },
+    {
+      "name": "Story Tile",
+      "kind": "custom",
+      "refersTo": "media-tile",
+      "description": "9:16 story tile with owner and timestamp on black gradient scrims.",
+      "html": "<a class=\"ds-story-tile\" href=\"#\"><span class=\"ds-story-top\"><span class=\"ds-story-avatar\"></span>natgeo</span><span class=\"ds-story-bottom\">3h ago</span></a>",
+      "css": ".ds-story-tile { position: relative; display: block; width: 160px; aspect-ratio: 9 / 16; overflow: hidden; border: 1px solid var(--border); border-radius: 12px; background: linear-gradient(160deg, #6b7a5a, #2f3b2a); text-decoration: none; transition: translate 200ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 200ms cubic-bezier(0.16, 1, 0.3, 1); } .ds-story-tile:hover { translate: 0 -2px; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); } .ds-story-top { position: absolute; inset: 0 0 auto 0; display: flex; align-items: center; gap: 8px; padding: 10px; background: linear-gradient(to bottom, rgb(0 0 0 / 0.6), transparent); color: #fff; font: 500 14px/20px var(--font-geist-sans, system-ui, sans-serif); } .ds-story-avatar { width: 32px; height: 32px; border-radius: 9999px; background: var(--muted); } .ds-story-bottom { position: absolute; inset: auto 0 0 0; padding: 10px; background: linear-gradient(to top, rgb(0 0 0 / 0.6), transparent); color: rgb(255 255 255 / 0.8); font: 400 12px/16px var(--font-geist-sans, system-ui, sans-serif); }"
+    },
+    {
+      "name": "History Change Row",
+      "kind": "custom",
+      "refersTo": "delta-gain",
+      "description": "One profile-history change: label, old value, arrow, new value, delta badge.",
+      "html": "<div class=\"ds-history-row\"><span class=\"ds-history-label\">Followers</span><span class=\"ds-history-from\">12.4K</span><span class=\"ds-history-arrow\">→</span><span class=\"ds-history-to\">12.6K</span><span class=\"ds-delta ds-delta-gain\">+172</span><span class=\"ds-delta ds-delta-loss\">−38</span></div>",
+      "css": ".ds-history-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font: 400 14px/20px var(--font-geist-sans, system-ui, sans-serif); } .ds-history-label { width: 96px; color: var(--muted-foreground); font: 500 12px/16px var(--font-geist-sans, system-ui, sans-serif); text-transform: uppercase; letter-spacing: 0.025em; } .ds-history-from { color: var(--muted-foreground); font-variant-numeric: tabular-nums; } .ds-history-arrow { color: var(--muted-foreground); } .ds-history-to { color: var(--foreground); font-weight: 500; font-variant-numeric: tabular-nums; } .ds-delta { padding: 2px 6px; border-radius: 6px; font: 500 12px/16px var(--font-geist-sans, system-ui, sans-serif); font-variant-numeric: tabular-nums; } .ds-delta-gain { background: color-mix(in srgb, var(--success) 10%, transparent); color: var(--success); } .ds-delta-loss { background: color-mix(in srgb, var(--destructive) 10%, transparent); color: var(--destructive); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Quiet Reading Room",
+    "overview": "The interface is a calm, gray room built so the archived photos and stories are the only real color on the page. Surfaces are near-white zinc in light mode and near-black zinc in dark mode, separated by one-pixel hairlines rather than shadows. A single indigo accent marks what you can act on. Everything else is ink and quiet gray.\n\nIt is deliberately familiar. A sticky top bar, media grids, search fields and dropdowns all behave the way visitors expect from social apps, so nobody has to learn the layout before finding the person they came for. Density is high: most text is 14px, gaps run 8 to 16px, and grids go up to five columns wide on desktop.\n\nPrecision carries the personality. Counts use tabular figures, dates are exact, and profile history renders as literal before and after values with an arrow between them. The UI keeps its own voice low so these facts read clearly.",
+    "keyCharacteristics": [
+      "Zinc neutrals with one indigo accent; media supplies the color.",
+      "Flat bordered surfaces that lift slightly only on hover.",
+      "Geist Sans throughout, mostly at 14px, semibold for headings.",
+      "44px minimum touch targets on every control.",
+      "Full light and dark themes defined from the same token names."
+    ],
+    "rules": [
+      {
+        "name": "The Media Owns Color Rule",
+        "body": "Chrome stays zinc and indigo. Photos, stories and avatars are the only full-color content, and the UI never competes with them through tinted panels or gradients.",
+        "section": "colors"
+      },
+      {
+        "name": "The One Accent Rule",
+        "body": "Archive Indigo is the only hue that signals interaction. Don't introduce a second accent; red and green are reserved for loss and gain.",
+        "section": "colors"
+      },
+      {
+        "name": "The Tabular Facts Rule",
+        "body": "Every count, delta and statistic uses tabular figures (`tabular-nums`) so columns of numbers line up and changes are easy to compare.",
+        "section": "typography"
+      },
+      {
+        "name": "The Flat-By-Default Rule",
+        "body": "Nothing casts a shadow at rest. If a surface needs separation, use a Hairline border or a step between Page Mist and Card White.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do use the semantic tokens (`bg-card`, `text-muted-foreground`, `border-border`, `bg-accent`) and never raw zinc or indigo classes, so both themes stay correct.",
+      "Do keep every interactive control at least 44px tall (`min-h-11`).",
+      "Do check every text and badge pair at 4.5:1 and every field edge at 3:1, in both themes, including text on the Well fill.",
+      "Do put any text over media on the 60% black gradient scrim, in white.",
+      "Do use `tabular-nums` for every count, delta and statistic.",
+      "Do use the shared grid column presets in `components/ui/grid-columns.ts` for any new media grid, so skeletons and virtualization match.",
+      "Do name transition properties (`transition-[translate,box-shadow]`, `transition-colors`) instead of `transition-all`, use the `ease-out-expo` curve for movement, and give every movement a `motion-reduce:` fallback."
+    ],
+    "donts": [
+      "Don't add shadows to surfaces at rest; shadows mean hover or floating.",
+      "Don't introduce a second accent hue or use Archive Indigo decoratively; it signals interaction or verification only.",
+      "Don't use Gain Green or Loss Red outside gains, losses and errors.",
+      "Don't add new corner radii beyond 6px, 8px, 12px and full.",
+      "Don't tint or color-grade archived media. The black text scrim is the only overlay it gets."
+    ]
+  }
+}

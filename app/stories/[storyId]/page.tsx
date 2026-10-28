@@ -7,6 +7,7 @@ import {
 import { loadStory } from "@/lib/api/server";
 import { formatDate, formatStoryTitle, formatUserTitle } from "@/lib/format";
 import { queryKeys } from "@/lib/query-keys";
+import { SITE_URL } from "@/lib/api/client";
 import { JsonLd } from "@/components/json-ld";
 import { StoryDetailContent } from "./story-detail-content";
 
@@ -53,6 +54,7 @@ export default async function StoryDetailPage({
           data={{
             "@context": "https://schema.org",
             "@type": "SocialMediaPosting",
+            url: `${SITE_URL}/stories/${storyId}`,
             headline: formatStoryTitle(story),
             datePublished: story.story_created_at,
             image: story.thumbnail || undefined,
@@ -60,6 +62,7 @@ export default async function StoryDetailPage({
               "@type": "Person",
               name: story.user.full_name || story.user.username,
               alternateName: `@${story.user.username}`,
+              url: `${SITE_URL}/users/${story.user.uuid}`,
             },
           }}
         />
