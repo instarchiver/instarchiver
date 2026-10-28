@@ -21,7 +21,7 @@ export function SimilarStories({ storyId }: { storyId: string }) {
 
   return (
     <div className="mt-10">
-      <h2 className="text-lg font-semibold text-foreground">Similar Stories</h2>
+      <h2 className="text-lg font-semibold text-foreground">Similar stories</h2>
       <div className="mt-4">
         <InfiniteGrid
           items={stories}

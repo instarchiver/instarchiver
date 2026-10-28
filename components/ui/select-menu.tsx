@@ -98,7 +98,7 @@ export function SelectMenu({
         aria-haspopup="listbox"
         aria-expanded={isOpen}
         aria-label={ariaLabel}
-        className="flex min-h-11 w-full cursor-pointer items-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        className="flex min-h-11 w-full cursor-pointer items-center gap-2 rounded-lg border border-input bg-card px-3 py-2 text-sm text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
       >
         {LeadingIcon && <LeadingIcon size={18} className="text-muted-foreground" />}
         <span className="flex-1 whitespace-nowrap text-left">{selected?.label}</span>
@@ -115,7 +115,7 @@ export function SelectMenu({
           tabIndex={-1}
           onKeyDown={onListKeyDown}
           ref={listRef}
-          className="absolute right-0 z-50 mt-1 max-h-64 w-full min-w-max overflow-auto rounded-lg border border-border bg-card p-1 shadow-md focus:outline-none"
+          className="absolute right-0 z-50 mt-1 max-h-64 w-full min-w-max origin-top overflow-auto rounded-lg border border-border bg-card p-1 shadow-md focus:outline-none transition-[opacity,scale] duration-150 ease-out-expo starting:scale-95 starting:opacity-0 motion-reduce:starting:scale-100"
         >
           {options.map((option, index) => {
             const isSelected = option.value === value;

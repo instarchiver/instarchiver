@@ -142,7 +142,7 @@ function AddUserDialog({
           <label htmlFor="add-user-username" className="sr-only">
             Instagram username
           </label>
-          <div className="relative flex min-h-11 items-center rounded-lg border border-border bg-card focus-within:ring-2 focus-within:ring-ring">
+          <div className="relative flex min-h-11 items-center rounded-lg border border-input bg-card focus-within:ring-2 focus-within:ring-ring">
             <span className="pl-3 text-sm text-muted-foreground">@</span>
             <input
               id="add-user-username"
@@ -207,7 +207,7 @@ function AddUserDialog({
       onClick={(e) => {
         if (e.target === e.currentTarget) close();
       }}
-      className="m-auto w-[calc(100%-2rem)] max-w-md rounded-lg border border-border bg-card p-0 text-foreground shadow-md backdrop:bg-black/50"
+      className="m-auto w-[calc(100%-2rem)] max-w-md rounded-lg border border-border bg-card p-0 text-foreground shadow-md transition-[opacity,scale,overlay,display] transition-discrete duration-150 ease-out-expo scale-95 opacity-0 open:scale-100 open:opacity-100 open:duration-200 starting:open:scale-95 starting:open:opacity-0 motion-reduce:scale-100 motion-reduce:starting:open:scale-100 backdrop:bg-black/0 backdrop:transition-[background-color,overlay,display] backdrop:transition-discrete backdrop:duration-150 open:backdrop:bg-black/50 starting:open:backdrop:bg-black/0"
     >
       <div className="flex flex-col gap-4 p-6">
         <div className="flex items-start justify-between gap-4">

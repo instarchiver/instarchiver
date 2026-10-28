@@ -120,7 +120,9 @@ export function InfiniteGrid<T>({
             >
               <div className={`grid gap-4 ${columns.className}`}>
                 {rowItems.map((item) => (
-                  <div key={getKey(item)}>{renderItem(item)}</div>
+                  <div key={getKey(item)} className="min-w-0">
+                    {renderItem(item)}
+                  </div>
                 ))}
               </div>
             </div>

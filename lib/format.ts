@@ -45,6 +45,26 @@ export function formatDate(dateString: string | null | undefined): string {
   }).format(date);
 }
 
+export function formatDay(dateString: string | null | undefined): string {
+  if (!dateString) return "";
+  const date = new Date(dateString);
+  if (Number.isNaN(date.getTime())) return "";
+  return new Intl.DateTimeFormat("en-US", { dateStyle: "medium" }).format(date);
+}
+
+const STORY_LIFETIME_MS = 24 * 60 * 60 * 1000;
+
+/** Where a story stands against Instagram's 24-hour window. */
+export function formatStoryWindow(storyCreatedAt: string | null | undefined): string {
+  if (!storyCreatedAt) return "";
+  const created = new Date(storyCreatedAt).getTime();
+  if (Number.isNaN(created)) return "";
+  const end = new Date(created + STORY_LIFETIME_MS).toISOString();
+  return created + STORY_LIFETIME_MS > Date.now()
+    ? `Live on Instagram, expires ${formatRelativeTime(end)}`
+    : `Expired on Instagram ${formatRelativeTime(end)}`;
+}
+
 export function isVideoUrl(url: string | null | undefined): boolean {
   if (!url) return false;
   return /\.(mp4|mov|webm|m4v)(\?.*)?$/i.test(url);

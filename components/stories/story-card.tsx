@@ -1,3 +1,4 @@
+import { ViewTransition } from "react";
 import Link from "next/link";
 import type { Story } from "@/lib/api/types";
 import { MediaItem } from "@/components/media/media-item";
@@ -8,13 +9,17 @@ export function StoryCard({ story }: { story: Story }) {
   return (
     <Link
       href={`/stories/${story.story_id}`}
-      className="group relative block aspect-[9/16] overflow-hidden rounded-xl border border-border bg-card transition-all hover:-translate-y-0.5 hover:shadow-md"
+      className="group relative block aspect-[9/16] overflow-hidden rounded-xl border border-border bg-card transition-[translate,box-shadow] duration-200 ease-out-expo hover:-translate-y-0.5 hover:shadow-md active:translate-y-0 active:shadow-none motion-reduce:hover:translate-y-0"
     >
-      <MediaItem
-        src={story.thumbnail}
-        alt={`Story by ${story.user.username}`}
-        blurDataUrl={story.blur_data_url}
-      />
+      <ViewTransition name={`story-${story.story_id}`} share="morph" default="none">
+        <div className="absolute inset-0 overflow-hidden rounded-xl">
+          <MediaItem
+            src={story.thumbnail}
+            alt={`Story by ${story.user.username}`}
+            blurDataUrl={story.blur_data_url}
+          />
+        </div>
+      </ViewTransition>
       <div className="absolute inset-x-0 top-0 flex items-center gap-2 bg-gradient-to-b from-black/60 to-transparent p-2.5">
         <Avatar src={story.user.profile_picture} alt={story.user.username} size="sm" />
         <span className="truncate text-sm font-medium text-white">

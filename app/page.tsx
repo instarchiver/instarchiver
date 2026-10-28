@@ -43,18 +43,19 @@ export default function Home() {
         <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
           Your Instagram archive, browsable.
         </h1>
-        <p className="mt-4 text-base leading-7 text-muted-foreground">
+        <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-muted-foreground">
           InstArchiver keeps a searchable record of archived Instagram users,
           their stories, and their posts &mdash; explore the collection below.
         </p>
       </div>
 
-      <div className="mt-12 grid gap-4 sm:grid-cols-3">
+      {/* Phones get three compact tiles so recent media starts above the fold. */}
+      <div className="mt-10 grid grid-cols-3 gap-3 sm:mt-12 sm:gap-4">
         {SECTIONS.map(({ href, label, description, icon: Icon, statKey }) => (
           <Link
             key={href}
             href={href}
-            className="group flex flex-col gap-4 rounded-xl border border-border bg-card p-6 transition-all hover:-translate-y-0.5 hover:shadow-md"
+            className="group flex min-w-0 flex-col gap-3 rounded-xl border border-border bg-card p-3 transition-[translate,box-shadow] duration-200 ease-out-expo hover:-translate-y-0.5 hover:shadow-md active:translate-y-0 active:shadow-none motion-reduce:hover:translate-y-0 sm:gap-4 sm:p-6"
           >
             <div className="flex items-center justify-between">
               <span className="flex h-11 w-11 items-center justify-center rounded-lg bg-muted text-accent">
@@ -62,12 +63,14 @@ export default function Home() {
               </span>
               <ArrowRight
                 size={18}
-                className="text-muted-foreground transition-transform group-hover:translate-x-0.5"
+                className="hidden text-muted-foreground transition-transform duration-200 ease-out-expo group-hover:translate-x-0.5 motion-reduce:group-hover:translate-x-0 sm:block"
               />
             </div>
             <div>
-              <p className="text-lg font-semibold text-foreground">{label}</p>
-              <p className="mt-1 text-sm text-muted-foreground">
+              <p className="text-base font-semibold text-foreground sm:text-lg">
+                {label}
+              </p>
+              <p className="mt-1 hidden text-sm text-muted-foreground sm:block">
                 {description}
               </p>
             </div>

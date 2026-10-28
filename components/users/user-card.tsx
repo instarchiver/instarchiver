@@ -8,12 +8,12 @@ export function UserCard({ user }: { user: InstagramUser }) {
   return (
     <Link
       href={`/users/${user.uuid}`}
-      className="group flex flex-col items-center gap-3 rounded-xl border border-border bg-card p-4 text-center transition-all hover:-translate-y-0.5 hover:shadow-md"
+      className="group flex h-full flex-col items-center gap-3 rounded-xl border border-border bg-card p-4 text-center transition-[translate,box-shadow] duration-200 ease-out-expo hover:-translate-y-0.5 hover:shadow-md active:translate-y-0 active:shadow-none motion-reduce:hover:translate-y-0"
     >
       <Avatar src={user.profile_picture} alt={user.username} size="lg" />
-      <div className="min-w-0">
+      <div className="w-full min-w-0">
         <div className="flex items-center justify-center gap-1">
-          <p className="truncate font-medium text-foreground">
+          <p className="min-w-0 truncate font-medium text-foreground">
             {user.username}
           </p>
           {user.is_verified && <VerifiedBadge />}

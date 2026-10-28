@@ -18,15 +18,18 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur supports-backdrop-blur:bg-background/60">
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
+      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-2 px-4 sm:gap-4 sm:px-6">
         <Link
           href="/"
           className="flex shrink-0 items-center gap-2 text-lg font-semibold tracking-tight text-foreground"
         >
-          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent text-accent-foreground">
+          <span
+            className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent text-accent-foreground"
+            aria-hidden="true"
+          >
             IA
           </span>
-          <span className="hidden sm:inline">InstArchiver</span>
+          <span className="sr-only sm:not-sr-only">InstArchiver</span>
         </Link>
 
         <nav className="flex items-center gap-1 overflow-x-auto">
@@ -38,7 +41,8 @@ export function Header() {
                 key={href}
                 href={href}
                 aria-current={isActive ? "page" : undefined}
-                className={`flex min-h-11 items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+                // The logo already links home, so Home gives up its slot on phones.
+                className={`${href === "/" ? "hidden sm:flex" : "flex"} min-h-11 items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
                   isActive
                     ? "bg-muted text-foreground"
                     : "text-muted-foreground hover:bg-muted hover:text-foreground"
@@ -51,7 +55,7 @@ export function Header() {
           })}
         </nav>
 
-        <div className="flex shrink-0 items-center gap-1">
+        <div className="flex shrink-0 items-center sm:gap-1">
           <ThemeToggle />
           <UserMenu />
         </div>
