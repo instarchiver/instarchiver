@@ -10,11 +10,13 @@
   --card-foreground: #18181b;
   --border: #e4e4e7;
   --muted: #f4f4f5;
-  --muted-foreground: #71717a;
+  --muted-foreground: #6b6b74;
+  --input: #8a8a93;
   --accent: #4f46e5;
   --accent-foreground: #ffffff;
   --ring: #4f46e5;
-  --destructive: #dc2626;
+  --success: #047857;
+  --destructive: #b91c1c;
   --destructive-foreground: #ffffff;
 }
 
@@ -27,9 +29,11 @@
   --border: #2a2a2e;
   --muted: #202023;
   --muted-foreground: #a1a1aa;
+  --input: #6a6a73;
   --accent: #818cf8;
   --accent-foreground: #0b0b0d;
   --ring: #818cf8;
+  --success: #34d399;
   --destructive: #f87171;
   --destructive-foreground: #0b0b0d;
 }
@@ -42,13 +46,27 @@
   --color-border: var(--border);
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
+  --color-input: var(--input);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
   --color-ring: var(--ring);
+  --color-success: var(--success);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
   --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@layer base {
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
 }
 
 body {
@@ -56,8 +74,45 @@ body {
   color: var(--color-foreground);
 }
 
-* {
-  border-color: var(--color-border);
+@layer base {
+  /* Layered so border-color utilities (e.g. border-input) can override it. */
+  * {
+    border-color: var(--color-border);
+  }
+}
+
+/* Grid tile -> detail hero morph (see PostCard, StoryCard and the detail skeletons). */
+::view-transition-group(.morph) {
+  animation-duration: 420ms;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Tiles are square or 9:16 and heroes are 4:5, so crop instead of stretching. */
+::view-transition-old(.morph),
+::view-transition-new(.morph) {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  overflow: clip;
+}
+
+::view-transition-image-pair(.morph) {
+  animation: morph-soften 420ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes morph-soften {
+  35% {
+    filter: blur(2px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*),
+  ::view-transition-image-pair(*) {
+    animation: none !important;
+  }
 }
 
 ::selection {

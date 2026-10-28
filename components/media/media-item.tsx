@@ -10,6 +10,7 @@ interface MediaItemProps {
   priority?: boolean;
   controls?: boolean;
   autoPlay?: boolean;
+  poster?: string | null;
 }
 
 export function MediaItem({
@@ -20,6 +21,7 @@ export function MediaItem({
   priority,
   controls = false,
   autoPlay = false,
+  poster,
 }: MediaItemProps) {
   if (!src) {
     return (
@@ -33,6 +35,7 @@ export function MediaItem({
     return (
       <video
         src={src}
+        poster={poster ?? undefined}
         controls={controls}
         autoPlay={autoPlay}
         muted={autoPlay}

@@ -9,12 +9,13 @@ import type {
 export function getUsers(
   cursorUrl?: string | null,
   search?: string,
-  ordering?: string
+  ordering?: string,
+  pageSize = 24
 ) {
   const url =
     cursorUrl ??
     buildApiUrl("/instagram/users/", {
-      page_size: "24",
+      page_size: String(pageSize),
       search: search || undefined,
       ordering: ordering || undefined,
     });

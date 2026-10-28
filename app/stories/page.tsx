@@ -4,6 +4,8 @@ import { StoriesPageContent } from "./stories-page-content";
 
 export const metadata: Metadata = {
   title: "Stories",
+  description: "Every archived Instagram story, from every user.",
+  alternates: { canonical: "/stories" },
 };
 
 function StoriesPageFallback() {
@@ -14,7 +16,7 @@ function StoriesPageFallback() {
         Every archived story, from every user.
       </p>
       <div className="mt-8">
-        <div className="min-h-11 animate-pulse rounded-lg border border-border bg-card" />
+        <div className="min-h-11 animate-pulse rounded-lg border border-input bg-card" />
       </div>
     </div>
   );

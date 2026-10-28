@@ -27,6 +27,7 @@ export function PostCarousel({
           src={items[index].media}
           alt={alt}
           blurDataUrl={items[index].blur_data_url}
+          poster={items[index].thumbnail ?? fallbackSrc}
           sizes="(min-width: 1024px) 40vw, 100vw"
           priority
           controls
@@ -36,6 +37,7 @@ export function PostCarousel({
           src={fallbackSrc}
           alt={alt}
           blurDataUrl={fallbackBlur}
+          poster={fallbackSrc}
           sizes="(min-width: 1024px) 40vw, 100vw"
           priority
           controls

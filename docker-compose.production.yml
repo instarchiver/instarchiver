@@ -1,0 +1,42 @@
+services:
+  nextjs:
+    container_name: instarchiver-nextjs
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-https://api.instarchiver.net}
+        NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-https://instarchiver.net}
+    image: instarchiver_production_nextjs
+    restart: unless-stopped
+    mem_limit: 512m
+
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: instarchiver-nginx
+    restart: unless-stopped
+    depends_on:
+      - nextjs
+    ports:
+      - 100.73.60.108:58300:80
+    configs:
+      - source: nginx_conf
+        target: /etc/nginx/conf.d/default.conf
+
+configs:
+  nginx_conf:
+    content: |
+      server {
+        listen 80;
+        client_max_body_size 20m;
+        location / {
+          proxy_pass http://nextjs:3000;
+          proxy_http_version 1.1;
+          proxy_set_header Host $$host;
+          proxy_set_header X-Real-IP $$remote_addr;
+          proxy_set_header X-Forwarded-For $$proxy_add_x_forwarded_for;
+          proxy_set_header X-Forwarded-Proto $$scheme;
+          proxy_set_header Upgrade $$http_upgrade;
+          proxy_set_header Connection "upgrade";
+        }
+      }

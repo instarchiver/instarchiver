@@ -21,7 +21,7 @@ function DeltaBadge({ delta }: { delta: number }) {
     <span
       className={`rounded-md px-1.5 py-0.5 text-xs font-medium tabular-nums ${
         positive
-          ? "bg-emerald-500/10 text-emerald-600"
+          ? "bg-success/10 text-success"
           : "bg-destructive/10 text-destructive"
       }`}
     >

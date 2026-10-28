@@ -18,7 +18,7 @@ export function StatCount({ statKey }: { statKey: keyof SiteStatistics }) {
   const { data } = useStatistics();
 
   return (
-    <p className="text-2xl font-semibold tabular-nums text-foreground">
+    <p className="text-xl font-semibold tabular-nums text-foreground sm:text-2xl">
       {data ? formatCount(data[statKey]) : "—"}
     </p>
   );
@@ -37,21 +37,21 @@ function RecentSection({
 }) {
   return (
     <section className="mt-16">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-4">
         <h2 className="text-2xl font-semibold text-foreground">{title}</h2>
         <Link
           href={href}
-          className="flex items-center gap-1 text-sm font-medium text-accent hover:underline"
+          className="flex min-h-11 shrink-0 items-center gap-1 whitespace-nowrap text-sm font-medium text-accent hover:underline"
         >
           View all <ArrowRight size={16} />
         </Link>
       </div>
       {isLoading ? (
-        <div className="mt-6">
+        <div className="mt-4">
           <CardSkeletonGrid count={10} />
         </div>
       ) : (
-        <div className={`mt-6 grid gap-4 ${COLUMNS_2_3_4_5.className}`}>
+        <div className={`mt-4 grid gap-4 ${COLUMNS_2_3_4_5.className}`}>
           {children}
         </div>
       )}
@@ -67,7 +67,7 @@ export function RecentStories() {
 
   return (
     <RecentSection
-      title="Recently Archived Stories"
+      title="Recently archived stories"
       href="/stories"
       isLoading={isLoading}
     >
@@ -86,7 +86,7 @@ export function RecentPosts() {
 
   return (
     <RecentSection
-      title="Recently Archived Posts"
+      title="Recently archived posts"
       href="/posts"
       isLoading={isLoading}
     >

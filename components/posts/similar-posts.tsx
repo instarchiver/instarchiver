@@ -21,7 +21,7 @@ export function SimilarPosts({ postId }: { postId: string }) {
 
   return (
     <div className="mt-10">
-      <h2 className="text-lg font-semibold text-foreground">Similar Posts</h2>
+      <h2 className="text-lg font-semibold text-foreground">Similar posts</h2>
       <div className="mt-4">
         <InfiniteGrid
           items={posts}

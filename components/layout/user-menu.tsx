@@ -88,7 +88,7 @@ function AccountDropdown({
       {isOpen && (
         <div
           role="menu"
-          className="absolute right-0 z-50 mt-1 w-64 rounded-lg border border-border bg-card p-1 shadow-md"
+          className="absolute right-0 z-50 mt-1 w-64 origin-top-right rounded-lg border border-border bg-card p-1 shadow-md transition-[opacity,scale] duration-150 ease-out-expo starting:scale-95 starting:opacity-0 motion-reduce:starting:scale-100"
         >
           <div className="px-3 py-2">
             <p className="truncate text-sm font-medium text-foreground">

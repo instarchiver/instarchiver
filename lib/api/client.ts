@@ -4,6 +4,9 @@ import type { AuthTokens } from "./types";
 export const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 
+export const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://instarchiver.net";
+
 export function buildApiUrl(
   path: string,
   params?: Record<string, string | undefined>
