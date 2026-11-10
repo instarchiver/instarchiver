@@ -104,12 +104,19 @@ async function isAuthFailure(res: Response) {
   }
 }
 
+const SSR_TIMEOUT_MS = 5000;
+
 export async function fetchJson<T>(
   url: string,
   init: FetchJsonInit = {}
 ): Promise<T> {
   const { auth = true, ...requestInit } = init;
   const access = auth ? getTokens()?.access : undefined;
+  // On the server a hung API keeps the SSR stream open until the visitor gives
+  // up, so cap the wait and let the page fall back to the browser fetch.
+  if (typeof window === "undefined") {
+    requestInit.signal ??= AbortSignal.timeout(SSR_TIMEOUT_MS);
+  }
 
   let res = await fetch(url, withAuthHeader(requestInit, access));
 

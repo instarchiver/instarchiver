@@ -29,6 +29,11 @@ configs:
       server {
         listen 80;
         client_max_body_size 20m;
+        # The app has no server actions, so a Next-Action header only comes
+        # from scanners. Remove this rule if you add server actions.
+        if ($$http_next_action) {
+          return 403;
+        }
         location / {
           proxy_pass http://nextjs:3000;
           proxy_http_version 1.1;
