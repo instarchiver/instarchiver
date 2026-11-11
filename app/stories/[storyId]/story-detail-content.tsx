@@ -38,6 +38,7 @@ export function StoryDetailSkeleton({ story }: { story?: Story }) {
                 blurDataUrl={story.blur_data_url}
                 sizes="384px"
                 priority
+                fit="contain"
               />
             </div>
           </ViewTransition>

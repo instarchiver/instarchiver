@@ -26,11 +26,12 @@ export function PostCarousel({
         <MediaItem
           src={items[index].media}
           alt={alt}
-          blurDataUrl={items[index].blur_data_url}
+          blurDataUrl={items[index].blur_data_url ?? fallbackBlur}
           poster={items[index].thumbnail ?? fallbackSrc}
           sizes="(min-width: 1024px) 40vw, 100vw"
           priority
           controls
+          fit="contain"
         />
       ) : (
         <MediaItem
@@ -41,6 +42,7 @@ export function PostCarousel({
           sizes="(min-width: 1024px) 40vw, 100vw"
           priority
           controls
+          fit="contain"
         />
       )}
 

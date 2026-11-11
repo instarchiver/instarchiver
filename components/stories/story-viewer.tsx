@@ -13,6 +13,7 @@ export function StoryViewer({ story }: { story: Story }) {
         priority
         controls
         autoPlay
+        fit="contain"
       />
     </div>
   );

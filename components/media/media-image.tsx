@@ -8,6 +8,7 @@ interface MediaImageProps {
   className?: string;
   sizes?: string;
   priority?: boolean;
+  fit?: "cover" | "contain";
 }
 
 export function MediaImage({
@@ -17,8 +18,35 @@ export function MediaImage({
   className = "",
   sizes = "(min-width: 1024px) 20vw, (min-width: 640px) 33vw, 50vw",
   priority,
+  fit = "cover",
 }: MediaImageProps) {
   const blur = toBlurDataUrl(blurDataUrl);
+
+  if (fit === "contain") {
+    return (
+      <>
+        <Image
+          src={src}
+          alt=""
+          aria-hidden="true"
+          fill
+          sizes={sizes}
+          placeholder={blur ? "blur" : undefined}
+          blurDataURL={blur}
+          className="pointer-events-none scale-125 object-cover blur-2xl"
+        />
+        <Image
+          src={src}
+          alt={alt}
+          fill
+          sizes={sizes}
+          priority={priority}
+          className={`object-contain ${className}`}
+        />
+      </>
+    );
+  }
+
   return (
     <Image
       src={src}

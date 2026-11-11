@@ -35,6 +35,7 @@ export function PostDetailSkeleton({ post }: { post?: Post }) {
                   blurDataUrl={post.blur_data_url}
                   sizes={HERO_SIZES}
                   priority
+                  fit="contain"
                 />
               </div>
             </ViewTransition>
