@@ -1,13 +1,13 @@
-import { ViewTransition } from "react";
-import Link from "next/link";
+import { memo, ViewTransition } from "react";
 import type { Story } from "@/lib/api/types";
 import { MediaItem } from "@/components/media/media-item";
+import { HoverPrefetchLink } from "@/components/ui/intent-link";
 import { Avatar } from "@/components/users/avatar";
 import { formatRelativeTime } from "@/lib/format";
 
-export function StoryCard({ story }: { story: Story }) {
+export const StoryCard = memo(function StoryCard({ story }: { story: Story }) {
   return (
-    <Link
+    <HoverPrefetchLink
       href={`/stories/${story.story_id}`}
       className="group relative block aspect-[9/16] overflow-hidden rounded-xl border border-border bg-card transition-[translate,box-shadow] duration-200 ease-out-expo hover:-translate-y-0.5 hover:shadow-md active:translate-y-0 active:shadow-none motion-reduce:hover:translate-y-0"
     >
@@ -31,6 +31,6 @@ export function StoryCard({ story }: { story: Story }) {
           {formatRelativeTime(story.story_created_at)}
         </span>
       </div>
-    </Link>
+    </HoverPrefetchLink>
   );
-}
+});

@@ -7,12 +7,18 @@ import {
 import { createUser, getUser, getUserHistory, getUsers } from "@/lib/api/users";
 import { queryKeys } from "@/lib/query-keys";
 
+const INFINITE_LIST_STALE_TIME = 5 * 60_000;
+const INFINITE_LIST_GC_TIME = 15 * 60_000;
+
 export function useInfiniteUsers(search?: string, ordering?: string) {
   return useInfiniteQuery({
     queryKey: queryKeys.users.list(search, ordering),
     queryFn: ({ pageParam }) => getUsers(pageParam, search, ordering),
     initialPageParam: null as string | null,
     getNextPageParam: (lastPage) => lastPage.next,
+    staleTime: INFINITE_LIST_STALE_TIME,
+    gcTime: INFINITE_LIST_GC_TIME,
+    refetchOnWindowFocus: false,
   });
 }
 

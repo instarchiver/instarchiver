@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense } from "react";
+import { Suspense, useCallback, useMemo } from "react";
 import { UsersThree } from "@phosphor-icons/react";
 import { useInfiniteUsers } from "@/hooks/use-users";
 import { useDebouncedSearchParam } from "@/components/hooks/use-debounced-search-param";
@@ -14,6 +14,7 @@ import {
   DEFAULT_USER_ORDERING,
   UserSortSelect,
 } from "@/components/users/user-sort-select";
+import type { InstagramUser } from "@/lib/api/types";
 
 function UsersPageFallback() {
   return (
@@ -46,8 +47,22 @@ function UsersList() {
     refetch,
   } = useInfiniteUsers(debouncedSearch, ordering);
 
-  const users = data?.pages.flatMap((page) => page.results) ?? [];
-  const isSearching = debouncedSearch.trim().length > 0;
+  const users = useMemo(
+    () => data?.pages.flatMap((page) => page.results) ?? [],
+    [data?.pages]
+  );
+  const trimmedSearch = debouncedSearch.trim();
+  const isSearching = trimmedSearch.length > 0;
+  const scrollKey = `/users?q=${trimmedSearch}&ordering=${ordering}`;
+
+  const getKey = useCallback((user: InstagramUser) => user.uuid, []);
+  const renderItem = useCallback(
+    (user: InstagramUser) => <UserCard user={user} />,
+    []
+  );
+  const handleRetry = useCallback(() => {
+    void refetch();
+  }, [refetch]);
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
@@ -73,14 +88,14 @@ function UsersList() {
       <div className="mt-8">
         <InfiniteGrid
           items={users}
-          getKey={(user) => user.uuid}
-          renderItem={(user) => <UserCard user={user} />}
+          getKey={getKey}
+          renderItem={renderItem}
           hasNextPage={Boolean(hasNextPage)}
           isFetchingNextPage={isFetchingNextPage}
           fetchNextPage={fetchNextPage}
           isLoading={isLoading}
           isError={isError}
-          onRetry={refetch}
+          onRetry={handleRetry}
           emptyIcon={UsersThree}
           emptyTitle={
             isSearching ? "No users match your search" : "No users archived yet"
@@ -91,6 +106,7 @@ function UsersList() {
               : undefined
           }
           columns={COLUMNS_2_3_4}
+          scrollKey={scrollKey}
         />
       </div>
     </div>

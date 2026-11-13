@@ -1,9 +1,11 @@
 "use client";
 
+import { useCallback, useMemo } from "react";
 import { GridFour } from "@phosphor-icons/react";
 import { useSimilarPosts } from "@/hooks/use-posts";
 import { InfiniteGrid } from "@/components/ui/infinite-grid";
 import { COLUMNS_2_3_4_5 } from "@/components/ui/grid-columns";
+import type { Post } from "@/lib/api/types";
 import { PostCard } from "./post-card";
 
 export function SimilarPosts({ postId }: { postId: string }) {
@@ -17,7 +19,15 @@ export function SimilarPosts({ postId }: { postId: string }) {
     refetch,
   } = useSimilarPosts(postId);
 
-  const posts = data?.pages.flatMap((page) => page.results) ?? [];
+  const posts = useMemo(
+    () => data?.pages.flatMap((page) => page.results) ?? [],
+    [data?.pages]
+  );
+  const getKey = useCallback((post: Post) => post.id, []);
+  const renderItem = useCallback((post: Post) => <PostCard post={post} />, []);
+  const handleRetry = useCallback(() => {
+    void refetch();
+  }, [refetch]);
 
   return (
     <div className="mt-10">
@@ -25,17 +35,19 @@ export function SimilarPosts({ postId }: { postId: string }) {
       <div className="mt-4">
         <InfiniteGrid
           items={posts}
-          getKey={(post) => post.id}
-          renderItem={(post) => <PostCard post={post} />}
+          getKey={getKey}
+          renderItem={renderItem}
           hasNextPage={Boolean(hasNextPage)}
           isFetchingNextPage={isFetchingNextPage}
           fetchNextPage={fetchNextPage}
           isLoading={isLoading}
           isError={isError}
-          onRetry={refetch}
+          onRetry={handleRetry}
           emptyIcon={GridFour}
           emptyTitle="No similar posts found"
           columns={COLUMNS_2_3_4_5}
+          cardAspectRatio={1}
+          scrollKey={`similar:post:${postId}`}
         />
       </div>
     </div>

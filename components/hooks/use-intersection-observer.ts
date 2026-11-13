@@ -2,9 +2,15 @@ import { useEffect, useRef } from "react";
 
 export function useIntersectionObserver(
   onIntersect: () => void,
-  enabled: boolean
+  enabled: boolean,
+  rootMargin = "1600px 0px"
 ) {
   const ref = useRef<HTMLDivElement | null>(null);
+  const onIntersectRef = useRef(onIntersect);
+
+  useEffect(() => {
+    onIntersectRef.current = onIntersect;
+  }, [onIntersect]);
 
   useEffect(() => {
     const node = ref.current;
@@ -13,15 +19,15 @@ export function useIntersectionObserver(
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0]?.isIntersecting) {
-          onIntersect();
+          onIntersectRef.current();
         }
       },
-      { rootMargin: "400px" }
+      { rootMargin }
     );
 
     observer.observe(node);
     return () => observer.disconnect();
-  }, [onIntersect, enabled]);
+  }, [enabled, rootMargin]);
 
   return ref;
 }

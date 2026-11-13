@@ -5,7 +5,7 @@ export function getStories(
   cursorUrl?: string | null,
   userUuid?: string,
   search?: string,
-  pageSize = 24
+  pageSize = 60
 ) {
   const url =
     cursorUrl ??
