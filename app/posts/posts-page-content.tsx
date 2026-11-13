@@ -1,5 +1,6 @@
 "use client";
 
+import { useCallback, useMemo } from "react";
 import { GridFour } from "@phosphor-icons/react";
 import { useInfinitePosts } from "@/hooks/use-posts";
 import { useDebouncedSearchParam } from "@/components/hooks/use-debounced-search-param";
@@ -7,6 +8,7 @@ import { InfiniteGrid } from "@/components/ui/infinite-grid";
 import { COLUMNS_2_3_4_5 } from "@/components/ui/grid-columns";
 import { SearchInput } from "@/components/ui/search-input";
 import { PostCard } from "@/components/posts/post-card";
+import type { Post } from "@/lib/api/types";
 
 export function PostsPageContent() {
   const { value: search, debouncedValue: debouncedSearch, setValue: setSearch } =
@@ -21,8 +23,19 @@ export function PostsPageContent() {
     refetch,
   } = useInfinitePosts(undefined, debouncedSearch);
 
-  const posts = data?.pages.flatMap((page) => page.results) ?? [];
-  const isSearching = debouncedSearch.trim().length > 0;
+  const posts = useMemo(
+    () => data?.pages.flatMap((page) => page.results) ?? [],
+    [data?.pages]
+  );
+  const trimmedSearch = debouncedSearch.trim();
+  const isSearching = trimmedSearch.length > 0;
+  const scrollKey = isSearching ? `/posts?q=${trimmedSearch}` : "/posts";
+
+  const getKey = useCallback((post: Post) => post.id, []);
+  const renderItem = useCallback((post: Post) => <PostCard post={post} />, []);
+  const handleRetry = useCallback(() => {
+    void refetch();
+  }, [refetch]);
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
@@ -44,14 +57,14 @@ export function PostsPageContent() {
       <div className="mt-8">
         <InfiniteGrid
           items={posts}
-          getKey={(post) => post.id}
-          renderItem={(post) => <PostCard post={post} />}
+          getKey={getKey}
+          renderItem={renderItem}
           hasNextPage={Boolean(hasNextPage)}
           isFetchingNextPage={isFetchingNextPage}
           fetchNextPage={fetchNextPage}
           isLoading={isLoading}
           isError={isError}
-          onRetry={refetch}
+          onRetry={handleRetry}
           emptyIcon={GridFour}
           emptyTitle={
             isSearching ? "No posts match your search" : "No posts archived yet"
@@ -62,6 +75,8 @@ export function PostsPageContent() {
               : undefined
           }
           columns={COLUMNS_2_3_4_5}
+          cardAspectRatio={1}
+          scrollKey={scrollKey}
         />
       </div>
     </div>

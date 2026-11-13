@@ -1,12 +1,12 @@
-import { ViewTransition } from "react";
-import Link from "next/link";
+import { memo, ViewTransition } from "react";
 import { CopySimple, Play } from "@phosphor-icons/react/ssr";
 import type { Post } from "@/lib/api/types";
 import { MediaItem } from "@/components/media/media-item";
+import { HoverPrefetchLink } from "@/components/ui/intent-link";
 
-export function PostCard({ post }: { post: Post }) {
+export const PostCard = memo(function PostCard({ post }: { post: Post }) {
   return (
-    <Link
+    <HoverPrefetchLink
       href={`/posts/${post.id}`}
       className="group relative block aspect-square overflow-hidden rounded-xl border border-border bg-card transition-[translate,box-shadow] duration-200 ease-out-expo hover:-translate-y-0.5 hover:shadow-md active:translate-y-0 active:shadow-none motion-reduce:hover:translate-y-0"
     >
@@ -28,6 +28,6 @@ export function PostCard({ post }: { post: Post }) {
           )}
         </div>
       )}
-    </Link>
+    </HoverPrefetchLink>
   );
-}
+});

@@ -1,5 +1,6 @@
 "use client";
 
+import { useCallback, useMemo } from "react";
 import { CirclesFour } from "@phosphor-icons/react";
 import { useInfiniteStories } from "@/hooks/use-stories";
 import { useDebouncedSearchParam } from "@/components/hooks/use-debounced-search-param";
@@ -7,6 +8,7 @@ import { InfiniteGrid } from "@/components/ui/infinite-grid";
 import { COLUMNS_2_3_4_5 } from "@/components/ui/grid-columns";
 import { SearchInput } from "@/components/ui/search-input";
 import { StoryCard } from "@/components/stories/story-card";
+import type { Story } from "@/lib/api/types";
 
 export function StoriesPageContent() {
   const { value: search, debouncedValue: debouncedSearch, setValue: setSearch } =
@@ -21,8 +23,22 @@ export function StoriesPageContent() {
     refetch,
   } = useInfiniteStories(undefined, debouncedSearch);
 
-  const stories = data?.pages.flatMap((page) => page.results) ?? [];
-  const isSearching = debouncedSearch.trim().length > 0;
+  const stories = useMemo(
+    () => data?.pages.flatMap((page) => page.results) ?? [],
+    [data?.pages]
+  );
+  const trimmedSearch = debouncedSearch.trim();
+  const isSearching = trimmedSearch.length > 0;
+  const scrollKey = isSearching ? `/stories?q=${trimmedSearch}` : "/stories";
+
+  const getKey = useCallback((story: Story) => story.story_id, []);
+  const renderItem = useCallback(
+    (story: Story) => <StoryCard story={story} />,
+    []
+  );
+  const handleRetry = useCallback(() => {
+    void refetch();
+  }, [refetch]);
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
@@ -44,14 +60,14 @@ export function StoriesPageContent() {
       <div className="mt-8">
         <InfiniteGrid
           items={stories}
-          getKey={(story) => story.story_id}
-          renderItem={(story) => <StoryCard story={story} />}
+          getKey={getKey}
+          renderItem={renderItem}
           hasNextPage={Boolean(hasNextPage)}
           isFetchingNextPage={isFetchingNextPage}
           fetchNextPage={fetchNextPage}
           isLoading={isLoading}
           isError={isError}
-          onRetry={refetch}
+          onRetry={handleRetry}
           emptyIcon={CirclesFour}
           emptyTitle={
             isSearching ? "No stories match your search" : "No stories archived yet"
@@ -62,6 +78,8 @@ export function StoriesPageContent() {
               : undefined
           }
           columns={COLUMNS_2_3_4_5}
+          cardAspectRatio={9 / 16}
+          scrollKey={scrollKey}
         />
       </div>
     </div>

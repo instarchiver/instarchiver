@@ -1,12 +1,17 @@
-import Link from "next/link";
+import { memo } from "react";
 import type { InstagramUser } from "@/lib/api/types";
+import { HoverPrefetchLink } from "@/components/ui/intent-link";
 import { formatCount } from "@/lib/format";
 import { Avatar } from "./avatar";
 import { PrivateBadge, VerifiedBadge } from "./verified-badge";
 
-export function UserCard({ user }: { user: InstagramUser }) {
+export const UserCard = memo(function UserCard({
+  user,
+}: {
+  user: InstagramUser;
+}) {
   return (
-    <Link
+    <HoverPrefetchLink
       href={`/users/${user.uuid}`}
       className="group flex h-full flex-col items-center gap-3 rounded-xl border border-border bg-card p-4 text-center transition-[translate,box-shadow] duration-200 ease-out-expo hover:-translate-y-0.5 hover:shadow-md active:translate-y-0 active:shadow-none motion-reduce:hover:translate-y-0"
     >
@@ -28,6 +33,6 @@ export function UserCard({ user }: { user: InstagramUser }) {
           {formatCount(user.follower_count)} followers
         </p>
       </div>
-    </Link>
+    </HoverPrefetchLink>
   );
-}
+});

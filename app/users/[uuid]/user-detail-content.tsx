@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense } from "react";
+import { Suspense, useCallback, useMemo } from "react";
 import { CirclesFour, GridFour } from "@phosphor-icons/react";
 import { useSearchParamState } from "@/components/hooks/use-search-param-state";
 import { useUser } from "@/hooks/use-users";
@@ -13,6 +13,7 @@ import { PostCard } from "@/components/posts/post-card";
 import { StoryCard } from "@/components/stories/story-card";
 import { ErrorState } from "@/components/ui/error-state";
 import { Skeleton } from "@/components/ui/skeleton";
+import type { Post, Story } from "@/lib/api/types";
 
 type Tab = "posts" | "stories";
 
@@ -52,6 +53,30 @@ function UserDetail({ uuid }: { uuid: string }) {
   const postsQuery = useInfinitePosts(uuid);
   const storiesQuery = useInfiniteStories(uuid);
 
+  const posts = useMemo(
+    () => postsQuery.data?.pages.flatMap((p) => p.results) ?? [],
+    [postsQuery.data?.pages]
+  );
+  const stories = useMemo(
+    () => storiesQuery.data?.pages.flatMap((p) => p.results) ?? [],
+    [storiesQuery.data?.pages]
+  );
+
+  const getPostKey = useCallback((post: Post) => post.id, []);
+  const renderPostItem = useCallback((post: Post) => <PostCard post={post} />, []);
+  const handleRetryPosts = useCallback(() => {
+    void postsQuery.refetch();
+  }, [postsQuery]);
+
+  const getStoryKey = useCallback((story: Story) => story.story_id, []);
+  const renderStoryItem = useCallback(
+    (story: Story) => <StoryCard story={story} />,
+    []
+  );
+  const handleRetryStories = useCallback(() => {
+    void storiesQuery.refetch();
+  }, [storiesQuery]);
+
   if (isLoading) return <UserDetailFallback />;
 
   if (isError || !user) {
@@ -64,9 +89,6 @@ function UserDetail({ uuid }: { uuid: string }) {
       </div>
     );
   }
-
-  const posts = postsQuery.data?.pages.flatMap((p) => p.results) ?? [];
-  const stories = storiesQuery.data?.pages.flatMap((p) => p.results) ?? [];
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
@@ -96,32 +118,36 @@ function UserDetail({ uuid }: { uuid: string }) {
         {tab === "posts" ? (
           <InfiniteGrid
             items={posts}
-            getKey={(post) => post.id}
-            renderItem={(post) => <PostCard post={post} />}
+            getKey={getPostKey}
+            renderItem={renderPostItem}
             hasNextPage={Boolean(postsQuery.hasNextPage)}
             isFetchingNextPage={postsQuery.isFetchingNextPage}
             fetchNextPage={postsQuery.fetchNextPage}
             isLoading={postsQuery.isLoading}
             isError={postsQuery.isError}
-            onRetry={() => postsQuery.refetch()}
+            onRetry={handleRetryPosts}
             emptyIcon={GridFour}
             emptyTitle="No posts from this user yet"
             columns={COLUMNS_2_3_4}
+            cardAspectRatio={1}
+            scrollKey={`user:${uuid}:posts`}
           />
         ) : (
           <InfiniteGrid
             items={stories}
-            getKey={(story) => story.story_id}
-            renderItem={(story) => <StoryCard story={story} />}
+            getKey={getStoryKey}
+            renderItem={renderStoryItem}
             hasNextPage={Boolean(storiesQuery.hasNextPage)}
             isFetchingNextPage={storiesQuery.isFetchingNextPage}
             fetchNextPage={storiesQuery.fetchNextPage}
             isLoading={storiesQuery.isLoading}
             isError={storiesQuery.isError}
-            onRetry={() => storiesQuery.refetch()}
+            onRetry={handleRetryStories}
             emptyIcon={CirclesFour}
             emptyTitle="No stories from this user yet"
             columns={COLUMNS_3_4_5}
+            cardAspectRatio={9 / 16}
+            scrollKey={`user:${uuid}:stories`}
           />
         )}
       </div>

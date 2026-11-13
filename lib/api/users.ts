@@ -10,7 +10,7 @@ export function getUsers(
   cursorUrl?: string | null,
   search?: string,
   ordering?: string,
-  pageSize = 24
+  pageSize = 60
 ) {
   const url =
     cursorUrl ??
