@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-28T07:19:10.797821+00:00",
+  "generatedAt": "2026-11-16T02:35:32.947Z",
   "title": "Design System: InstArchiver",
   "extensions": {
     "colorMeta": {
@@ -326,8 +326,13 @@
     "motion": [
       {
         "name": "skeleton-pulse",
-        "value": "animate-pulse (2s cubic-bezier(0.4, 0, 0.6, 1) infinite)",
-        "purpose": "Loading placeholders."
+        "value": "animate-pulse (2s cubic-bezier(0.4, 0, 0.6, 1) infinite); motion-reduce:animate-none",
+        "purpose": "Loading placeholders with static fallback under prefers-reduced-motion."
+      },
+      {
+        "name": "spinner-spin",
+        "value": "animate-spin (1s linear infinite); motion-reduce:animate-none",
+        "purpose": "Pagination and fetch spinners with static fallback under prefers-reduced-motion."
       },
       {
         "name": "tile-morph",
@@ -347,7 +352,12 @@
       {
         "name": "float-enter",
         "value": "150ms (menus) / 200ms (dialog) ease-out-expo from scale 0.95 and opacity 0 via @starting-style",
-        "purpose": "Dropdowns, the account menu and the add-user dialog. Dialog exits in 150ms. Reduced motion keeps the fade only."
+        "purpose": "Dropdowns, the account menu and the add-user dialog (with 50% black backdrop). Dialog exits in 150ms. Reduced motion keeps the fade only."
+      },
+      {
+        "name": "story-autoplay-guard",
+        "value": "prefers-reduced-motion: reduce skips video autoplay",
+        "purpose": "Prevents automatic video playback in StoryViewer when reduced motion is requested."
       }
     ],
     "breakpoints": [
@@ -370,7 +380,7 @@
       "name": "Primary Button",
       "kind": "button",
       "refersTo": "button-primary",
-      "description": "Archive Indigo action button, e.g. Add user or Try again.",
+      "description": "Archive Indigo action button, e.g. Add user, Find user, or Try again.",
       "html": "<button class=\"ds-btn-primary\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 256 256\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"16\" stroke-linecap=\"round\"><circle cx=\"108\" cy=\"100\" r=\"60\"/><path d=\"M22 200c20-30 52-48 86-48s66 18 86 48\"/><line x1=\"200\" y1=\"112\" x2=\"248\" y2=\"112\"/><line x1=\"224\" y1=\"88\" x2=\"224\" y2=\"136\"/></svg>Add user</button>",
       "css": ".ds-btn-primary { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 16px; border: none; border-radius: 8px; background: var(--accent); color: var(--accent-foreground); font: 500 14px/20px var(--font-geist-sans, system-ui, sans-serif); cursor: pointer; transition: opacity 150ms; } .ds-btn-primary:hover { opacity: 0.9; } .ds-btn-primary:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }"
     },
@@ -386,15 +396,23 @@
       "name": "Search Input",
       "kind": "input",
       "refersTo": "input-search",
-      "description": "Search field used on the Users, Stories and Posts grids.",
-      "html": "<label class=\"ds-input-search\"><span class=\"ds-input-search-icon\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 256 256\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"16\" stroke-linecap=\"round\"><circle cx=\"112\" cy=\"112\" r=\"80\"/><line x1=\"168.6\" y1=\"168.6\" x2=\"224\" y2=\"224\"/></svg></span><input type=\"text\" placeholder=\"Search users\" aria-label=\"Search users\"></label>",
-      "css": ".ds-input-search { position: relative; display: flex; align-items: center; min-height: 44px; width: 320px; border: 1px solid var(--input); border-radius: 8px; background: var(--card); } .ds-input-search:focus-within { box-shadow: 0 0 0 2px var(--ring); } .ds-input-search-icon { position: absolute; left: 12px; display: flex; color: var(--muted-foreground); pointer-events: none; } .ds-input-search input { width: 100%; min-height: 44px; padding: 8px 40px; border: none; background: transparent; color: var(--foreground); font: 400 14px/20px var(--font-geist-sans, system-ui, sans-serif); outline: none; } .ds-input-search input::placeholder { color: var(--muted-foreground); }"
+      "description": "Search field with 44px clear button hit area used on Home, Users, Stories and Posts.",
+      "html": "<div class=\"ds-input-search\"><span class=\"ds-input-search-icon\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 256 256\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"16\" stroke-linecap=\"round\"><circle cx=\"112\" cy=\"112\" r=\"80\"/><line x1=\"168.6\" y1=\"168.6\" x2=\"224\" y2=\"224\"/></svg></span><input type=\"text\" value=\"natgeo\" placeholder=\"Search users\" aria-label=\"Search users\"><button type=\"button\" class=\"ds-input-clear\" aria-label=\"Clear search\"><span class=\"ds-input-clear-pill\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 256 256\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"16\" stroke-linecap=\"round\"><line x1=\"200\" y1=\"56\" x2=\"56\" y2=\"200\"/><line x1=\"200\" y1=\"200\" x2=\"56\" y2=\"56\"/></svg></span></button></div>",
+      "css": ".ds-input-search { position: relative; display: flex; align-items: center; min-height: 44px; width: 320px; border: 1px solid var(--input); border-radius: 8px; background: var(--card); } .ds-input-search:focus-within { box-shadow: 0 0 0 2px var(--ring); } .ds-input-search-icon { position: absolute; left: 12px; display: flex; color: var(--muted-foreground); pointer-events: none; } .ds-input-search input { width: 100%; min-height: 44px; padding: 8px 44px 8px 40px; border: none; border-radius: 8px; background: transparent; color: var(--foreground); font: 400 14px/20px var(--font-geist-sans, system-ui, sans-serif); outline: none; } .ds-input-search input::placeholder { color: var(--muted-foreground); } .ds-input-clear { position: absolute; right: 0; display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; border: none; border-radius: 8px; background: transparent; color: var(--muted-foreground); cursor: pointer; } .ds-input-clear:hover { color: var(--foreground); } .ds-input-clear:hover .ds-input-clear-pill { background: var(--muted); } .ds-input-clear:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; } .ds-input-clear-pill { display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 6px; transition: background-color 150ms; }"
+    },
+    {
+      "name": "Select Menu",
+      "kind": "input",
+      "refersTo": "input-search",
+      "description": "WAI-ARIA listbox trigger and floating panel with 44px option rows.",
+      "html": "<div class=\"ds-select\"><button type=\"button\" class=\"ds-select-trigger\" aria-haspopup=\"listbox\" aria-expanded=\"true\" aria-label=\"Sort users\"><span>Most followers</span><svg width=\"14\" height=\"14\" viewBox=\"0 0 256 256\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"16\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><polyline points=\"208 96 128 176 48 96\"/></svg></button><ul class=\"ds-select-list\" role=\"listbox\" aria-label=\"Sort users\"><li class=\"ds-select-option is-selected\" role=\"option\" aria-selected=\"true\">Most followers</li><li class=\"ds-select-option\" role=\"option\" aria-selected=\"false\">Recently added</li></ul></div>",
+      "css": ".ds-select { position: relative; width: 200px; } .ds-select-trigger { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 44px; width: 100%; padding: 8px 12px; border: 1px solid var(--input); border-radius: 8px; background: var(--card); color: var(--foreground); font: 400 14px/20px var(--font-geist-sans, system-ui, sans-serif); cursor: pointer; } .ds-select-trigger:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--ring); } .ds-select-trigger svg { color: var(--muted-foreground); } .ds-select-list { margin: 4px 0 0; padding: 4px; list-style: none; border: 1px solid var(--border); border-radius: 8px; background: var(--card); box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); } .ds-select-option { display: flex; align-items: center; min-height: 44px; padding: 8px 12px; border-radius: 6px; color: var(--foreground); font: 400 14px/20px var(--font-geist-sans, system-ui, sans-serif); cursor: pointer; } .ds-select-option:hover { background: var(--muted); } .ds-select-option.is-selected { font-weight: 500; }"
     },
     {
       "name": "Navigation",
       "kind": "nav",
       "refersTo": "nav-link",
-      "description": "Header nav links with icon; the active link gets a Well fill.",
+      "description": "Header nav links with icon and sr-only mobile labels; the active link gets a Well fill.",
       "html": "<nav class=\"ds-nav\"><a class=\"ds-nav-link\" href=\"#\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 256 256\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"16\" stroke-linecap=\"round\"><circle cx=\"128\" cy=\"140\" r=\"40\"/><path d=\"M64 216a72 72 0 0 1 128 0\"/></svg><span>Users</span></a><a class=\"ds-nav-link is-active\" aria-current=\"page\" href=\"#\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 256 256\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"16\"><rect x=\"40\" y=\"40\" width=\"72\" height=\"72\" rx=\"8\"/><rect x=\"144\" y=\"40\" width=\"72\" height=\"72\" rx=\"8\"/><rect x=\"40\" y=\"144\" width=\"72\" height=\"72\" rx=\"8\"/><rect x=\"144\" y=\"144\" width=\"72\" height=\"72\" rx=\"8\"/></svg><span>Posts</span></a></nav>",
       "css": ".ds-nav { display: flex; gap: 4px; } .ds-nav-link { display: flex; align-items: center; gap: 6px; min-height: 44px; padding: 8px 12px; border-radius: 8px; color: var(--muted-foreground); font: 500 14px/20px var(--font-geist-sans, system-ui, sans-serif); text-decoration: none; transition: background-color 150ms, color 150ms; } .ds-nav-link:hover, .ds-nav-link.is-active { background: var(--muted); color: var(--foreground); } .ds-nav-link:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }"
     },
@@ -410,9 +428,17 @@
       "name": "Story Tile",
       "kind": "custom",
       "refersTo": "media-tile",
-      "description": "9:16 story tile with owner and timestamp on black gradient scrims.",
+      "description": "9:16 story tile with owner and timestamp in white on a 75% black gradient scrim.",
       "html": "<a class=\"ds-story-tile\" href=\"#\"><span class=\"ds-story-top\"><span class=\"ds-story-avatar\"></span>natgeo</span><span class=\"ds-story-bottom\">3h ago</span></a>",
-      "css": ".ds-story-tile { position: relative; display: block; width: 160px; aspect-ratio: 9 / 16; overflow: hidden; border: 1px solid var(--border); border-radius: 12px; background: linear-gradient(160deg, #6b7a5a, #2f3b2a); text-decoration: none; transition: translate 200ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 200ms cubic-bezier(0.16, 1, 0.3, 1); } .ds-story-tile:hover { translate: 0 -2px; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); } .ds-story-top { position: absolute; inset: 0 0 auto 0; display: flex; align-items: center; gap: 8px; padding: 10px; background: linear-gradient(to bottom, rgb(0 0 0 / 0.6), transparent); color: #fff; font: 500 14px/20px var(--font-geist-sans, system-ui, sans-serif); } .ds-story-avatar { width: 32px; height: 32px; border-radius: 9999px; background: var(--muted); } .ds-story-bottom { position: absolute; inset: auto 0 0 0; padding: 10px; background: linear-gradient(to top, rgb(0 0 0 / 0.6), transparent); color: rgb(255 255 255 / 0.8); font: 400 12px/16px var(--font-geist-sans, system-ui, sans-serif); }"
+      "css": ".ds-story-tile { position: relative; display: block; width: 160px; aspect-ratio: 9 / 16; overflow: hidden; border: 1px solid var(--border); border-radius: 12px; background: linear-gradient(160deg, #6b7a5a, #2f3b2a); text-decoration: none; transition: translate 200ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 200ms cubic-bezier(0.16, 1, 0.3, 1); } .ds-story-tile:hover { translate: 0 -2px; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); } .ds-story-tile:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; } .ds-story-top { position: absolute; inset: 0 0 auto 0; display: flex; align-items: center; gap: 8px; padding: 10px; background: linear-gradient(to bottom, rgb(0 0 0 / 0.75), rgb(0 0 0 / 0.35), transparent); color: #fff; font: 500 14px/20px var(--font-geist-sans, system-ui, sans-serif); } .ds-story-avatar { width: 32px; height: 32px; border-radius: 9999px; background: var(--muted); } .ds-story-bottom { position: absolute; inset: auto 0 0 0; padding: 10px; background: linear-gradient(to top, rgb(0 0 0 / 0.75), rgb(0 0 0 / 0.35), transparent); color: #fff; font: 400 12px/16px var(--font-geist-sans, system-ui, sans-serif); }"
+    },
+    {
+      "name": "Profile Tabs",
+      "kind": "nav",
+      "refersTo": "nav-link",
+      "description": "WAI-ARIA tablist for Posts and Stories on User Detail with 2px Archive Indigo active bar.",
+      "html": "<div class=\"ds-tabs\" role=\"tablist\" aria-label=\"Profile content\"><button type=\"button\" role=\"tab\" aria-selected=\"true\" class=\"ds-tab is-active\">Posts</button><button type=\"button\" role=\"tab\" aria-selected=\"false\" class=\"ds-tab\">Stories</button></div>",
+      "css": ".ds-tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--border); } .ds-tab { display: flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 16px; border: none; border-bottom: 2px solid transparent; background: transparent; color: var(--muted-foreground); font: 500 14px/20px var(--font-geist-sans, system-ui, sans-serif); cursor: pointer; transition: color 150ms; } .ds-tab:hover { color: var(--foreground); } .ds-tab.is-active { border-bottom-color: var(--accent); color: var(--foreground); } .ds-tab:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }"
     },
     {
       "name": "History Change Row",
@@ -430,7 +456,7 @@
       "Zinc neutrals with one indigo accent; media supplies the color.",
       "Flat bordered surfaces that lift slightly only on hover.",
       "Geist Sans throughout, mostly at 14px, semibold for headings.",
-      "44px minimum touch targets on every control.",
+      "44px minimum touch targets on every interactive control.",
       "Full light and dark themes defined from the same token names."
     ],
     "rules": [
@@ -446,7 +472,12 @@
       },
       {
         "name": "The Tabular Facts Rule",
-        "body": "Every count, delta and statistic uses tabular figures (`tabular-nums`) so columns of numbers line up and changes are easy to compare.",
+        "body": "Every count, delta, carousel slide counter (`1 / N`), and statistic uses tabular figures (`tabular-nums`) so columns of numbers line up and changes are easy to compare.",
+        "section": "typography"
+      },
+      {
+        "name": "The Even Lines Rule",
+        "body": "Headings use `text-wrap: balance` and paragraphs use `text-wrap: pretty`, set once in the base layer of `app/globals.css`. Headings are in sentence case.",
         "section": "typography"
       },
       {
@@ -459,17 +490,19 @@
       "Do use the semantic tokens (`bg-card`, `text-muted-foreground`, `border-border`, `bg-accent`) and never raw zinc or indigo classes, so both themes stay correct.",
       "Do keep every interactive control at least 44px tall (`min-h-11`).",
       "Do check every text and badge pair at 4.5:1 and every field edge at 3:1, in both themes, including text on the Well fill.",
-      "Do put any text over media on the 60% black gradient scrim, in white.",
-      "Do use `tabular-nums` for every count, delta and statistic.",
+      "Do put any text over story media on the 75% black gradient scrim (`from-black/75 via-black/35 to-transparent`), in 100% white (`text-white`).",
+      "Do use `sr-only sm:not-sr-only` (never `display: none`) for mobile icon-only nav labels and the header wordmark so screen readers retain their accessible names.",
+      "Do use `tabular-nums` for every count, delta, slide counter, and statistic.",
       "Do use the shared grid column presets in `components/ui/grid-columns.ts` for any new media grid, so skeletons and virtualization match.",
-      "Do name transition properties (`transition-[translate,box-shadow]`, `transition-colors`) instead of `transition-all`, use the `ease-out-expo` curve for movement, and give every movement a `motion-reduce:` fallback."
+      "Do name transition properties (`transition-[translate,box-shadow]`, `transition-colors`) instead of `transition-all`, use the `ease-out-expo` curve for movement, and give every animation—including `Skeleton` and `Spinner` (`motion-reduce:animate-none`)—a `motion-reduce:` fallback."
     ],
     "donts": [
       "Don't add shadows to surfaces at rest; shadows mean hover or floating.",
       "Don't introduce a second accent hue or use Archive Indigo decoratively; it signals interaction or verification only.",
       "Don't use Gain Green or Loss Red outside gains, losses and errors.",
       "Don't add new corner radii beyond 6px, 8px, 12px and full.",
-      "Don't tint or color-grade archived media. The black text scrim is the only overlay it gets."
+      "Don't tint or color-grade archived media. The black text scrim is the only overlay it gets.",
+      "Don't place carousel pagination dots or counters over `<video controls>`; keep them below the media frame."
     ]
   }
 }

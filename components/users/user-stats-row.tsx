@@ -3,7 +3,10 @@ import { formatCount } from "@/lib/format";
 function Stat({ label, value }: { label: string; value: number }) {
   return (
     <div className="flex flex-col items-center gap-0.5 sm:items-start">
-      <span className="text-lg font-semibold tabular-nums text-foreground">
+      <span
+        className="text-lg font-semibold tabular-nums text-foreground"
+        title={value.toLocaleString("en-US")}
+      >
         {formatCount(value)}
       </span>
       <span className="text-xs text-muted-foreground">{label}</span>

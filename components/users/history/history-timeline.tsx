@@ -53,19 +53,25 @@ export function HistoryTimeline({
 
   return (
     <div>
-      <ol>
-        {visible.map(({ entry, changes, isFirst }) => (
-          <HistoryEntry
-            key={entry.history_id}
-            entry={entry}
-            changes={changes}
-            isFirst={isFirst}
-          />
-        ))}
-      </ol>
+      {visible.length > 0 && (
+        <ol>
+          {visible.map(({ entry, changes, isFirst }) => (
+            <HistoryEntry
+              key={entry.history_id}
+              entry={entry}
+              changes={changes}
+              isFirst={isFirst}
+            />
+          ))}
+        </ol>
+      )}
       {hasNextPage && (
-        <div ref={sentinelRef} className="flex items-center justify-center py-8">
+        <div
+          ref={sentinelRef}
+          className="flex items-center justify-center gap-2 py-8 text-sm text-muted-foreground"
+        >
           <Spinner />
+          {visible.length === 0 && <span>Checking older snapshots…</span>}
         </div>
       )}
     </div>

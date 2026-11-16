@@ -58,6 +58,11 @@
 }
 
 @layer base {
+  body {
+    background: var(--color-background);
+    color: var(--color-foreground);
+  }
+
   h1,
   h2,
   h3 {
@@ -67,18 +72,16 @@
   p {
     text-wrap: pretty;
   }
-}
 
-body {
-  background: var(--color-background);
-  color: var(--color-foreground);
-}
-
-@layer base {
   /* Layered so border-color utilities (e.g. border-input) can override it. */
   * {
     border-color: var(--color-border);
   }
+}
+
+/* Let clicks pass through the view-transition overlay so controls remain responsive mid-morph. */
+::view-transition {
+  pointer-events: none;
 }
 
 /* Grid tile -> detail hero morph (see PostCard, StoryCard and the detail skeletons). */

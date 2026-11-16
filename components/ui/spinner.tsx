@@ -1,7 +1,7 @@
 export function Spinner({ className = "" }: { className?: string }) {
   return (
     <svg
-      className={`animate-spin text-muted-foreground ${className}`}
+      className={`animate-spin text-muted-foreground motion-reduce:animate-none ${className}`}
       width="20"
       height="20"
       viewBox="0 0 24 24"

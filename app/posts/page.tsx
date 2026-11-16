@@ -1,5 +1,7 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
+import { CardSkeletonGrid } from "@/components/ui/skeleton";
+import { COLUMNS_2_3_4_5 } from "@/components/ui/grid-columns";
 import { PostsPageContent } from "./posts-page-content";
 
 export const metadata: Metadata = {
@@ -15,8 +17,11 @@ function PostsPageFallback() {
       <p className="mt-1 text-sm text-muted-foreground">
         Every archived post, from every user.
       </p>
+      <div className="mt-6 max-w-sm">
+        <div className="min-h-11 animate-pulse rounded-lg border border-input bg-card motion-reduce:animate-none" />
+      </div>
       <div className="mt-8">
-        <div className="min-h-11 animate-pulse rounded-lg border border-input bg-card" />
+        <CardSkeletonGrid columns={COLUMNS_2_3_4_5} showFooter={false} />
       </div>
     </div>
   );

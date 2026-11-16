@@ -22,6 +22,7 @@ export function SearchInput({
       <MagnifyingGlass
         size={18}
         className="pointer-events-none absolute left-3 text-muted-foreground"
+        aria-hidden="true"
       />
       <input
         type="text"
@@ -29,16 +30,18 @@ export function SearchInput({
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         aria-label={ariaLabel}
-        className="min-h-11 w-full rounded-lg bg-transparent py-2 pl-10 pr-10 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none"
+        className="min-h-11 w-full rounded-lg bg-transparent py-2 pl-10 pr-11 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none"
       />
       {value && (
         <button
           type="button"
           onClick={onClear}
           aria-label="Clear search"
-          className="absolute right-2 flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+          className="group absolute right-0 flex h-11 w-11 cursor-pointer items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
         >
-          <X size={16} />
+          <span className="flex h-7 w-7 items-center justify-center rounded-md transition-colors group-hover:bg-muted">
+            <X size={16} aria-hidden="true" />
+          </span>
         </button>
       )}
     </div>

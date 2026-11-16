@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useMemo } from "react";
-import { GridFour } from "@phosphor-icons/react";
+import { ArrowClockwise, GridFour } from "@phosphor-icons/react";
 import { useSimilarPosts } from "@/hooks/use-posts";
 import { InfiniteGrid } from "@/components/ui/infinite-grid";
 import { COLUMNS_2_3_4_5 } from "@/components/ui/grid-columns";
@@ -20,8 +20,11 @@ export function SimilarPosts({ postId }: { postId: string }) {
   } = useSimilarPosts(postId);
 
   const posts = useMemo(
-    () => data?.pages.flatMap((page) => page.results) ?? [],
-    [data?.pages]
+    () =>
+      data?.pages
+        .flatMap((page) => page.results)
+        .filter((post) => post.id !== postId) ?? [],
+    [data?.pages, postId]
   );
   const getKey = useCallback((post: Post) => post.id, []);
   const renderItem = useCallback((post: Post) => <PostCard post={post} />, []);
@@ -30,26 +33,53 @@ export function SimilarPosts({ postId }: { postId: string }) {
   }, [refetch]);
 
   return (
-    <div className="mt-10">
-      <h2 className="text-lg font-semibold text-foreground">Similar posts</h2>
+    <section aria-labelledby="similar-posts-heading" className="mt-10">
+      <h2 id="similar-posts-heading" className="text-lg font-semibold text-foreground">
+        Similar posts
+      </h2>
       <div className="mt-4">
-        <InfiniteGrid
-          items={posts}
-          getKey={getKey}
-          renderItem={renderItem}
-          hasNextPage={Boolean(hasNextPage)}
-          isFetchingNextPage={isFetchingNextPage}
-          fetchNextPage={fetchNextPage}
-          isLoading={isLoading}
-          isError={isError}
-          onRetry={handleRetry}
-          emptyIcon={GridFour}
-          emptyTitle="No similar posts found"
-          columns={COLUMNS_2_3_4_5}
-          cardAspectRatio={1}
-          scrollKey={`similar:post:${postId}`}
-        />
+        {!isLoading && isError && posts.length === 0 ? (
+          <div
+            role="alert"
+            className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-dashed border-border bg-card px-4 py-3 text-sm"
+          >
+            <p className="text-muted-foreground">
+              Couldn&apos;t load similar posts.
+            </p>
+            <button
+              type="button"
+              onClick={handleRetry}
+              className="flex min-h-11 cursor-pointer items-center gap-2 rounded-lg bg-accent px-4 text-sm font-medium text-accent-foreground transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+            >
+              <ArrowClockwise size={16} aria-hidden="true" />
+              Try again
+            </button>
+          </div>
+        ) : !isLoading && !isError && posts.length === 0 ? (
+          <p className="text-sm text-muted-foreground">
+            No similar posts in the archive yet.
+          </p>
+        ) : (
+          <InfiniteGrid
+            items={posts}
+            getKey={getKey}
+            renderItem={renderItem}
+            hasNextPage={Boolean(hasNextPage)}
+            isFetchingNextPage={isFetchingNextPage}
+            fetchNextPage={fetchNextPage}
+            isLoading={isLoading}
+            isError={isError}
+            onRetry={handleRetry}
+            emptyIcon={GridFour}
+            emptyTitle="No similar posts found"
+            errorMessage="Couldn't load more similar posts."
+            showSkeletonFooter={false}
+            columns={COLUMNS_2_3_4_5}
+            cardAspectRatio={1}
+            scrollKey={`similar:post:${postId}`}
+          />
+        )}
       </div>
-    </div>
+    </section>
   );
 }

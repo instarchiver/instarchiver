@@ -36,6 +36,9 @@ export function PostsPageContent() {
   const handleRetry = useCallback(() => {
     void refetch();
   }, [refetch]);
+  const handleClearSearch = useCallback(() => {
+    setSearch("");
+  }, [setSearch]);
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
@@ -48,9 +51,9 @@ export function PostsPageContent() {
         <SearchInput
           value={search}
           onChange={setSearch}
-          onClear={() => setSearch("")}
-          placeholder="Search posts..."
-          aria-label="Search posts"
+          onClear={handleClearSearch}
+          placeholder="Search captions or usernames..."
+          aria-label="Search posts by caption or username"
         />
       </div>
 
@@ -65,15 +68,28 @@ export function PostsPageContent() {
           isLoading={isLoading}
           isError={isError}
           onRetry={handleRetry}
+          errorMessage="Couldn't load archived posts."
           emptyIcon={GridFour}
           emptyTitle={
             isSearching ? "No posts match your search" : "No posts archived yet"
           }
           emptyDescription={
             isSearching
-              ? `No results for "${debouncedSearch}". Try a different caption or username.`
+              ? `No results for "${trimmedSearch}". Try a different caption or username.`
               : undefined
           }
+          emptyAction={
+            isSearching ? (
+              <button
+                type="button"
+                onClick={handleClearSearch}
+                className="inline-flex min-h-11 cursor-pointer items-center justify-center rounded-lg border border-border bg-card px-4 text-sm font-medium text-foreground transition-colors hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+              >
+                Clear search
+              </button>
+            ) : undefined
+          }
+          showSkeletonFooter={false}
           columns={COLUMNS_2_3_4_5}
           cardAspectRatio={1}
           scrollKey={scrollKey}
