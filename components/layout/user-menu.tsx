@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { SignOut } from "@phosphor-icons/react";
 import { useMounted } from "@/components/hooks/use-mounted";
 import { Avatar } from "@/components/users/avatar";
@@ -15,9 +15,10 @@ export function UserMenu() {
   const mounted = useMounted();
   const { user, isLoadingUser } = useMe();
   const login = useLoginWithGoogle();
+  const errorId = useId();
 
   if (!mounted || isLoadingUser) {
-    return <div className="h-11 w-11 rounded-lg" aria-hidden="true" />;
+    return <div className="h-11 w-16 rounded-lg" aria-hidden="true" />;
   }
 
   if (user) {
@@ -25,22 +26,35 @@ export function UserMenu() {
   }
 
   const loginError =
-    login.error && !isCancelledPopup(login.error)
+    !login.isPending && login.error && !isCancelledPopup(login.error)
       ? "Sign in failed. Please try again."
       : undefined;
 
   return (
-    <button
-      type="button"
-      onClick={() => login.mutate()}
-      disabled={login.isPending}
-      title={loginError}
-      className={`flex min-h-11 cursor-pointer items-center rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring disabled:cursor-wait disabled:opacity-60 ${
-        loginError ? "text-destructive" : "text-muted-foreground hover:text-foreground"
-      }`}
-    >
-      Login
-    </button>
+    <div className="relative flex items-center">
+      <button
+        type="button"
+        onClick={() => login.mutate()}
+        disabled={login.isPending}
+        aria-describedby={loginError ? errorId : undefined}
+        className={`flex min-h-11 cursor-pointer items-center rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring disabled:cursor-wait disabled:opacity-60 ${
+          loginError
+            ? "text-destructive"
+            : "text-muted-foreground hover:text-foreground"
+        }`}
+      >
+        Login
+      </button>
+      {loginError && (
+        <p
+          id={errorId}
+          role="alert"
+          className="absolute right-0 top-full z-50 mt-1 w-max max-w-[calc(100vw-2rem)] rounded-lg border border-border bg-card px-3 py-2 text-xs font-medium text-destructive shadow-md"
+        >
+          {loginError}
+        </p>
+      )}
+    </div>
   );
 }
 
@@ -51,32 +65,62 @@ function AccountDropdown({
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const triggerRef = useRef<HTMLButtonElement | null>(null);
+  const firstItemRef = useRef<HTMLButtonElement | null>(null);
   const logout = useLogout();
   const displayName = user.name || user.username;
 
   useEffect(() => {
     if (!isOpen) return;
 
-    function onMouseDown(e: MouseEvent) {
-      if (!containerRef.current?.contains(e.target as Node)) setIsOpen(false);
+    firstItemRef.current?.focus();
+
+    function onPointerDown(e: PointerEvent) {
+      if (!containerRef.current?.contains(e.target as Node)) {
+        setIsOpen(false);
+      }
     }
     function onKeyDown(e: KeyboardEvent) {
-      if (e.key === "Escape") setIsOpen(false);
+      if (e.key === "Escape") {
+        e.preventDefault();
+        setIsOpen(false);
+        triggerRef.current?.focus();
+      } else if (e.key === "Tab") {
+        setIsOpen(false);
+      }
     }
 
-    document.addEventListener("mousedown", onMouseDown);
+    document.addEventListener("pointerdown", onPointerDown);
     document.addEventListener("keydown", onKeyDown);
     return () => {
-      document.removeEventListener("mousedown", onMouseDown);
+      document.removeEventListener("pointerdown", onPointerDown);
       document.removeEventListener("keydown", onKeyDown);
     };
   }, [isOpen]);
 
   return (
-    <div ref={containerRef} className="relative">
+    <div
+      ref={containerRef}
+      className="relative"
+      onBlur={(e) => {
+        if (
+          isOpen &&
+          !e.currentTarget.contains(e.relatedTarget as Node | null)
+        ) {
+          setIsOpen(false);
+        }
+      }}
+    >
       <button
+        ref={triggerRef}
         type="button"
         onClick={() => setIsOpen((open) => !open)}
+        onKeyDown={(e) => {
+          if (e.key === "ArrowDown" && !isOpen) {
+            e.preventDefault();
+            setIsOpen(true);
+          }
+        }}
         aria-haspopup="menu"
         aria-expanded={isOpen}
         aria-label={`Account menu for ${displayName}`}
@@ -100,15 +144,16 @@ function AccountDropdown({
           </div>
           <div className="my-1 border-t border-border" />
           <button
+            ref={firstItemRef}
             type="button"
             role="menuitem"
             onClick={() => {
               setIsOpen(false);
               logout();
             }}
-            className="flex w-full cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-left text-sm text-foreground hover:bg-muted focus:outline-none focus-visible:bg-muted"
+            className="flex min-h-11 w-full cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-left text-sm text-foreground hover:bg-muted focus:outline-none focus-visible:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
           >
-            <SignOut size={16} />
+            <SignOut size={16} aria-hidden="true" />
             Log out
           </button>
         </div>

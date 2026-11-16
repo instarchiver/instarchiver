@@ -1,5 +1,6 @@
 import { Avatar } from "@/components/users/avatar";
 import { UserStatsRow } from "@/components/users/user-stats-row";
+import { PrivateBadge, VerifiedBadge } from "@/components/users/verified-badge";
 import type { InstagramUserHistory } from "@/lib/api/types";
 import { formatDate, formatRelativeTime } from "@/lib/format";
 import type { HistoryChange } from "@/lib/history-diff";
@@ -8,9 +9,18 @@ import { HistoryChangeRow } from "./history-change-row";
 function FirstSnapshot({ entry }: { entry: InstagramUserHistory }) {
   return (
     <div className="flex flex-col gap-3 sm:flex-row sm:items-start">
-      <Avatar src={entry.profile_picture} alt={entry.username} size="md" />
+      <Avatar src={entry.profile_picture} alt="" size="md" />
       <div className="flex min-w-0 flex-col gap-2">
-        <p className="text-sm font-medium text-foreground">@{entry.username}</p>
+        <div className="flex flex-wrap items-center gap-1.5">
+          <p className="text-sm font-medium text-foreground">@{entry.username}</p>
+          {entry.is_verified && <VerifiedBadge />}
+          {entry.is_private && <PrivateBadge />}
+        </div>
+        {entry.full_name && (
+          <p className="break-words text-sm text-muted-foreground">
+            {entry.full_name}
+          </p>
+        )}
         <UserStatsRow
           posts={entry.media_count}
           followers={entry.follower_count}

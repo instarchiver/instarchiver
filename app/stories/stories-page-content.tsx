@@ -39,6 +39,9 @@ export function StoriesPageContent() {
   const handleRetry = useCallback(() => {
     void refetch();
   }, [refetch]);
+  const handleClearSearch = useCallback(() => {
+    setSearch("");
+  }, [setSearch]);
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
@@ -51,9 +54,9 @@ export function StoriesPageContent() {
         <SearchInput
           value={search}
           onChange={setSearch}
-          onClear={() => setSearch("")}
-          placeholder="Search stories..."
-          aria-label="Search stories"
+          onClear={handleClearSearch}
+          placeholder="Search by username..."
+          aria-label="Search stories by username"
         />
       </div>
 
@@ -68,15 +71,28 @@ export function StoriesPageContent() {
           isLoading={isLoading}
           isError={isError}
           onRetry={handleRetry}
+          errorMessage="Couldn't load archived stories."
           emptyIcon={CirclesFour}
           emptyTitle={
             isSearching ? "No stories match your search" : "No stories archived yet"
           }
           emptyDescription={
             isSearching
-              ? `No results for "${debouncedSearch}". Try a different username.`
+              ? `No results for "${trimmedSearch}". Try a different username.`
               : undefined
           }
+          emptyAction={
+            isSearching ? (
+              <button
+                type="button"
+                onClick={handleClearSearch}
+                className="inline-flex min-h-11 cursor-pointer items-center justify-center rounded-lg border border-border bg-card px-4 text-sm font-medium text-foreground transition-colors hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+              >
+                Clear search
+              </button>
+            ) : undefined
+          }
+          showSkeletonFooter={false}
           columns={COLUMNS_2_3_4_5}
           cardAspectRatio={9 / 16}
           scrollKey={scrollKey}

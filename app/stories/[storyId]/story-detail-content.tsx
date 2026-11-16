@@ -2,17 +2,26 @@
 
 import { ViewTransition } from "react";
 import Link from "next/link";
-import { HourglassSimple } from "@phosphor-icons/react";
+import { ArrowLeft, CirclesFour, HourglassSimple } from "@phosphor-icons/react";
 import { useStory } from "@/hooks/use-stories";
+import { ApiError } from "@/lib/api/client";
 import { StoryViewer } from "@/components/stories/story-viewer";
 import { SimilarStories } from "@/components/stories/similar-stories";
 import { Avatar } from "@/components/users/avatar";
 import { PrivateBadge, VerifiedBadge } from "@/components/users/verified-badge";
+import { EmptyState } from "@/components/ui/empty-state";
 import { ErrorState } from "@/components/ui/error-state";
 import { Skeleton } from "@/components/ui/skeleton";
 import { MediaImage } from "@/components/media/media-image";
 import type { Story } from "@/lib/api/types";
-import { formatDate, formatStoryWindow } from "@/lib/format";
+import {
+  formatDate,
+  formatStoryTitle,
+  formatStoryWindow,
+} from "@/lib/format";
+
+const STORY_FRAME =
+  "relative mx-auto aspect-[9/16] w-[min(100%,calc((100dvh-15rem)*9/16))] max-w-sm overflow-hidden rounded-xl border border-border bg-card";
 
 /**
  * `story` is the grid item the visitor tapped, when it is still cached. Showing
@@ -22,16 +31,23 @@ export function StoryDetailSkeleton({ story }: { story?: Story }) {
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
       <div className="mx-auto max-w-md">
-        <div className="mb-4 flex items-center gap-3 p-2">
-          <Skeleton className="h-12 w-12 rounded-full" />
+        <div className="mb-4 flex min-h-11 items-center">
+          <Skeleton className="h-5 w-28" />
+        </div>
+        <div className="-mx-2 mb-4 flex items-center gap-3 px-2 py-2">
+          <Skeleton className="h-12 w-12 shrink-0 rounded-full" />
           <div className="space-y-2">
             <Skeleton className="h-4 w-32" />
             <Skeleton className="h-3 w-24" />
           </div>
         </div>
         {story?.thumbnail ? (
-          <ViewTransition name={`story-${story.story_id}`} share="morph" default="none">
-            <div className="relative mx-auto aspect-[9/16] w-full max-w-sm overflow-hidden rounded-xl border border-border bg-card">
+          <ViewTransition
+            name={`story-${story.story_id}`}
+            share="morph"
+            default="none"
+          >
+            <div className={STORY_FRAME}>
               <MediaImage
                 src={story.thumbnail}
                 alt=""
@@ -43,7 +59,7 @@ export function StoryDetailSkeleton({ story }: { story?: Story }) {
             </div>
           </ViewTransition>
         ) : (
-          <Skeleton className="mx-auto aspect-[9/16] w-full max-w-sm rounded-xl" />
+          <Skeleton className="mx-auto aspect-[9/16] w-[min(100%,calc((100dvh-15rem)*9/16))] max-w-sm rounded-xl" />
         )}
       </div>
     </div>
@@ -51,15 +67,42 @@ export function StoryDetailSkeleton({ story }: { story?: Story }) {
 }
 
 export function StoryDetailContent({ storyId }: { storyId: string }) {
-  const { data: story, isLoading, isError, refetch } = useStory(storyId);
+  const { data: story, isLoading, isError, error, refetch } = useStory(storyId);
 
   if (isLoading) return <StoryDetailSkeleton />;
+
+  const isNotFound = error instanceof ApiError && error.status === 404;
+
+  if (isNotFound) {
+    return (
+      <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
+        <div className="mx-auto max-w-md">
+          <EmptyState
+            icon={CirclesFour}
+            title="Story not found"
+            description="This story isn't in the archive or may have been removed."
+            action={
+              <Link
+                href="/stories"
+                className="inline-flex min-h-11 items-center justify-center rounded-lg bg-accent px-4 text-sm font-medium text-accent-foreground transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+              >
+                Browse stories
+              </Link>
+            }
+          />
+        </div>
+      </div>
+    );
+  }
 
   if (isError || !story) {
     return (
       <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
         <div className="mx-auto max-w-md">
-          <ErrorState message="Couldn't load this story." onRetry={() => refetch()} />
+          <ErrorState
+            message="Couldn't load this story."
+            onRetry={() => refetch()}
+          />
         </div>
       </div>
     );
@@ -69,10 +112,20 @@ export function StoryDetailContent({ storyId }: { storyId: string }) {
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
       <div className="mx-auto max-w-md">
         <Link
-          href={`/users/${story.user.uuid}`}
-          className="mb-4 flex items-center gap-3 rounded-xl p-2 transition-colors hover:bg-muted"
+          href="/stories"
+          className="-ml-2 mb-4 inline-flex min-h-11 items-center gap-1.5 rounded-lg px-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
         >
-          <Avatar src={story.user.profile_picture} alt={story.user.username} />
+          <ArrowLeft size={16} aria-hidden="true" />
+          Back to stories
+        </Link>
+
+        <h1 className="sr-only">{formatStoryTitle(story)}</h1>
+
+        <Link
+          href={`/users/${story.user.uuid}?tab=stories`}
+          className="-mx-2 mb-4 flex items-center gap-3 rounded-xl px-2 py-2 transition-colors hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+        >
+          <Avatar src={story.user.profile_picture} alt="" />
           <div className="min-w-0">
             <div className="flex items-center gap-1">
               <p className="truncate font-medium text-foreground">
@@ -81,16 +134,28 @@ export function StoryDetailContent({ storyId }: { storyId: string }) {
               {story.user.is_verified && <VerifiedBadge />}
               {story.user.is_private && <PrivateBadge />}
             </div>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-xs text-muted-foreground tabular-nums">
               {formatDate(story.story_created_at)}
             </p>
+            {story.created_at && (
+              <p className="text-xs text-muted-foreground tabular-nums">
+                Archived {formatDate(story.created_at)}
+              </p>
+            )}
           </div>
         </Link>
 
-        <ViewTransition name={`story-${story.story_id}`} share="morph" default="none">
+        <ViewTransition
+          name={`story-${story.story_id}`}
+          share="morph"
+          default="none"
+        >
           <StoryViewer story={story} />
         </ViewTransition>
-        <p className="mt-3 flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
+        <p
+          suppressHydrationWarning
+          className="mt-3 flex items-center justify-center gap-1.5 text-xs text-muted-foreground"
+        >
           <HourglassSimple size={14} aria-hidden="true" />
           {formatStoryWindow(story.story_created_at)}
         </p>

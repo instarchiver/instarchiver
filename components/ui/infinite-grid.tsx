@@ -6,6 +6,7 @@ import {
   useLayoutEffect,
   useRef,
   useState,
+  type ReactNode,
 } from "react";
 import { usePathname } from "next/navigation";
 import { useWindowVirtualizer } from "@tanstack/react-virtual";
@@ -77,9 +78,13 @@ interface InfiniteGridProps<T> {
   emptyIcon: Icon;
   emptyTitle: string;
   emptyDescription?: string;
+  emptyAction?: ReactNode;
+  errorMessage?: string;
   columns: GridColumns;
   cardAspectRatio?: number;
   scrollKey?: string;
+  skeletonVariant?: "media" | "user";
+  showSkeletonFooter?: boolean;
 }
 
 interface VirtualizedRowsProps<T> {
@@ -95,6 +100,7 @@ interface VirtualizedRowsProps<T> {
   restoreState: SavedGridScrollState | null;
   hasNextPage: boolean;
   isFetchingNextPage: boolean;
+  isError: boolean;
   fetchNextPage: () => void;
   onSettled?: () => void;
 }
@@ -112,6 +118,7 @@ function VirtualizedRows<T>({
   restoreState,
   hasNextPage,
   isFetchingNextPage,
+  isError,
   fetchNextPage,
   onSettled,
 }: VirtualizedRowsProps<T>) {
@@ -154,13 +161,25 @@ function VirtualizedRows<T>({
   const lastVirtualIndex = virtualItems[virtualItems.length - 1]?.index;
 
   useEffect(() => {
-    if (!hasNextPage || isFetchingNextPage || lastVirtualIndex === undefined) {
+    if (
+      !hasNextPage ||
+      isFetchingNextPage ||
+      isError ||
+      lastVirtualIndex === undefined
+    ) {
       return;
     }
     if (lastVirtualIndex >= rowCount - PREFETCH_ROW_BUFFER) {
       fetchNextPage();
     }
-  }, [hasNextPage, isFetchingNextPage, lastVirtualIndex, rowCount, fetchNextPage]);
+  }, [
+    hasNextPage,
+    isFetchingNextPage,
+    isError,
+    lastVirtualIndex,
+    rowCount,
+    fetchNextPage,
+  ]);
 
   const prevDimensionsRef = useRef({ width, columnCount });
   useLayoutEffect(() => {
@@ -307,6 +326,7 @@ interface VirtualizedGridBodyProps<T> {
   scrollKey: string;
   hasNextPage: boolean;
   isFetchingNextPage: boolean;
+  isError: boolean;
   fetchNextPage: () => void;
   sentinelRef: React.RefObject<HTMLDivElement | null>;
 }
@@ -320,6 +340,7 @@ function VirtualizedGridBody<T>({
   scrollKey,
   hasNextPage,
   isFetchingNextPage,
+  isError,
   fetchNextPage,
   sentinelRef,
 }: VirtualizedGridBodyProps<T>) {
@@ -411,13 +432,14 @@ function VirtualizedGridBody<T>({
           restoreState={restoreState}
           hasNextPage={hasNextPage}
           isFetchingNextPage={isFetchingNextPage}
+          isError={isError}
           fetchNextPage={fetchNextPage}
           onSettled={handleSettled}
         />
       )}
-      {hasNextPage && (
+      {hasNextPage && !isError && (
         <div ref={sentinelRef} className="flex items-center justify-center py-8">
-          <Spinner />
+          {isFetchingNextPage && <Spinner />}
         </div>
       )}
     </div>
@@ -437,47 +459,87 @@ export function InfiniteGrid<T>({
   emptyIcon,
   emptyTitle,
   emptyDescription,
+  emptyAction,
+  errorMessage,
   columns,
   cardAspectRatio,
   scrollKey,
+  skeletonVariant = "media",
+  showSkeletonFooter = false,
 }: InfiniteGridProps<T>) {
   const pathname = usePathname();
   const effectiveScrollKey = scrollKey ?? pathname;
 
   const onIntersect = useCallback(() => {
-    if (hasNextPage && !isFetchingNextPage) fetchNextPage();
-  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+    if (hasNextPage && !isFetchingNextPage && !isError) fetchNextPage();
+  }, [hasNextPage, isFetchingNextPage, isError, fetchNextPage]);
 
   const sentinelRef = useIntersectionObserver(
     onIntersect,
     hasNextPage && !isLoading && !isError
   );
 
-  if (isLoading) return <CardSkeletonGrid />;
-  if (isError) return <ErrorState onRetry={onRetry} />;
+  if (isLoading) {
+    const aspectClass =
+      cardAspectRatio !== undefined && Math.abs(cardAspectRatio - 9 / 16) < 0.01
+        ? "aspect-[9/16]"
+        : "aspect-square";
+    return (
+      <CardSkeletonGrid
+        columns={columns}
+        aspectClass={aspectClass}
+        showFooter={showSkeletonFooter}
+        variant={skeletonVariant}
+      />
+    );
+  }
+  if (isError && items.length === 0) {
+    return <ErrorState message={errorMessage} onRetry={onRetry} />;
+  }
   if (items.length === 0) {
     return (
       <EmptyState
         icon={emptyIcon}
         title={emptyTitle}
         description={emptyDescription}
+        action={emptyAction}
       />
     );
   }
 
   return (
-    <VirtualizedGridBody
-      key={effectiveScrollKey}
-      items={items}
-      renderItem={renderItem}
-      getKey={getKey}
-      columns={columns}
-      cardAspectRatio={cardAspectRatio}
-      scrollKey={effectiveScrollKey}
-      hasNextPage={hasNextPage}
-      isFetchingNextPage={isFetchingNextPage}
-      fetchNextPage={fetchNextPage}
-      sentinelRef={sentinelRef}
-    />
+    <>
+      <VirtualizedGridBody
+        key={effectiveScrollKey}
+        items={items}
+        renderItem={renderItem}
+        getKey={getKey}
+        columns={columns}
+        cardAspectRatio={cardAspectRatio}
+        scrollKey={effectiveScrollKey}
+        hasNextPage={hasNextPage}
+        isFetchingNextPage={isFetchingNextPage}
+        isError={isError}
+        fetchNextPage={fetchNextPage}
+        sentinelRef={sentinelRef}
+      />
+      {isError && (
+        <div
+          role="alert"
+          className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-dashed border-border bg-card px-4 py-3 text-sm"
+        >
+          <p className="text-muted-foreground">
+            {errorMessage ?? "Couldn't load more items."}
+          </p>
+          <button
+            type="button"
+            onClick={onRetry}
+            className="flex min-h-11 cursor-pointer items-center gap-2 rounded-lg bg-accent px-4 text-sm font-medium text-accent-foreground transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+          >
+            Try again
+          </button>
+        </div>
+      )}
+    </>
   );
 }

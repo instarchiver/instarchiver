@@ -6,7 +6,13 @@ import {
   CirclesFour,
   UsersThree,
 } from "@phosphor-icons/react/ssr";
-import { RecentPosts, RecentStories, StatCount } from "./home-sections";
+import {
+  HomeSearchForm,
+  HomeStatsErrorNotice,
+  RecentPosts,
+  RecentStories,
+  StatCount,
+} from "./home-sections";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/" },
@@ -41,33 +47,36 @@ export default function Home() {
     <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
       <div className="mx-auto max-w-2xl text-center">
         <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
-          Your Instagram archive, browsable.
+          Public Instagram archive, browsable.
         </h1>
         <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-muted-foreground">
           InstArchiver keeps a searchable record of archived Instagram users,
-          their stories, and their posts &mdash; explore the collection below.
+          their stories, and their posts. Look up a profile or explore recent
+          additions below.
         </p>
+        <HomeSearchForm />
       </div>
 
-      {/* Phones get three compact tiles so recent media starts above the fold. */}
-      <div className="mt-10 grid grid-cols-3 gap-3 sm:mt-12 sm:gap-4">
+      {/* Phones >= 360px get three compact tiles so recent media starts above the fold. */}
+      <div className="mt-10 grid grid-cols-1 gap-3 min-[360px]:grid-cols-3 sm:mt-12 sm:gap-4">
         {SECTIONS.map(({ href, label, description, icon: Icon, statKey }) => (
           <Link
             key={href}
             href={href}
-            className="group flex min-w-0 flex-col gap-3 rounded-xl border border-border bg-card p-3 transition-[translate,box-shadow] duration-200 ease-out-expo hover:-translate-y-0.5 hover:shadow-md active:translate-y-0 active:shadow-none motion-reduce:hover:translate-y-0 sm:gap-4 sm:p-6"
+            className="group flex min-w-0 flex-col gap-3 rounded-xl border border-border bg-card p-3 transition-[translate,box-shadow] duration-200 ease-out-expo hover:-translate-y-0.5 hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring active:translate-y-0 active:shadow-none motion-reduce:hover:translate-y-0 sm:gap-4 sm:p-6"
           >
             <div className="flex items-center justify-between">
-              <span className="flex h-11 w-11 items-center justify-center rounded-lg bg-muted text-accent">
-                <Icon size={22} weight="bold" />
+              <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-muted text-accent sm:h-11 sm:w-11">
+                <Icon size={20} weight="bold" aria-hidden="true" />
               </span>
               <ArrowRight
                 size={18}
+                aria-hidden="true"
                 className="hidden text-muted-foreground transition-transform duration-200 ease-out-expo group-hover:translate-x-0.5 motion-reduce:group-hover:translate-x-0 sm:block"
               />
             </div>
-            <div>
-              <p className="text-base font-semibold text-foreground sm:text-lg">
+            <div className="min-w-0">
+              <p className="truncate text-sm font-semibold text-foreground sm:text-lg">
                 {label}
               </p>
               <p className="mt-1 hidden text-sm text-muted-foreground sm:block">
@@ -78,6 +87,7 @@ export default function Home() {
           </Link>
         ))}
       </div>
+      <HomeStatsErrorNotice />
 
       <RecentStories />
       <RecentPosts />

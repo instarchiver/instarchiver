@@ -1,51 +1,130 @@
 "use client";
 
-import { useRef, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { GoogleLogo, UserPlus, X } from "@phosphor-icons/react";
-import { useMounted } from "@/components/hooks/use-mounted";
 import { Spinner } from "@/components/ui/spinner";
 import { isCancelledPopup, useLoginWithGoogle, useMe } from "@/hooks/use-auth";
 import { useCreateUser } from "@/hooks/use-users";
 import { getApiErrorMessage } from "@/lib/api/client";
 
 const PRIMARY_BUTTON =
-  "flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-lg bg-accent px-4 text-sm font-medium text-accent-foreground transition-colors hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring disabled:cursor-wait disabled:opacity-60";
+  "flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-lg bg-accent px-4 text-sm font-medium text-accent-foreground transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring disabled:cursor-wait disabled:opacity-60";
 const GHOST_BUTTON =
-  "flex min-h-11 cursor-pointer items-center rounded-lg px-4 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground disabled:cursor-not-allowed disabled:opacity-60";
+  "flex min-h-11 cursor-pointer items-center rounded-lg px-4 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring disabled:cursor-not-allowed disabled:opacity-60";
 
-export function AddUserButton({ className = "" }: { className?: string }) {
-  const mounted = useMounted();
+const NON_PROFILE_PATHS = new Set([
+  "p",
+  "reel",
+  "reels",
+  "stories",
+  "explore",
+  "accounts",
+  "direct",
+  "tv",
+]);
+
+function parseInstagramUsername(
+  raw: string
+): { username: string } | { error: string } {
+  const trimmed = raw.trim();
+  if (!trimmed) {
+    return { error: "Enter an Instagram username." };
+  }
+
+  const urlMatch = trimmed.match(
+    /^(?:https?:\/\/)?(?:www\.)?instagram\.com\/([^/?#]+)/i
+  );
+  if (urlMatch) {
+    const segment = urlMatch[1].replace(/^@/, "");
+    if (!segment || NON_PROFILE_PATHS.has(segment.toLowerCase())) {
+      return {
+        error:
+          "Enter an Instagram username or profile link, not a post or story URL.",
+      };
+    }
+    return { username: segment };
+  }
+
+  const normalized = trimmed.replace(/^@/, "");
+  if (!normalized) {
+    return { error: "Enter an Instagram username." };
+  }
+  return { username: normalized };
+}
+
+export function AddUserButton({
+  className = "",
+  initialUsername,
+  label = "Add user",
+}: {
+  className?: string;
+  initialUsername?: string;
+  label?: string;
+}) {
   const dialogRef = useRef<HTMLDialogElement | null>(null);
+  const [isOpen, setIsOpen] = useState(false);
 
-  if (!mounted) return null;
+  function openDialog() {
+    setIsOpen(true);
+    dialogRef.current?.showModal();
+  }
 
   return (
     <>
       <button
         type="button"
-        onClick={() => dialogRef.current?.showModal()}
+        onClick={openDialog}
         className={`${PRIMARY_BUTTON} shrink-0 ${className}`}
       >
-        <UserPlus size={16} />
-        Add user
+        <UserPlus size={16} aria-hidden="true" />
+        {label}
       </button>
-      <AddUserDialog dialogRef={dialogRef} />
+      <AddUserDialog
+        dialogRef={dialogRef}
+        isOpen={isOpen}
+        onOpenChange={setIsOpen}
+        initialUsername={initialUsername}
+      />
     </>
   );
 }
 
 function AddUserDialog({
   dialogRef,
+  isOpen,
+  onOpenChange,
+  initialUsername = "",
 }: {
   dialogRef: React.RefObject<HTMLDialogElement | null>;
+  isOpen: boolean;
+  onOpenChange: (open: boolean) => void;
+  initialUsername?: string;
 }) {
   const router = useRouter();
   const { user, isLoadingUser } = useMe();
   const login = useLoginWithGoogle();
   const createUser = useCreateUser();
-  const [username, setUsername] = useState("");
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const [username, setUsername] = useState(initialUsername);
+  const [prevOpen, setPrevOpen] = useState(false);
   const [validationError, setValidationError] = useState<string>();
+
+  if (isOpen && !prevOpen) {
+    setPrevOpen(true);
+    setUsername(initialUsername);
+    setValidationError(undefined);
+  } else if (!isOpen && prevOpen) {
+    setPrevOpen(false);
+  }
+
+  useEffect(() => {
+    if (!isOpen || !user || isLoadingUser) return;
+    const rafId = window.requestAnimationFrame(() => {
+      inputRef.current?.focus();
+    });
+    return () => window.cancelAnimationFrame(rafId);
+  }, [isOpen, user, isLoadingUser]);
 
   const isPending = createUser.isPending || login.isPending;
   const errorMessage =
@@ -63,7 +142,8 @@ function AddUserDialog({
     dialogRef.current?.close();
   }
 
-  function resetForm() {
+  function handleDialogClose() {
+    onOpenChange(false);
     setUsername("");
     setValidationError(undefined);
     createUser.reset();
@@ -72,20 +152,18 @@ function AddUserDialog({
 
   function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    // The backend stores the username as sent, so strip the "@" people
-    // tend to paste along with it.
-    const normalized = username.trim().replace(/^@/, "");
-    if (!normalized) {
-      setValidationError("Enter an Instagram username.");
+    const parsed = parseInstagramUsername(username);
+    if ("error" in parsed) {
+      setValidationError(parsed.error);
       return;
     }
     setValidationError(undefined);
     createUser.mutate(
-      { username: normalized },
+      { username: parsed.username },
       {
-        onSuccess: (user) => {
+        onSuccess: (createdUser) => {
           dialogRef.current?.close();
-          router.push(`/users/${user.uuid}`);
+          router.push(`/users/${createdUser.uuid}`);
         },
       }
     );
@@ -128,7 +206,7 @@ function AddUserDialog({
             {login.isPending ? (
               <Spinner className="h-4 w-4 text-accent-foreground" />
             ) : (
-              <GoogleLogo size={16} weight="bold" />
+              <GoogleLogo size={16} weight="bold" aria-hidden="true" />
             )}
             Log in with Google
           </button>
@@ -140,18 +218,23 @@ function AddUserDialog({
       <form onSubmit={onSubmit} className="flex flex-col gap-4">
         <div>
           <label htmlFor="add-user-username" className="sr-only">
-            Instagram username
+            Instagram username or profile link
           </label>
           <div className="relative flex min-h-11 items-center rounded-lg border border-input bg-card focus-within:ring-2 focus-within:ring-ring">
-            <span className="pl-3 text-sm text-muted-foreground">@</span>
+            <span
+              className="pl-3 text-sm text-muted-foreground"
+              aria-hidden="true"
+            >
+              @
+            </span>
             <input
+              ref={inputRef}
               id="add-user-username"
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               disabled={isPending}
-              placeholder="username"
-              autoFocus
+              placeholder="username or instagram.com/username"
               autoComplete="off"
               autoCapitalize="none"
               autoCorrect="off"
@@ -175,7 +258,10 @@ function AddUserDialog({
 
         <div className="flex items-center justify-end gap-2">
           {isPending && (
-            <span className="mr-auto flex items-center gap-2 text-sm text-muted-foreground">
+            <span
+              role="status"
+              className="mr-auto flex items-center gap-2 text-sm text-muted-foreground"
+            >
               <Spinner className="h-4 w-4" />
               Fetching profile…
             </span>
@@ -200,7 +286,7 @@ function AddUserDialog({
     <dialog
       ref={dialogRef}
       aria-labelledby="add-user-title"
-      onClose={resetForm}
+      onClose={handleDialogClose}
       onCancel={(e) => {
         if (isPending) e.preventDefault();
       }}
@@ -225,9 +311,9 @@ function AddUserDialog({
             onClick={close}
             disabled={isPending}
             aria-label="Close"
-            className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground disabled:cursor-not-allowed disabled:opacity-60"
+            className="flex h-11 w-11 shrink-0 cursor-pointer items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring disabled:cursor-not-allowed disabled:opacity-60"
           >
-            <X size={18} />
+            <X size={18} aria-hidden="true" />
           </button>
         </div>
         {body}

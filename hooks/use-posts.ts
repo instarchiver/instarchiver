@@ -1,5 +1,7 @@
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getPost, getPosts, getSimilarPosts } from "@/lib/api/posts";
+import type { Post } from "@/lib/api/types";
+import { findCachedItem } from "@/lib/cached-item";
 import { queryKeys } from "@/lib/query-keys";
 
 const INFINITE_LIST_STALE_TIME = 5 * 60_000;
@@ -26,9 +28,13 @@ export function useRecentPosts() {
 }
 
 export function usePost(id: string) {
+  const queryClient = useQueryClient();
+
   return useQuery({
     queryKey: queryKeys.posts.detail(id),
     queryFn: () => getPost(id),
+    placeholderData: () =>
+      findCachedItem<Post>(queryClient, "posts", (p) => p.id === id),
   });
 }
 

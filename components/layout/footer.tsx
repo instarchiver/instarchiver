@@ -8,7 +8,7 @@ export function Footer() {
         </p>
         <a
           href="mailto:arter@instarchiver.net"
-          className="transition-colors hover:text-foreground"
+          className="rounded-sm transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
         >
           arter@instarchiver.net
         </a>

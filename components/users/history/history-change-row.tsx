@@ -35,14 +35,18 @@ function FlagValue({ field, value }: { field: "is_private" | "is_verified"; valu
   if (field === "is_private") {
     return (
       <span className="inline-flex items-center gap-1">
-        {value ? <LockSimple size={14} weight="fill" /> : <Globe size={14} />}
+        {value ? (
+          <LockSimple size={14} weight="fill" aria-hidden="true" />
+        ) : (
+          <Globe size={14} aria-hidden="true" />
+        )}
         {value ? "Private" : "Public"}
       </span>
     );
   }
   return (
     <span className="inline-flex items-center gap-1">
-      {value && <SealCheck size={14} weight="fill" className="text-accent" />}
+      {value && <SealCheck size={14} weight="fill" className="text-accent" aria-hidden="true" />}
       {value ? "Verified" : "Not verified"}
     </span>
   );
@@ -62,11 +66,13 @@ export function HistoryChangeRow({
   switch (change.kind) {
     case "image":
       return (
-        <div className="flex items-center gap-3">
+        <div className="flex min-w-0 flex-wrap items-center gap-3">
           <Label>Photo</Label>
-          <Avatar src={change.from} alt={`Previous photo of ${username}`} size="md" />
-          {arrow}
-          <Avatar src={change.to} alt={`New photo of ${username}`} size="md" />
+          <div className="flex items-center gap-3">
+            <Avatar src={change.from} alt={`Previous photo of ${username}`} size="md" />
+            {arrow}
+            <Avatar src={change.to} alt={`New photo of ${username}`} size="md" />
+          </div>
         </div>
       );
 
@@ -129,12 +135,12 @@ export function HistoryChangeRow({
         <div className="flex flex-wrap items-center gap-2 text-sm">
           <Label>{change.label}</Label>
           <span
-            className={`break-all text-muted-foreground ${change.from ? "line-through" : ""}`}
+            className={`break-words text-muted-foreground ${change.from ? "line-through" : ""}`}
           >
             {change.from || <EmptyValue />}
           </span>
           {arrow}
-          <span className="break-all font-medium text-foreground">
+          <span className="break-words font-medium text-foreground">
             {change.to || <EmptyValue />}
           </span>
         </div>

@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowLeft, ClockCounterClockwise } from "@phosphor-icons/react";
+import { ArrowLeft, ClockCounterClockwise, UsersThree } from "@phosphor-icons/react";
 import { useInfiniteUserHistory, useUser } from "@/hooks/use-users";
+import { ApiError } from "@/lib/api/client";
 import { Avatar } from "@/components/users/avatar";
 import { HistoryTimeline } from "@/components/users/history/history-timeline";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -22,8 +23,28 @@ export function TimelineSkeleton() {
   );
 }
 
+export function UserHistoryFallback() {
+  return (
+    <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
+      <Skeleton className="h-11 w-32" />
+      <div className="mt-4 mb-8 flex items-center gap-4">
+        <Skeleton className="h-12 w-12 rounded-full" />
+        <div className="space-y-2">
+          <Skeleton className="h-7 w-40" />
+          <Skeleton className="h-4 w-28" />
+        </div>
+      </div>
+      <TimelineSkeleton />
+    </div>
+  );
+}
+
 export function UserHistoryContent({ uuid }: { uuid: string }) {
-  const { data: user } = useUser(uuid);
+  const {
+    data: user,
+    isError: isUserError,
+    error: userError,
+  } = useUser(uuid);
   const {
     data,
     isLoading,
@@ -34,6 +55,26 @@ export function UserHistoryContent({ uuid }: { uuid: string }) {
     fetchNextPage,
   } = useInfiniteUserHistory(uuid);
 
+  if (isUserError && userError instanceof ApiError && userError.status === 404) {
+    return (
+      <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
+        <EmptyState
+          icon={UsersThree}
+          title="User not found"
+          description="This archived profile doesn't exist or may have been removed."
+          action={
+            <Link
+              href="/users"
+              className="inline-flex min-h-11 items-center rounded-lg bg-accent px-4 text-sm font-medium text-accent-foreground transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+            >
+              Browse users
+            </Link>
+          }
+        />
+      </div>
+    );
+  }
+
   const entries = data?.pages.flatMap((p) => p.results) ?? [];
 
   let content: React.ReactNode;
@@ -43,7 +84,7 @@ export function UserHistoryContent({ uuid }: { uuid: string }) {
     content = (
       <ErrorState
         message="Couldn't load this profile's history."
-        onRetry={() => refetch()}
+        onRetry={() => void refetch()}
       />
     );
   } else if (entries.length === 0) {
@@ -69,25 +110,31 @@ export function UserHistoryContent({ uuid }: { uuid: string }) {
     <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
       <Link
         href={`/users/${uuid}`}
-        className="inline-flex min-h-11 items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+        className="inline-flex min-h-11 items-center gap-2 rounded-lg px-1 text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
       >
-        <ArrowLeft size={16} />
+        <ArrowLeft size={16} aria-hidden="true" />
         Back to profile
       </Link>
 
       <div className="mt-4 mb-8 flex items-center gap-4">
         {user ? (
-          <Avatar src={user.profile_picture} alt={user.username} size="md" />
+          <Avatar src={user.profile_picture} alt="" size="md" />
+        ) : isUserError ? (
+          <Avatar src={null} alt="" size="md" />
         ) : (
           <Skeleton className="h-12 w-12 rounded-full" />
         )}
         <div className="min-w-0">
-          <h1 className="text-xl font-semibold text-foreground">
+          <h1 className="text-2xl font-semibold text-foreground">
             Profile history
           </h1>
           {user ? (
             <p className="truncate text-sm text-muted-foreground">
               @{user.username}
+            </p>
+          ) : isUserError ? (
+            <p className="text-sm text-muted-foreground">
+              Profile details unavailable
             </p>
           ) : (
             <Skeleton className="mt-1 h-4 w-32" />

@@ -8,6 +8,7 @@ import { useSearchParamState } from "@/components/hooks/use-search-param-state";
 import { InfiniteGrid } from "@/components/ui/infinite-grid";
 import { COLUMNS_2_3_4 } from "@/components/ui/grid-columns";
 import { SearchInput } from "@/components/ui/search-input";
+import { CardSkeletonGrid, Skeleton } from "@/components/ui/skeleton";
 import { AddUserButton } from "@/components/users/add-user-dialog";
 import { UserCard } from "@/components/users/user-card";
 import {
@@ -23,8 +24,13 @@ function UsersPageFallback() {
       <p className="mt-1 text-sm text-muted-foreground">
         Every archived Instagram profile.
       </p>
+      <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
+        <Skeleton className="h-11 w-full sm:max-w-sm sm:flex-1" />
+        <Skeleton className="h-11 w-full sm:w-44" />
+        <Skeleton className="h-11 w-full sm:ml-auto sm:w-28" />
+      </div>
       <div className="mt-8">
-        <div className="min-h-11 animate-pulse rounded-lg border border-input bg-card" />
+        <CardSkeletonGrid count={8} columns={COLUMNS_2_3_4} variant="user" />
       </div>
     </div>
   );
@@ -64,6 +70,28 @@ function UsersList() {
     void refetch();
   }, [refetch]);
 
+  const cleanHandle = trimmedSearch.replace(/^@/, "");
+  const isSingleHandle =
+    cleanHandle.length > 0 && !/\s/.test(cleanHandle) && cleanHandle.length <= 30;
+
+  const emptyAction = isSearching ? (
+    <div className="flex flex-wrap items-center justify-center gap-2">
+      <button
+        type="button"
+        onClick={() => setSearch("")}
+        className="flex min-h-11 cursor-pointer items-center rounded-lg border border-border bg-card px-4 text-sm font-medium text-foreground transition-colors hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+      >
+        Clear search
+      </button>
+      <AddUserButton
+        initialUsername={isSingleHandle ? cleanHandle : undefined}
+        label={isSingleHandle ? `Add @${cleanHandle}` : "Add user"}
+      />
+    </div>
+  ) : (
+    <AddUserButton />
+  );
+
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
       <h1 className="text-2xl font-semibold text-foreground">Users</h1>
@@ -102,10 +130,13 @@ function UsersList() {
           }
           emptyDescription={
             isSearching
-              ? `No results for "${debouncedSearch}". Try a different username or name.`
+              ? `No results for "${trimmedSearch}". Try a different username or name.`
               : undefined
           }
+          emptyAction={emptyAction}
+          errorMessage="Couldn't load archived users."
           columns={COLUMNS_2_3_4}
+          skeletonVariant="user"
           scrollKey={scrollKey}
         />
       </div>
