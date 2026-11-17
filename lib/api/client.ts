@@ -7,6 +7,10 @@ export const API_BASE_URL =
 export const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://instarchiver.net";
 
+const APP_VERSION = process.env.NEXT_PUBLIC_APP_VERSION || "0.1.0";
+
+export const APP_USER_AGENT = `InstArchiver/${APP_VERSION} (+${SITE_URL})`;
+
 export function buildApiUrl(
   path: string,
   params?: Record<string, string | undefined>
@@ -49,10 +53,18 @@ export interface FetchJsonInit extends RequestInit {
   auth?: boolean;
 }
 
-function withAuthHeader(init: RequestInit, access: string | undefined) {
+function applyServerUserAgent(headers: Headers) {
+  // User-Agent is a forbidden header in browser Fetch, so only attach it on the server.
+  if (typeof window === "undefined" && !headers.has("User-Agent")) {
+    headers.set("User-Agent", APP_USER_AGENT);
+  }
+}
+
+function withRequestHeaders(init: RequestInit, access?: string): RequestInit {
   const headers = new Headers(init.headers);
   if (access) headers.set("Authorization", `Bearer ${access}`);
   else headers.delete("Authorization");
+  applyServerUserAgent(headers);
   return { ...init, headers };
 }
 
@@ -63,11 +75,14 @@ export function refreshSession(): Promise<AuthTokens | null> {
   const refresh = getTokens()?.refresh;
   if (!refresh) return Promise.resolve(null);
 
-  refreshPromise ??= fetch(buildApiUrl("/authentication/refresh/"), {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ refresh }),
-  })
+  refreshPromise ??= fetch(
+    buildApiUrl("/authentication/refresh/"),
+    withRequestHeaders({
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ refresh }),
+    })
+  )
     .then(async (res) => {
       if (!res.ok) throw new ApiError(res.status, res.url);
       const tokens = (await res.json()) as AuthTokens;
@@ -118,18 +133,18 @@ export async function fetchJson<T>(
     requestInit.signal ??= AbortSignal.timeout(SSR_TIMEOUT_MS);
   }
 
-  let res = await fetch(url, withAuthHeader(requestInit, access));
+  let res = await fetch(url, withRequestHeaders(requestInit, access));
 
   if (access && (await isAuthFailure(res))) {
     const tokens = await refreshSession();
     if (tokens) {
-      res = await fetch(url, withAuthHeader(requestInit, tokens.access));
+      res = await fetch(url, withRequestHeaders(requestInit, tokens.access));
     }
     // No valid session to be had: drop it and retry anonymously so public
     // endpoints keep working.
     if (!tokens || (await isAuthFailure(res))) {
       clearTokens();
-      res = await fetch(url, withAuthHeader(requestInit, undefined));
+      res = await fetch(url, withRequestHeaders(requestInit, undefined));
     }
   }
 
