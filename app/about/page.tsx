@@ -4,7 +4,7 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "About",
   description:
-    "How InstArchiver works: a public, searchable archive of Instagram profiles, stories, posts, and historical profile changes.",
+    "How Instarchiver works: a public, searchable archive of Instagram profiles, stories, posts, and historical profile changes.",
   alternates: { canonical: "/about" },
 };
 
@@ -13,7 +13,7 @@ const LINK_CLASS =
 
 const FAQS = [
   {
-    question: "Do I need an account to browse InstArchiver?",
+    question: "Do I need an account to browse Instarchiver?",
     answer:
       "No. All archived profiles, stories, posts, and profile history timelines are publicly browsable without logging in. A Google account is only required when adding a new Instagram username to the archive.",
   },
@@ -25,7 +25,7 @@ const FAQS = [
   {
     question: "How do I request copyright removal or opt out a profile?",
     answer:
-      "Send a request through the DMCA and content removal page or email arter@instarchiver.net with the specific InstArchiver URLs and proof of ownership or authorization.",
+      "Send a request through the DMCA and content removal page or email arter@instarchiver.net with the specific Instarchiver URLs and proof of ownership or authorization.",
   },
 ];
 
@@ -33,10 +33,10 @@ export default function AboutPage() {
   return (
     <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6 sm:py-12">
       <h1 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
-        About InstArchiver
+        About Instarchiver
       </h1>
       <p className="mt-3 text-base leading-7 text-muted-foreground">
-        InstArchiver is a public, searchable archive of Instagram profiles,
+        Instarchiver is a public, searchable archive of Instagram profiles,
         stories, posts, and profile history. It preserves public snapshots over
         time so visitors can inspect records without needing an Instagram
         account.
@@ -52,7 +52,7 @@ export default function AboutPage() {
               <span className="font-medium text-foreground">
                 Stories beyond 24 hours:
               </span>{" "}
-              Instagram stories expire after 24 hours. InstArchiver retains
+              Instagram stories expire after 24 hours. Instarchiver retains
               archived stories alongside their original publish time and archive
               timestamp.
             </li>
@@ -128,7 +128,7 @@ export default function AboutPage() {
             Independence and non-affiliation
           </h2>
           <p className="mt-3 text-sm leading-6 text-muted-foreground">
-            InstArchiver is an independent public archive and is not affiliated
+            Instarchiver is an independent public archive and is not affiliated
             with, endorsed by, or connected to Instagram or Meta Platforms, Inc.
             All trademarks, profile names, and archived media belong to their
             respective owners.

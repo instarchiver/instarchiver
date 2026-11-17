@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -28,13 +29,16 @@ export function Header() {
           href="/"
           className="flex min-h-11 min-w-11 shrink-0 items-center justify-center gap-2 rounded-lg text-lg font-semibold tracking-tight text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring sm:w-auto sm:justify-start sm:px-2"
         >
-          <span
-            className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent text-accent-foreground"
+          <Image
+            src="/logo.png"
+            alt=""
+            width={32}
+            height={32}
+            priority
+            className="h-8 w-8 shrink-0 object-contain"
             aria-hidden="true"
-          >
-            IA
-          </span>
-          <span className="sr-only sm:not-sr-only">InstArchiver</span>
+          />
+          <span className="sr-only sm:not-sr-only">Instarchiver</span>
         </Link>
 
         <nav aria-label="Primary" className="flex items-center gap-1 py-1">

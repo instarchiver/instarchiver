@@ -36,7 +36,7 @@ export function Footer() {
           </a>
         </div>
         <p className="text-xs text-muted-foreground">
-          InstArchiver is an independent public archive and is not affiliated
+          Instarchiver is an independent public archive and is not affiliated
           with Instagram or Meta.
         </p>
       </div>

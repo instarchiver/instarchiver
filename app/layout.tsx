@@ -17,12 +17,12 @@ const geistSans = Geist({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    template: "%s | InstArchiver",
-    default: "InstArchiver",
+    template: "%s | Instarchiver",
+    default: "Instarchiver",
   },
   description:
-    "InstArchiver keeps a searchable archive of Instagram profiles, stories, and posts, including profile history over time.",
-  openGraph: { siteName: "InstArchiver", type: "website" },
+    "Instarchiver keeps a searchable archive of Instagram profiles, stories, and posts, including profile history over time.",
+  openGraph: { siteName: "Instarchiver", type: "website" },
   twitter: { card: "summary_large_image" },
   other: { "google-adsense-account": ADSENSE_CLIENT_ID },
 };

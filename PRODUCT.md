@@ -12,7 +12,7 @@ The primary users are public visitors. Most arrive looking for one specific pers
 
 ## Product Purpose
 
-InstArchiver is a public, searchable archive of Instagram profiles and their stories and posts. It lets visitors do four things Instagram itself does not allow:
+Instarchiver is a public, searchable archive of Instagram profiles and their stories and posts. It lets visitors do four things Instagram itself does not allow:
 
 - watch stories after Instagram's 24-hour window has closed
 - see how a profile changed over time: username, full name, bio, avatar, private and verified status, and follower, following and post counts
@@ -23,7 +23,7 @@ Success means a visitor finds the person they came for and the content they want
 
 ## Positioning
 
-Instagram shows the current state of an account. InstArchiver keeps what Instagram drops: expired stories, deleted posts, and every earlier version of a profile, all browsable in public without a login.
+Instagram shows the current state of an account. Instarchiver keeps what Instagram drops: expired stories, deleted posts, and every earlier version of a profile, all browsable in public without a login.
 
 ## Operating Context
 
@@ -42,7 +42,7 @@ Visitors usually arrive with a username or a shared link and go straight to one 
 
 ## Brand Commitments
 
-- The name is InstArchiver, written with that capitalization.
+- The name is Instarchiver, written with that capitalization.
 - UI copy is plain and neutral: factual labels, short descriptions, no jokes. The README's dry, self-deprecating humor belongs to the README only and stays out of the product.
 - The public contact address is arter@instarchiver.net, shown in the footer.
 

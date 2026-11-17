@@ -1,5 +1,5 @@
 ---
-name: InstArchiver
+name: Instarchiver
 description: A public archive of Instagram profiles, stories, posts, and profile history.
 colors:
   archive-indigo: "#4f46e5"
@@ -128,7 +128,7 @@ components:
     padding: "2px 6px"
 ---
 
-# Design System: InstArchiver
+# Design System: Instarchiver
 
 ## Overview
 
@@ -152,7 +152,7 @@ Precision carries the personality. Counts use tabular figures, dates are exact, 
 A neutral zinc palette with one indigo accent, mirrored in a light and a dark theme from the same set of semantic tokens (`--background`, `--card`, `--accent` and so on in `app/globals.css`).
 
 ### Primary
-- **Archive Indigo** (light `archive-indigo`, dark `archive-indigo-dark`): the one interactive color. It fills primary buttons, colors text links ("View all", "View profile history"), the verified seal, history timeline dots, the focus ring, text selection, active tab underlines, and the "IA" logo tile. Text on it is white in light mode and near-black in dark mode.
+- **Archive Indigo** (light `archive-indigo`, dark `archive-indigo-dark`): the one interactive color. It fills primary buttons, colors text links ("View all", "View profile history"), the verified seal, history timeline dots, the focus ring, text selection, and active tab underlines. Text on it is white in light mode and near-black in dark mode.
 
 ### Neutral
 - **Page Mist** (`page-mist` / `page-mist-dark`): the page background, and the translucent fill behind the sticky header.

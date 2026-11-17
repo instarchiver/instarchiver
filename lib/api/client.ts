@@ -9,7 +9,7 @@ export const SITE_URL =
 
 const APP_VERSION = process.env.NEXT_PUBLIC_APP_VERSION || "0.1.0";
 
-export const APP_USER_AGENT = `InstArchiver/${APP_VERSION} (+${SITE_URL})`;
+export const APP_USER_AGENT = `Instarchiver/${APP_VERSION} (+${SITE_URL})`;
 
 export function buildApiUrl(
   path: string,
