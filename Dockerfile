@@ -8,8 +8,10 @@ WORKDIR /app
 # NEXT_PUBLIC_* values are inlined into the bundle at build time.
 ARG NEXT_PUBLIC_API_URL=https://api.instarchiver.net
 ARG NEXT_PUBLIC_SITE_URL=https://instarchiver.net
+ARG NEXT_PUBLIC_APP_VERSION=
 ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL \
     NEXT_PUBLIC_SITE_URL=$NEXT_PUBLIC_SITE_URL \
+    NEXT_PUBLIC_APP_VERSION=$NEXT_PUBLIC_APP_VERSION \
     NEXT_TELEMETRY_DISABLED=1
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
