@@ -1,14 +1,32 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
+import {
+  dehydrate,
+  HydrationBoundary,
+  QueryClient,
+} from "@tanstack/react-query";
+import { getStories } from "@/lib/api/stories";
+import { queryKeys } from "@/lib/query-keys";
 import { CardSkeletonGrid } from "@/components/ui/skeleton";
 import { COLUMNS_2_3_4_5 } from "@/components/ui/grid-columns";
 import { StoriesPageContent } from "./stories-page-content";
 
-export const metadata: Metadata = {
-  title: "Stories",
-  description: "Every archived Instagram story, from every user.",
-  alternates: { canonical: "/stories" },
-};
+interface StoriesPageProps {
+  searchParams: Promise<{ q?: string }>;
+}
+
+export async function generateMetadata({
+  searchParams,
+}: StoriesPageProps): Promise<Metadata> {
+  const { q } = await searchParams;
+  const hasSearch = typeof q === "string" && q.trim().length > 0;
+  return {
+    title: "Stories",
+    description: "Every archived Instagram story, from every user.",
+    alternates: { canonical: "/stories" },
+    ...(hasSearch ? { robots: { index: false, follow: true } } : {}),
+  };
+}
 
 function StoriesPageFallback() {
   return (
@@ -31,10 +49,26 @@ function StoriesPageFallback() {
   );
 }
 
-export default function StoriesPage() {
+export default async function StoriesPage({ searchParams }: StoriesPageProps) {
+  const params = await searchParams;
+  const search = typeof params.q === "string" ? params.q : "";
+
+  const queryClient = new QueryClient();
+  try {
+    await queryClient.prefetchInfiniteQuery({
+      queryKey: queryKeys.stories.list(undefined, search),
+      queryFn: ({ pageParam }) => getStories(pageParam, undefined, search),
+      initialPageParam: null as string | null,
+    });
+  } catch (error) {
+    console.error("[ssr] Stories prefetch failed, falling back to client", error);
+  }
+
   return (
-    <Suspense fallback={<StoriesPageFallback />}>
-      <StoriesPageContent />
-    </Suspense>
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <Suspense fallback={<StoriesPageFallback />}>
+        <StoriesPageContent />
+      </Suspense>
+    </HydrationBoundary>
   );
 }

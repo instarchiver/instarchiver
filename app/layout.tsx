@@ -7,6 +7,7 @@ import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { ScrollToTop } from "@/components/scroll-to-top";
 import { SITE_URL } from "@/lib/api/client";
+import { ADSENSE_CLIENT_ID, CONSENT_STORAGE_KEY } from "@/lib/consent";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,6 +24,7 @@ export const metadata: Metadata = {
     "InstArchiver keeps a searchable archive of Instagram profiles, stories, and posts, including profile history over time.",
   openGraph: { siteName: "InstArchiver", type: "website" },
   twitter: { card: "summary_large_image" },
+  other: { "google-adsense-account": ADSENSE_CLIENT_ID },
 };
 
 export default function RootLayout({
@@ -51,6 +53,33 @@ export default function RootLayout({
           </main>
           <Footer />
         </Providers>
+        <Script id="google-consent-default" strategy="beforeInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            window.gtag = window.gtag || gtag;
+            var defaultConsent = {
+              ad_storage: 'denied',
+              ad_user_data: 'denied',
+              ad_personalization: 'denied',
+              analytics_storage: 'denied',
+              wait_for_update: 500
+            };
+            try {
+              var rawConsent = window.localStorage.getItem(${JSON.stringify(CONSENT_STORAGE_KEY)});
+              if (rawConsent) {
+                var savedConsent = JSON.parse(rawConsent);
+                if (savedConsent && typeof savedConsent.analytics === 'boolean' && typeof savedConsent.advertising === 'boolean') {
+                  defaultConsent.analytics_storage = savedConsent.analytics ? 'granted' : 'denied';
+                  defaultConsent.ad_storage = savedConsent.advertising ? 'granted' : 'denied';
+                  defaultConsent.ad_user_data = savedConsent.advertising ? 'granted' : 'denied';
+                  defaultConsent.ad_personalization = savedConsent.advertising ? 'granted' : 'denied';
+                }
+              }
+            } catch (e) {}
+            gtag('consent', 'default', defaultConsent);
+          `}
+        </Script>
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-6CJW2BM9NS"
           strategy="afterInteractive"
@@ -63,6 +92,15 @@ export default function RootLayout({
             gtag('config', 'G-6CJW2BM9NS');
           `}
         </Script>
+        {ADSENSE_CLIENT_ID && (
+          <Script
+            id="google-adsense"
+            async
+            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT_ID}`}
+            crossOrigin="anonymous"
+            strategy="afterInteractive"
+          />
+        )}
       </body>
     </html>
   );

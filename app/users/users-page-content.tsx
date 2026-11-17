@@ -17,13 +17,23 @@ import {
 } from "@/components/users/user-sort-select";
 import type { InstagramUser } from "@/lib/api/types";
 
+function UsersPageHeader() {
+  return (
+    <>
+      <h1 className="text-2xl font-semibold text-foreground">Users</h1>
+      <p className="mt-1.5 max-w-2xl text-sm leading-6 text-muted-foreground">
+        Browse and sort archived Instagram profiles by followers, recency, or
+        username, or open any profile to inspect its posts, stories, and
+        snapshot history.
+      </p>
+    </>
+  );
+}
+
 function UsersPageFallback() {
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
-      <h1 className="text-2xl font-semibold text-foreground">Users</h1>
-      <p className="mt-1 text-sm text-muted-foreground">
-        Every archived Instagram profile.
-      </p>
+      <UsersPageHeader />
       <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
         <Skeleton className="h-11 w-full sm:max-w-sm sm:flex-1" />
         <Skeleton className="h-11 w-full sm:w-44" />
@@ -94,10 +104,7 @@ function UsersList() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
-      <h1 className="text-2xl font-semibold text-foreground">Users</h1>
-      <p className="mt-1 text-sm text-muted-foreground">
-        Every archived Instagram profile.
-      </p>
+      <UsersPageHeader />
 
       <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
         <div className="sm:max-w-sm sm:flex-1">
@@ -136,6 +143,7 @@ function UsersList() {
           emptyAction={emptyAction}
           errorMessage="Couldn't load archived users."
           columns={COLUMNS_2_3_4}
+          cardAspectRatio={1.1}
           skeletonVariant="user"
           scrollKey={scrollKey}
         />

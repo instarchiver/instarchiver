@@ -7,6 +7,7 @@ import { usePost } from "@/hooks/use-posts";
 import { ApiError } from "@/lib/api/client";
 import { PostCarousel } from "@/components/posts/post-carousel";
 import { SimilarPosts } from "@/components/posts/similar-posts";
+import { AdSlot } from "@/components/ads/ad-slot";
 import { Avatar } from "@/components/users/avatar";
 import { PrivateBadge, VerifiedBadge } from "@/components/users/verified-badge";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -14,7 +15,7 @@ import { ErrorState } from "@/components/ui/error-state";
 import { Skeleton } from "@/components/ui/skeleton";
 import { MediaImage } from "@/components/media/media-image";
 import type { Post } from "@/lib/api/types";
-import { formatDate, formatPostTitle } from "@/lib/format";
+import { formatDate } from "@/lib/format";
 
 const HERO_FRAME =
   "relative aspect-square w-full overflow-hidden rounded-xl border border-border bg-card sm:aspect-[4/5]";
@@ -110,6 +111,14 @@ export function PostDetailContent({ id }: { id: string }) {
     );
   }
 
+  const itemCount = post.media.length || post.media_count || 1;
+  const mediaTypeLabel =
+    post.variant === "carousel"
+      ? `Carousel of ${itemCount} items`
+      : post.variant === "video"
+        ? "Video"
+        : "Single image";
+
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
       <div className="mx-auto max-w-4xl">
@@ -121,7 +130,9 @@ export function PostDetailContent({ id }: { id: string }) {
           Back to posts
         </Link>
 
-        <h1 className="sr-only">{formatPostTitle(post)}</h1>
+        <h1 className="mb-6 text-xl font-semibold text-foreground sm:text-2xl">
+          Archived post by @{post.user.username}
+        </h1>
 
         <div className="grid gap-8 sm:grid-cols-2">
           <div className="sm:sticky sm:top-24 sm:self-start">
@@ -164,9 +175,49 @@ export function PostDetailContent({ id }: { id: string }) {
                 {post.caption}
               </p>
             )}
+
+            <div className="rounded-xl border border-border bg-card p-4">
+              <h2 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                Archive details
+              </h2>
+              <dl className="mt-3 space-y-2 text-xs">
+                <div className="flex items-baseline justify-between gap-4">
+                  <dt className="text-muted-foreground">Media type</dt>
+                  <dd className="font-medium tabular-nums text-foreground">
+                    {mediaTypeLabel}
+                  </dd>
+                </div>
+                <div className="flex items-baseline justify-between gap-4">
+                  <dt className="text-muted-foreground">Posted on Instagram</dt>
+                  <dd className="tabular-nums text-foreground">
+                    {formatDate(post.post_created_at) || "—"}
+                  </dd>
+                </div>
+                {post.created_at && (
+                  <div className="flex items-baseline justify-between gap-4">
+                    <dt className="text-muted-foreground">Archived on</dt>
+                    <dd className="tabular-nums text-foreground">
+                      {formatDate(post.created_at)}
+                    </dd>
+                  </div>
+                )}
+              </dl>
+              <p className="mt-3 border-t border-border pt-3 text-xs leading-5 text-muted-foreground">
+                Similar posts below are ranked automatically using visual and
+                caption vector embeddings.
+              </p>
+              <Link
+                href="/dmca"
+                className="mt-1 inline-flex min-h-11 items-center rounded-sm text-xs text-muted-foreground transition-colors hover:text-foreground hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+              >
+                Report or request removal
+              </Link>
+            </div>
           </div>
         </div>
       </div>
+
+      <AdSlot variant="leaderboard" className="mt-10" enabled={Boolean(post)} />
 
       <SimilarPosts postId={id} />
     </div>

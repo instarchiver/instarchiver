@@ -7,7 +7,7 @@ import { getStories } from "@/lib/api/stories";
 
 export const revalidate = 86400;
 
-export const SITEMAP_IDS = ["pages", "users", "posts", "stories"] as const;
+export const SITEMAP_IDS = ["pages", "users", "history", "posts", "stories"] as const;
 type SitemapId = (typeof SITEMAP_IDS)[number];
 
 // ponytail: one sitemap per type. Google caps a sitemap at 50,000 URLs, and the
@@ -47,11 +47,23 @@ const builders: Record<SitemapId, () => Promise<MetadataRoute.Sitemap>> = {
       changeFrequency: "daily" as const,
       priority: 0.8,
     })),
+    ...["about", "privacy", "terms", "contact", "dmca"].map((path) => ({
+      url: `${SITE_URL}/${path}`,
+      changeFrequency: "monthly" as const,
+      priority: 0.5,
+    })),
   ],
   users: async () =>
     (await collect((c) => getUsers(c, undefined, undefined, 100))).map(
       (user) => ({
         url: `${SITE_URL}/users/${user.uuid}`,
+        lastModified: user.updated_at,
+      }),
+    ),
+  history: async () =>
+    (await collect((c) => getUsers(c, undefined, undefined, 100))).map(
+      (user) => ({
+        url: `${SITE_URL}/users/${user.uuid}/history`,
         lastModified: user.updated_at,
       }),
     ),

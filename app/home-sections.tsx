@@ -11,6 +11,7 @@ import type { SiteStatistics } from "@/lib/api/types";
 import { formatCount } from "@/lib/format";
 import { PostCard } from "@/components/posts/post-card";
 import { StoryCard } from "@/components/stories/story-card";
+import { AdSlot } from "@/components/ads/ad-slot";
 import { ErrorState } from "@/components/ui/error-state";
 import { SearchInput } from "@/components/ui/search-input";
 import { CardSkeletonGrid, Skeleton } from "@/components/ui/skeleton";
@@ -198,4 +199,18 @@ export function RecentPosts() {
       ))}
     </RecentSection>
   );
+}
+
+export function HomeMidAdSlot() {
+  const stories = useRecentStories();
+  const posts = useRecentPosts();
+  const hasBothSections =
+    !stories.isLoading &&
+    !posts.isLoading &&
+    !stories.isError &&
+    !posts.isError &&
+    (stories.data?.results.length ?? 0) > 0 &&
+    (posts.data?.results.length ?? 0) > 0;
+
+  return <AdSlot variant="leaderboard" className="mt-10" enabled={hasBothSections} />;
 }

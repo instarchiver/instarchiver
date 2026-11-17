@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type FormEvent } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { GoogleLogo, UserPlus, X } from "@phosphor-icons/react";
 import { Spinner } from "@/components/ui/spinner";
@@ -211,6 +212,25 @@ function AddUserDialog({
             Log in with Google
           </button>
         </div>
+        <p className="text-xs leading-5 text-muted-foreground">
+          By signing in, you agree to our{" "}
+          <Link
+            href="/terms"
+            onClick={() => dialogRef.current?.close()}
+            className="rounded-sm font-medium text-accent underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+          >
+            Terms of Service
+          </Link>{" "}
+          and{" "}
+          <Link
+            href="/privacy"
+            onClick={() => dialogRef.current?.close()}
+            className="rounded-sm font-medium text-accent underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+          >
+            Privacy Policy
+          </Link>
+          .
+        </p>
       </div>
     );
   } else {

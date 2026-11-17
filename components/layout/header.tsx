@@ -2,7 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { House, UsersThree, CirclesFour, GridFour } from "@phosphor-icons/react";
+import {
+  House,
+  UsersThree,
+  CirclesFour,
+  GridFour,
+} from "@phosphor-icons/react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { UserMenu } from "@/components/layout/user-menu";
 
@@ -36,13 +41,15 @@ export function Header() {
           {NAV_LINKS.map(({ href, label, icon: Icon }) => {
             const isActive =
               href === "/" ? pathname === "/" : pathname.startsWith(href);
+            const visibilityClass =
+              href === "/" ? "hidden sm:flex" : "flex";
             return (
               <Link
                 key={href}
                 href={href}
                 aria-current={isActive ? "page" : undefined}
                 // The logo already links home, so Home gives up its slot on phones.
-                className={`${href === "/" ? "hidden sm:flex" : "flex"} min-h-11 items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring ${
+                className={`${visibilityClass} min-h-11 items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring ${
                   isActive
                     ? "bg-muted text-foreground"
                     : "text-muted-foreground hover:bg-muted hover:text-foreground"

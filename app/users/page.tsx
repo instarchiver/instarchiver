@@ -1,12 +1,54 @@
 import type { Metadata } from "next";
+import {
+  dehydrate,
+  HydrationBoundary,
+  QueryClient,
+} from "@tanstack/react-query";
+import { getUsers } from "@/lib/api/users";
+import { queryKeys } from "@/lib/query-keys";
 import { UsersPageContent } from "./users-page-content";
 
-export const metadata: Metadata = {
-  title: "Users",
-  description: "Browse and search archived Instagram profiles.",
-  alternates: { canonical: "/users" },
-};
+const DEFAULT_USER_ORDERING = "-created_at";
 
-export default function UsersPage() {
-  return <UsersPageContent />;
+interface UsersPageProps {
+  searchParams: Promise<{ q?: string; ordering?: string }>;
+}
+
+export async function generateMetadata({
+  searchParams,
+}: UsersPageProps): Promise<Metadata> {
+  const { q } = await searchParams;
+  const hasSearch = typeof q === "string" && q.trim().length > 0;
+  return {
+    title: "Users",
+    description: "Browse and search archived Instagram profiles.",
+    alternates: { canonical: "/users" },
+    ...(hasSearch ? { robots: { index: false, follow: true } } : {}),
+  };
+}
+
+export default async function UsersPage({ searchParams }: UsersPageProps) {
+  const params = await searchParams;
+  const search = typeof params.q === "string" ? params.q : "";
+  const ordering =
+    typeof params.ordering === "string" && params.ordering
+      ? params.ordering
+      : DEFAULT_USER_ORDERING;
+
+  const queryClient = new QueryClient();
+  try {
+    await queryClient.prefetchInfiniteQuery({
+      queryKey: queryKeys.users.list(search, ordering),
+      queryFn: ({ pageParam }) => getUsers(pageParam, search, ordering),
+      initialPageParam: null as string | null,
+    });
+  } catch (error) {
+    console.error("[ssr] Users prefetch failed, falling back to client", error);
+  }
+
+  return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <UsersPageContent />
+    </HydrationBoundary>
+  );
 }

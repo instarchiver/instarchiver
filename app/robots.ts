@@ -4,7 +4,11 @@ import { SITEMAP_IDS } from "./sitemap";
 
 export default function robots(): MetadataRoute.Robots {
   return {
-    rules: { userAgent: "*", allow: "/" },
+    rules: {
+      userAgent: "*",
+      allow: "/",
+      disallow: ["/*?q=*", "/*&q=*"],
+    },
     sitemap: SITEMAP_IDS.map((id) => `${SITE_URL}/sitemap/${id}.xml`),
   };
 }
