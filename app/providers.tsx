@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider } from "next-themes";
+import { CookieConsentProvider } from "@/components/consent/cookie-consent";
 import { NavigationProgressProvider } from "@/components/navigation-progress";
 
 export function Providers({ children }: { children: React.ReactNode }) {
@@ -20,9 +21,11 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
   return (
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-      <QueryClientProvider client={queryClient}>
-        <NavigationProgressProvider>{children}</NavigationProgressProvider>
-      </QueryClientProvider>
+      <CookieConsentProvider>
+        <QueryClientProvider client={queryClient}>
+          <NavigationProgressProvider>{children}</NavigationProgressProvider>
+        </QueryClientProvider>
+      </CookieConsentProvider>
     </ThemeProvider>
   );
 }

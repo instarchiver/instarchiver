@@ -9,6 +9,7 @@ import { useInfinitePosts } from "@/hooks/use-posts";
 import { useInfiniteStories } from "@/hooks/use-stories";
 import { ApiError } from "@/lib/api/client";
 import { UserProfileHeader } from "@/components/users/user-profile-header";
+import { AdSlot } from "@/components/ads/ad-slot";
 import { InfiniteGrid } from "@/components/ui/infinite-grid";
 import { COLUMNS_2_3_4_5, COLUMNS_3_4_5 } from "@/components/ui/grid-columns";
 import { PostCard } from "@/components/posts/post-card";
@@ -223,10 +224,21 @@ function UserDetail({ uuid }: { uuid: string }) {
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
       <UserProfileHeader user={user} />
 
+      <div className="mt-1 flex justify-center sm:justify-start">
+        <Link
+          href="/dmca"
+          className="inline-flex min-h-11 items-center rounded-sm text-xs text-muted-foreground transition-colors hover:text-foreground hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+        >
+          Request profile or content removal
+        </Link>
+      </div>
+
+      <AdSlot variant="leaderboard" className="mt-6" enabled={Boolean(user)} />
+
       <div
         role="tablist"
         aria-label="Profile content"
-        className="mt-10 flex gap-1 border-b border-border"
+        className="mt-8 flex gap-1 border-b border-border"
       >
         {TABS.map(({ id, label, icon: Icon }, index) => {
           const selected = tab === id;

@@ -1,6 +1,7 @@
 "use client";
 
 import { Suspense, useCallback, useMemo } from "react";
+import Link from "next/link";
 import { UsersThree } from "@phosphor-icons/react";
 import { useInfiniteUsers } from "@/hooks/use-users";
 import { useDebouncedSearchParam } from "@/components/hooks/use-debounced-search-param";
@@ -21,8 +22,16 @@ function UsersPageFallback() {
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
       <h1 className="text-2xl font-semibold text-foreground">Users</h1>
-      <p className="mt-1 text-sm text-muted-foreground">
-        Every archived Instagram profile.
+      <p className="mt-1.5 max-w-2xl text-sm leading-6 text-muted-foreground">
+        Browse and sort archived Instagram profiles by followers, recency, or
+        username, or open any profile to inspect posts, stories, and{" "}
+        <Link
+          href="/about"
+          className="rounded-sm text-accent hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+        >
+          historical snapshot diffs
+        </Link>
+        .
       </p>
       <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
         <Skeleton className="h-11 w-full sm:max-w-sm sm:flex-1" />
@@ -95,8 +104,16 @@ function UsersList() {
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
       <h1 className="text-2xl font-semibold text-foreground">Users</h1>
-      <p className="mt-1 text-sm text-muted-foreground">
-        Every archived Instagram profile.
+      <p className="mt-1.5 max-w-2xl text-sm leading-6 text-muted-foreground">
+        Browse and sort archived Instagram profiles by followers, recency, or
+        username, or open any profile to inspect posts, stories, and{" "}
+        <Link
+          href="/about"
+          className="rounded-sm text-accent hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+        >
+          historical snapshot diffs
+        </Link>
+        .
       </p>
 
       <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -136,6 +153,7 @@ function UsersList() {
           emptyAction={emptyAction}
           errorMessage="Couldn't load archived users."
           columns={COLUMNS_2_3_4}
+          cardAspectRatio={1.1}
           skeletonVariant="user"
           scrollKey={scrollKey}
         />
