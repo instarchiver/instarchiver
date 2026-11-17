@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useMemo } from "react";
-import Link from "next/link";
 import { CirclesFour } from "@phosphor-icons/react";
 import { useInfiniteStories } from "@/hooks/use-stories";
 import { useDebouncedSearchParam } from "@/components/hooks/use-debounced-search-param";
@@ -50,21 +49,7 @@ export function StoriesPageContent() {
       <p className="mt-1.5 max-w-2xl text-sm leading-6 text-muted-foreground">
         Archived Instagram photo and video stories captured while profiles were
         public and preserved past Instagram&apos;s 24-hour window. Browse
-        chronologically or filter by username, and see{" "}
-        <Link
-          href="/about"
-          className="rounded-sm text-accent hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
-        >
-          about
-        </Link>{" "}
-        or{" "}
-        <Link
-          href="/dmca"
-          className="rounded-sm text-accent hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
-        >
-          content removal
-        </Link>{" "}
-        for details.
+        chronologically or filter by username.
       </p>
 
       <div className="mt-6 max-w-sm">

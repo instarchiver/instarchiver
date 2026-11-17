@@ -7,7 +7,6 @@ import {
   UsersThree,
   CirclesFour,
   GridFour,
-  Info,
 } from "@phosphor-icons/react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { UserMenu } from "@/components/layout/user-menu";
@@ -17,7 +16,6 @@ const NAV_LINKS = [
   { href: "/users", label: "Users", icon: UsersThree },
   { href: "/stories", label: "Stories", icon: CirclesFour },
   { href: "/posts", label: "Posts", icon: GridFour },
-  { href: "/about", label: "About", icon: Info },
 ];
 
 export function Header() {
@@ -44,11 +42,7 @@ export function Header() {
             const isActive =
               href === "/" ? pathname === "/" : pathname.startsWith(href);
             const visibilityClass =
-              href === "/"
-                ? "hidden sm:flex"
-                : href === "/about"
-                  ? "hidden md:flex"
-                  : "flex";
+              href === "/" ? "hidden sm:flex" : "flex";
             return (
               <Link
                 key={href}

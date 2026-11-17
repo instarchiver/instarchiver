@@ -11,6 +11,24 @@ export const metadata: Metadata = {
 const LINK_CLASS =
   "font-medium text-accent underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring rounded-sm";
 
+const FAQS = [
+  {
+    question: "Do I need an account to browse InstArchiver?",
+    answer:
+      "No. All archived profiles, stories, posts, and profile history timelines are publicly browsable without logging in. A Google account is only required when adding a new Instagram username to the archive.",
+  },
+  {
+    question: "Can I view stories after 24 hours or posts that were deleted?",
+    answer:
+      "Yes, when they were archived while the profile was public. Each story page displays whether its original 24-hour Instagram window is still active or has expired.",
+  },
+  {
+    question: "How do I request copyright removal or opt out a profile?",
+    answer:
+      "Send a request through the DMCA and content removal page or email arter@instarchiver.net with the specific InstArchiver URLs and proof of ownership or authorization.",
+  },
+];
+
 export default function AboutPage() {
   return (
     <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6 sm:py-12">
@@ -89,6 +107,24 @@ export default function AboutPage() {
 
         <section className="rounded-xl border border-border bg-card p-6">
           <h2 className="text-lg font-semibold text-foreground">
+            Frequently asked questions
+          </h2>
+          <dl className="mt-4 space-y-4">
+            {FAQS.map(({ question, answer }) => (
+              <div key={question}>
+                <dt className="text-sm font-semibold text-foreground">
+                  {question}
+                </dt>
+                <dd className="mt-1 text-sm leading-6 text-muted-foreground">
+                  {answer}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+
+        <section className="rounded-xl border border-border bg-card p-6">
+          <h2 className="text-lg font-semibold text-foreground">
             Independence and non-affiliation
           </h2>
           <p className="mt-3 text-sm leading-6 text-muted-foreground">
@@ -106,6 +142,10 @@ export default function AboutPage() {
             policy, review our{" "}
             <Link href="/privacy" className={LINK_CLASS}>
               Privacy Policy
+            </Link>{" "}
+            and{" "}
+            <Link href="/terms" className={LINK_CLASS}>
+              Terms
             </Link>
             , or reach out via our{" "}
             <Link href="/contact" className={LINK_CLASS}>
