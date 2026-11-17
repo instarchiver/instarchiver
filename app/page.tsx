@@ -86,7 +86,7 @@ export default async function Home() {
             Public Instagram archive, browsable.
           </h1>
           <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-muted-foreground">
-            InstArchiver keeps a searchable record of archived Instagram users,
+            Instarchiver keeps a searchable record of archived Instagram users,
             their stories, and their posts. Look up a profile or explore recent
             additions below.
           </p>
@@ -135,7 +135,7 @@ export default async function Home() {
         >
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <p className="max-w-2xl text-sm leading-6 text-muted-foreground">
-              InstArchiver preserves public Instagram profile snapshots,
+              Instarchiver preserves public Instagram profile snapshots,
               expired stories, and posts for browsing without an account. It is
               an independent archive and is not affiliated with Instagram or
               Meta.
@@ -145,7 +145,7 @@ export default async function Home() {
                 href="/about"
                 className="inline-flex min-h-11 items-center gap-1 rounded-lg px-1 text-sm font-medium text-accent hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
               >
-                About InstArchiver <ArrowRight size={16} aria-hidden="true" />
+                About Instarchiver <ArrowRight size={16} aria-hidden="true" />
               </Link>
               <Link
                 href="/dmca"

@@ -4,7 +4,7 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Contact",
   description:
-    "Contact InstArchiver for general inquiries, bug reports, privacy questions, or content removal requests.",
+    "Contact Instarchiver for general inquiries, bug reports, privacy questions, or content removal requests.",
   alternates: { canonical: "/contact" },
 };
 
@@ -18,7 +18,7 @@ export default function ContactPage() {
         Contact
       </h1>
       <p className="mt-3 text-base leading-7 text-muted-foreground">
-        Reach the InstArchiver operator directly by email for support, bug
+        Reach the Instarchiver operator directly by email for support, bug
         reports, privacy questions, or content removal notices.
       </p>
 
@@ -53,7 +53,7 @@ export default function ContactPage() {
             </li>
             <li>
               <span className="font-medium text-foreground">Bug reports:</span>{" "}
-              The InstArchiver page URL, your browser or device, and what you
+              The Instarchiver page URL, your browser or device, and what you
               expected versus what happened.
             </li>
             <li>

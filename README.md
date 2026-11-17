@@ -1,4 +1,4 @@
-# InstArchiver
+# Instarchiver
 
 An Instagram archiver, because apparently the world needed one more. Next.js frontend for browsing users, posts, and stories that a Django backend hoards on your behalf so you don't have to.
 
@@ -7,7 +7,7 @@ An Instagram archiver, because apparently the world needed one more. Next.js fro
 - Infinite-scrolling grids of archived users/posts/stories, virtualized so it doesn't eat your RAM. It used to. We fixed it. Mostly.
 - Search + sort, synced to the URL, debounced like it's not 2009.
 - "Similar Posts/Stories," courtesy of `pgvector` embeddings the backend swears by. Vibes-based, but it works.
-- SSR titles, so link previews don't all just say "InstArchiver" forever.
+- SSR titles, so link previews don't all just say "Instarchiver" forever.
 - Dark mode. A footer with an actual email in it. We have standards, occasionally.
 
 ## Stack

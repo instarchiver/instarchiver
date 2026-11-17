@@ -4,7 +4,7 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Privacy Policy",
   description:
-    "How InstArchiver handles analytics, advertising cookies, Google Sign-In via Firebase Authentication, browser storage, and public archive data.",
+    "How Instarchiver handles analytics, advertising cookies, Google Sign-In via Firebase Authentication, browser storage, and public archive data.",
   alternates: { canonical: "/privacy" },
 };
 
@@ -21,7 +21,7 @@ export default function PrivacyPage() {
         Last updated: November 2026
       </p>
       <p className="mt-4 text-base leading-7 text-muted-foreground">
-        This Privacy Policy explains what information InstArchiver collects, how
+        This Privacy Policy explains what information Instarchiver collects, how
         cookies and local browser storage are used, and the choices available to
         you when browsing or signing in.
       </p>
@@ -32,7 +32,7 @@ export default function PrivacyPage() {
             1. Public archive data
           </h2>
           <p className="mt-3 text-sm leading-6 text-muted-foreground">
-            InstArchiver indexes and displays publicly available Instagram
+            Instarchiver indexes and displays publicly available Instagram
             profile metadata, posts, stories, and historical profile snapshots.
             Browsing the archive does not require registration or login. Account
             owners and rights holders may request removal or exclusion at any
@@ -63,7 +63,7 @@ export default function PrivacyPage() {
             3. Browser storage (localStorage and cookies)
           </h2>
           <p className="mt-3 text-sm leading-6 text-muted-foreground">
-            InstArchiver uses local browser storage and cookies for essential
+            Instarchiver uses local browser storage and cookies for essential
             site functionality and, where permitted, analytics and advertising:
           </p>
           <ul className="mt-3 list-disc space-y-2 pl-5 text-sm leading-6 text-muted-foreground">
@@ -104,7 +104,7 @@ export default function PrivacyPage() {
             4. Google Analytics
           </h2>
           <p className="mt-3 text-sm leading-6 text-muted-foreground">
-            InstArchiver uses Google Analytics (measurement ID{" "}
+            Instarchiver uses Google Analytics (measurement ID{" "}
             <code className="rounded bg-muted px-1 py-0.5 text-xs text-foreground">
               G-6CJW2BM9NS
             </code>
@@ -120,10 +120,10 @@ export default function PrivacyPage() {
           </h2>
           <div className="mt-3 space-y-3 text-sm leading-6 text-muted-foreground">
             <p>
-              InstArchiver uses or may use Google AdSense to display
+              Instarchiver uses or may use Google AdSense to display
               advertisements. Third-party vendors, including Google, use cookies
               (such as the DoubleClick / DART cookie) to serve ads based on a
-              visitor&apos;s prior visits to InstArchiver or other websites on
+              visitor&apos;s prior visits to Instarchiver or other websites on
               the internet.
             </p>
             <p>
@@ -151,7 +151,7 @@ export default function PrivacyPage() {
               >
                 aboutads.info/choices
               </a>
-              , or adjust your consent choices on InstArchiver using the
+              , or adjust your consent choices on Instarchiver using the
               &ldquo;Cookie preferences&rdquo; link in the footer.
             </p>
           </div>

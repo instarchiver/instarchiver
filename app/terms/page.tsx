@@ -4,7 +4,7 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Terms of Service",
   description:
-    "Terms governing access to InstArchiver, fair-use limits, intellectual property, and disclaimers.",
+    "Terms governing access to Instarchiver, fair-use limits, intellectual property, and disclaimers.",
   alternates: { canonical: "/terms" },
 };
 
@@ -21,7 +21,7 @@ export default function TermsPage() {
         Last updated: November 2026
       </p>
       <p className="mt-4 text-base leading-7 text-muted-foreground">
-        By accessing or using InstArchiver, you agree to these Terms of Service.
+        By accessing or using Instarchiver, you agree to these Terms of Service.
         If you do not agree with these terms, please do not use the service.
       </p>
 
@@ -31,7 +31,7 @@ export default function TermsPage() {
             1. Use of the archive
           </h2>
           <p className="mt-3 text-sm leading-6 text-muted-foreground">
-            InstArchiver provides a public, read-only web archive of public
+            Instarchiver provides a public, read-only web archive of public
             Instagram profiles, stories, posts, and historical profile changes
             for informational, journalistic, and research reference. You agree
             to use the service only for lawful purposes and in compliance with
@@ -44,12 +44,12 @@ export default function TermsPage() {
             2. Fair use and prohibited conduct
           </h2>
           <p className="mt-3 text-sm leading-6 text-muted-foreground">
-            To keep InstArchiver reliable for all visitors, you may not:
+            To keep Instarchiver reliable for all visitors, you may not:
           </p>
           <ul className="mt-3 list-disc space-y-2 pl-5 text-sm leading-6 text-muted-foreground">
             <li>
               Run automated scrapers, bots, or bulk downloaders against
-              InstArchiver pages, media assets, or backend APIs.
+              Instarchiver pages, media assets, or backend APIs.
             </li>
             <li>
               Attempt to bypass authentication, rate limits, or access controls.
@@ -85,7 +85,7 @@ export default function TermsPage() {
           <p className="mt-3 text-sm leading-6 text-muted-foreground">
             Archived images, videos, captions, and profile information remain
             the intellectual property of their respective creators and owners.
-            If you believe content on InstArchiver infringes your copyright or
+            If you believe content on Instarchiver infringes your copyright or
             wish to opt a profile out of the archive, follow the instructions on
             our{" "}
             <Link href="/dmca" className={LINK_CLASS}>
@@ -100,7 +100,7 @@ export default function TermsPage() {
             5. Non-affiliation
           </h2>
           <p className="mt-3 text-sm leading-6 text-muted-foreground">
-            InstArchiver is an independent project and is not affiliated with,
+            Instarchiver is an independent project and is not affiliated with,
             associated with, authorized by, endorsed by, or in any way
             officially connected with Instagram or Meta Platforms, Inc.
           </p>
@@ -111,7 +111,7 @@ export default function TermsPage() {
             6. Disclaimer of warranties and availability
           </h2>
           <p className="mt-3 text-sm leading-6 text-muted-foreground">
-            InstArchiver is provided on an &ldquo;as is&rdquo; and &ldquo;as
+            Instarchiver is provided on an &ldquo;as is&rdquo; and &ldquo;as
             available&rdquo; basis without warranties of any kind, whether
             express or implied. We do not guarantee uninterrupted uptime,
             completeness of any profile&apos;s history, or continued retention

@@ -4,7 +4,7 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "DMCA & Content Removal",
   description:
-    "How copyright owners and Instagram account holders can request content takedown or profile removal from InstArchiver.",
+    "How copyright owners and Instagram account holders can request content takedown or profile removal from Instarchiver.",
   alternates: { canonical: "/dmca" },
 };
 
@@ -18,7 +18,7 @@ export default function DmcaPage() {
         DMCA &amp; Content Removal
       </h1>
       <p className="mt-3 text-base leading-7 text-muted-foreground">
-        InstArchiver respects the rights of content creators, copyright
+        Instarchiver respects the rights of content creators, copyright
         holders, and Instagram account owners. You can request removal of
         specific posts or stories, or opt an entire profile out of the archive.
       </p>
@@ -30,7 +30,7 @@ export default function DmcaPage() {
           </h2>
           <p className="mt-3 text-sm leading-6 text-muted-foreground">
             If you are a copyright owner or authorized agent and believe
-            material on InstArchiver infringes your copyright, send a written
+            material on Instarchiver infringes your copyright, send a written
             notice containing:
           </p>
           <ul className="mt-3 list-disc space-y-2 pl-5 text-sm leading-6 text-muted-foreground">
@@ -39,7 +39,7 @@ export default function DmcaPage() {
               infringed.
             </li>
             <li>
-              The exact InstArchiver URL(s) where the material appears (for
+              The exact Instarchiver URL(s) where the material appears (for
               example,{" "}
               <code className="rounded bg-muted px-1 py-0.5 text-xs text-foreground">
                 https://instarchiver.net/posts/...
@@ -73,13 +73,13 @@ export default function DmcaPage() {
             2. Account owner opt-out and profile removal
           </h2>
           <p className="mt-3 text-sm leading-6 text-muted-foreground">
-            If you own an Instagram account indexed on InstArchiver and want
+            If you own an Instagram account indexed on Instarchiver and want
             your profile, posts, stories, or profile history removed and
             excluded from future archiving, please provide:
           </p>
           <ul className="mt-3 list-disc space-y-2 pl-5 text-sm leading-6 text-muted-foreground">
             <li>
-              Your Instagram username and the exact InstArchiver profile URL(s)
+              Your Instagram username and the exact Instarchiver profile URL(s)
               to remove.
             </li>
             <li>

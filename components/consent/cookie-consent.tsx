@@ -108,7 +108,7 @@ export function CookieConsentProvider({
                 Cookie preferences
               </p>
               <p className="text-sm leading-5 text-muted-foreground">
-                InstArchiver uses essential storage for your theme and session,
+                Instarchiver uses essential storage for your theme and session,
                 plus optional cookies for Google Analytics and Google AdSense.
                 See our{" "}
                 <Link
