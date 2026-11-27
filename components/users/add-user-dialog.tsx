@@ -7,7 +7,7 @@ import { GoogleLogo, UserPlus, X } from "@phosphor-icons/react";
 import { Spinner } from "@/components/ui/spinner";
 import { isCancelledPopup, useLoginWithGoogle, useMe } from "@/hooks/use-auth";
 import { useCreateUser } from "@/hooks/use-users";
-import { getApiErrorMessage } from "@/lib/api/client";
+import { ApiError, getApiErrorMessage } from "@/lib/api/client";
 
 const PRIMARY_BUTTON =
   "flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-lg bg-accent px-4 text-sm font-medium text-accent-foreground transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring disabled:cursor-wait disabled:opacity-60";
@@ -144,11 +144,14 @@ function AddUserDialog({
   }
 
   function handleDialogClose() {
+    const wasForbidden =
+      createUser.error instanceof ApiError && createUser.error.status === 403;
     onOpenChange(false);
     setUsername("");
     setValidationError(undefined);
     createUser.reset();
     login.reset();
+    if (wasForbidden) router.refresh();
   }
 
   function onSubmit(e: FormEvent<HTMLFormElement>) {

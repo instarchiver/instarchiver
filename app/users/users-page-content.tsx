@@ -30,14 +30,16 @@ function UsersPageHeader() {
   );
 }
 
-function UsersPageFallback() {
+function UsersPageFallback({ allowAddUser }: { allowAddUser: boolean }) {
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
       <UsersPageHeader />
       <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
         <Skeleton className="h-11 w-full sm:max-w-sm sm:flex-1" />
         <Skeleton className="h-11 w-full sm:w-44" />
-        <Skeleton className="h-11 w-full sm:ml-auto sm:w-28" />
+        {allowAddUser && (
+          <Skeleton className="h-11 w-full sm:ml-auto sm:w-28" />
+        )}
       </div>
       <div className="mt-8">
         <CardSkeletonGrid count={8} columns={COLUMNS_2_3_4} variant="user" />
@@ -46,7 +48,7 @@ function UsersPageFallback() {
   );
 }
 
-function UsersList() {
+function UsersList({ allowAddUser }: { allowAddUser: boolean }) {
   const { value: search, debouncedValue: debouncedSearch, setValue: setSearch } =
     useDebouncedSearchParam("q");
   const { value: ordering, setValue: setOrdering } = useSearchParamState(
@@ -93,14 +95,16 @@ function UsersList() {
       >
         Clear search
       </button>
-      <AddUserButton
-        initialUsername={isSingleHandle ? cleanHandle : undefined}
-        label={isSingleHandle ? `Add @${cleanHandle}` : "Add user"}
-      />
+      {allowAddUser && (
+        <AddUserButton
+          initialUsername={isSingleHandle ? cleanHandle : undefined}
+          label={isSingleHandle ? `Add @${cleanHandle}` : "Add user"}
+        />
+      )}
     </div>
-  ) : (
+  ) : allowAddUser ? (
     <AddUserButton />
-  );
+  ) : undefined;
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
@@ -117,7 +121,9 @@ function UsersList() {
           />
         </div>
         <UserSortSelect value={ordering} onChange={setOrdering} />
-        <AddUserButton className="w-full justify-center sm:ml-auto sm:w-auto" />
+        {allowAddUser && (
+          <AddUserButton className="w-full justify-center sm:ml-auto sm:w-auto" />
+        )}
       </div>
 
       <div className="mt-8">
@@ -152,10 +158,14 @@ function UsersList() {
   );
 }
 
-export function UsersPageContent() {
+export function UsersPageContent({
+  allowAddUser,
+}: {
+  allowAddUser: boolean;
+}) {
   return (
-    <Suspense fallback={<UsersPageFallback />}>
-      <UsersList />
+    <Suspense fallback={<UsersPageFallback allowAddUser={allowAddUser} />}>
+      <UsersList allowAddUser={allowAddUser} />
     </Suspense>
   );
 }
