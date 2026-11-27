@@ -4,6 +4,7 @@ import {
   HydrationBoundary,
   QueryClient,
 } from "@tanstack/react-query";
+import { getFrontendSettings } from "@/lib/api/settings";
 import { getUsers } from "@/lib/api/users";
 import { queryKeys } from "@/lib/query-keys";
 import { UsersPageContent } from "./users-page-content";
@@ -36,19 +37,32 @@ export default async function UsersPage({ searchParams }: UsersPageProps) {
       : DEFAULT_USER_ORDERING;
 
   const queryClient = new QueryClient();
-  try {
-    await queryClient.prefetchInfiniteQuery({
-      queryKey: queryKeys.users.list(search, ordering),
-      queryFn: ({ pageParam }) => getUsers(pageParam, search, ordering),
-      initialPageParam: null as string | null,
-    });
-  } catch (error) {
-    console.error("[ssr] Users prefetch failed, falling back to client", error);
-  }
+  const [frontendSettings] = await Promise.all([
+    getFrontendSettings().catch((error) => {
+      console.error(
+        "[ssr] Frontend settings fetch failed, disabling add-user UI",
+        error
+      );
+      return null;
+    }),
+    queryClient
+      .prefetchInfiniteQuery({
+        queryKey: queryKeys.users.list(search, ordering),
+        queryFn: ({ pageParam }) => getUsers(pageParam, search, ordering),
+        initialPageParam: null as string | null,
+      })
+      .catch((error) => {
+        console.error(
+          "[ssr] Users prefetch failed, falling back to client",
+          error
+        );
+      }),
+  ]);
+  const allowAddUser = frontendSettings?.allow_add_user === true;
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <UsersPageContent />
+      <UsersPageContent allowAddUser={allowAddUser} />
     </HydrationBoundary>
   );
 }

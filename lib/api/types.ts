@@ -115,3 +115,7 @@ export interface AuthUser {
   name: string;
   photo_url: string;
 }
+
+export interface FrontendSettings {
+  allow_add_user: boolean;
+}
