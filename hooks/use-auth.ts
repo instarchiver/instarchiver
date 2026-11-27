@@ -1,6 +1,7 @@
 import { useSyncExternalStore } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { getMe, loginWithGoogle } from "@/lib/api/auth";
+import { getMe } from "@/lib/api/auth";
+import { signInWithGoogleForTokens } from "@/lib/auth/google-sign-in";
 import {
   clearTokens,
   getTokensServerSnapshot,
@@ -55,21 +56,7 @@ export function useLoginWithGoogle() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async () => {
-      // Loaded on demand so the Firebase SDK stays out of the initial bundle.
-      const [{ getFirebaseAuth, createGoogleProvider }, { signInWithPopup, signOut }] =
-        await Promise.all([import("@/lib/firebase"), import("firebase/auth")]);
-
-      const firebaseAuth = getFirebaseAuth();
-      const credential = await signInWithPopup(firebaseAuth, createGoogleProvider());
-      try {
-        const idToken = await credential.user.getIdToken();
-        return await loginWithGoogle(idToken);
-      } finally {
-        // The backend JWT is the session from here on.
-        await signOut(firebaseAuth).catch(() => {});
-      }
-    },
+    mutationFn: signInWithGoogleForTokens,
     onSuccess: (tokens) => {
       setTokens(tokens);
       return queryClient.invalidateQueries({ queryKey: queryKeys.auth.me });
